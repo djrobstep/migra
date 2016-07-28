@@ -1,4 +1,5 @@
 create extension hstore;
+create extension postgis;
 
 CREATE TABLE products (
     product_no integer PRIMARY KEY,
@@ -18,8 +19,6 @@ CREATE TABLE orders (
     shipping_address text
 );
 
-
-
 CREATE TABLE order_items (
     product_no integer REFERENCES products ON DELETE RESTRICT,
     order_id integer REFERENCES orders ON DELETE CASCADE,
@@ -36,6 +35,17 @@ $$
         END;
 
 $$
-LANGUAGE PLPGSQL;
+LANGUAGE PLPGSQL volatile returns null on null input security definer;
+
+create or replace function public.newfunc(i integer, t text[])
+returns TABLE(a text, c integer) as
+$$
+ declare
+        BEGIN
+                select 'no', 1;
+        END;
+
+$$
+LANGUAGE PLPGSQL STABLE returns null on null input security invoker;
 
 create view vvv as select 2;

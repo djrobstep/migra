@@ -70,11 +70,11 @@ Documentation
 
 
 Features and Limitations
------------
+------------------------
 
-Migra will detect changes to tables, views, materialized views, indexes, constraints, sequences, and extensions.
+Migra will detect changes to tables, views, materialized views, indexes, constraints, sequences, and which extensions are installed.
 
-In terms of specific PostgreSQL feature limitations, `migra` is only confirmed to work with SQL/PLPGSQL functions so far. Doesn't track changes to function modifiers (IMMUTABLE/STABLE/VOLATILE, STRICT, RETURNS NULL ON NULL INPUT, etc).
+In terms of specific PostgreSQL feature limitations, `migra` is only confirmed to work with SQL/PLPGSQL functions so far.
 
 
 Installation
