@@ -26,7 +26,9 @@ class Migration(object):
         self.changes.i_target = get_inspector(self.s_target)
 
     def apply(self):
-        raw_execute(self.s_from, self.statements.sql)
+        for stmt in self.statements:
+            raw_execute(self.s_from, stmt)
+
         self.inspect_from()
         safety_on = self.statements.safe
         self.clear()
@@ -42,14 +44,18 @@ class Migration(object):
         self.statements.safe = safety_on
 
     def add_all_changes(self):
-        self.add(self.changes.sequences(drops_only=True))
+        self.add(self.changes.enums(modifications=False))
+
+        self.add(self.changes.sequences(creations_only=True))
+
         self.add(self.changes.extensions(drops_only=True))
         self.add(self.changes.views(drops_only=True))
         self.add(self.changes.functions(drops_only=True))
 
         self.add(self.changes.schema())
 
-        self.add(self.changes.sequences(creations_only=True))
+        self.add(self.changes.sequences(drops_only=True))
+
         self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.views(creations_only=True))
         self.add(self.changes.functions(creations_only=True))

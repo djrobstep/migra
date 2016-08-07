@@ -1,8 +1,10 @@
 create extension hstore;
 create extension postgis;
 
+CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped', 'delivered');
+
 CREATE TABLE products (
-    product_no integer PRIMARY KEY,
+    product_no serial primary key,
     name text,
     price numeric not null default 100,
     x integer,
@@ -15,8 +17,9 @@ CREATE TABLE products (
 create index on products(name);
 
 CREATE TABLE orders (
-    order_id integer PRIMARY KEY,
-    shipping_address text
+    order_id integer primary key unique,
+    shipping_address text,
+    status shipping_status
 );
 
 CREATE TABLE order_items (
@@ -49,3 +52,12 @@ $$
 LANGUAGE PLPGSQL STABLE returns null on null input security invoker;
 
 create view vvv as select 2;
+
+
+CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');
+
+CREATE TABLE bug (
+    id serial,
+    description text,
+    status text-- bug_status
+);

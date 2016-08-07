@@ -1,5 +1,7 @@
 create extension pg_trgm;
 
+CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped');
+
 CREATE TABLE products (
     product_no integer PRIMARY KEY,
     name varchar(10) not null unique,
@@ -14,12 +16,13 @@ create index on products(price);
 create view vvv as select * from products;
 
 CREATE TABLE orders (
-    order_id integer PRIMARY KEY,
-    shipping_address text
+    order_id serial primary key,
+    shipping_address text,
+    status shipping_status
 );
 
 CREATE TABLE unwanted (
-    id integer PRIMARY KEY,
+    id serial,
     name text not null
 );
 
@@ -33,3 +36,5 @@ $$
 
 $$
 LANGUAGE PLPGSQL STABLE returns null on null input security definer;
+
+CREATE TYPE unwanted_enum AS ENUM ('unwanted', 'not wanted');

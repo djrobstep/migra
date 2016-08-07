@@ -1,3 +1,11 @@
+drop type "public"."unwanted_enum";
+
+create type "public"."bug_status" as enum ('new', 'open', 'closed');
+
+create sequence "public"."bug_id_seq";
+
+create sequence "public"."products_product_no_seq";
+
 drop extension if exists "pg_trgm";
 
 drop view if exists "public"."vvv" cascade;
@@ -5,6 +13,13 @@ drop view if exists "public"."vvv" cascade;
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
 
 drop table "public"."unwanted";
+
+create table "public"."bug" (
+    "id" integer not null default nextval('bug_id_seq'::regclass),
+    "description" text,
+    "status" text
+);
+
 
 create table "public"."order_items" (
     "product_no" integer not null,
@@ -15,11 +30,21 @@ create table "public"."order_items" (
 
 CREATE UNIQUE INDEX order_items_pkey ON order_items USING btree (product_no, order_id);
 
+alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+
 alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
 
 alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
 
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+alter table "public"."orders" alter column "status" set data type varchar;
+
+drop type "public"."shipping_status";
+
+create type "public"."shipping_status" as enum ('not shipped', 'shipped', 'delivered');
+
+alter table "public"."orders" alter column "status" set data type shipping_status using "status"::shipping_status;
+
+alter table "public"."orders" alter column "order_id" drop default;
 
 alter table "public"."products" drop column "oldcolumn";
 
@@ -34,6 +59,8 @@ alter table "public"."products" alter column "name" set data type text;
 alter table "public"."products" alter column "price" set not null;
 
 alter table "public"."products" alter column "price" set default 100;
+
+alter table "public"."products" alter column "product_no" set default nextval('products_product_no_seq'::regclass);
 
 alter table "public"."products" alter column "x" drop not null;
 
@@ -52,6 +79,10 @@ drop index if exists "public"."products_name_key";
 drop index if exists "public"."products_price_idx";
 
 CREATE INDEX products_name_idx ON products USING btree (name);
+
+drop sequence if exists "public"."orders_order_id_seq";
+
+drop sequence if exists "public"."unwanted_id_seq";
 
 create extension "hstore" with schema "public" version '1.3';
 

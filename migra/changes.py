@@ -6,6 +6,7 @@ from functools import partial
 
 
 THINGS = [
+    'enums',
     'sequences',
     'constraints',
     'functions',
@@ -19,7 +20,8 @@ def statements_for_changes(
         things_from,
         things_target,
         creations_only=False,
-        drops_only=False):
+        drops_only=False,
+        modifications=True):
 
     added, removed, modified, _ = \
         differences(things_from, things_target)
@@ -34,13 +36,43 @@ def statements_for_changes(
         for k, v in added.items():
             statements.append(v.create_statement)
 
-    for k, v in modified.items():
-        if not creations_only:
-            statements.append(v.drop_statement)
-        if not drops_only:
-            statements.append(v.create_statement)
+    if modifications:
+        for k, v in modified.items():
+            if not creations_only:
+                statements.append(v.drop_statement)
+            if not drops_only:
+                statements.append(v.create_statement)
 
     return statements
+
+
+def get_enum_modifications(tables_from, tables_target):
+    _, _, t_modified, _ = differences(tables_from, tables_target)
+
+    pre = Statements()
+    recreate = Statements()
+    post = Statements()
+
+    enums_to_change = {}
+
+    for t, v in t_modified.items():
+        t_before = tables_from[t]
+
+        _, _, c_modified, _ = differences(t_before.columns, v.columns)
+
+        for k, c in c_modified.items():
+            before = t_before.columns[k]
+
+            if c.is_enum == before.is_enum and c.dbtypestr == before.dbtypestr and c.enum != before.enum:
+                pre.append(before.change_enum_to_string_statement(t))
+                enums_to_change[c.enum.name] = c.enum
+                post.append(before.change_string_to_enum_statement(t))
+
+    for e in enums_to_change.values():
+        recreate.append(e.drop_statement)
+        recreate.append(e.create_statement)
+
+    return pre + recreate + post
 
 
 def get_schema_changes(tables_from, tables_target):
@@ -59,6 +91,8 @@ def get_schema_changes(tables_from, tables_target):
 
     for t, v in added.items():
         statements += [c.create_statement for c in v.constraints.values()]
+
+    statements += get_enum_modifications(tables_from, tables_target)
 
     for t, v in modified.items():
         before = tables_from[t]

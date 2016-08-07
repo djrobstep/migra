@@ -67,6 +67,7 @@ def test_all():
         assert run(args, out=out, err=err) == 2
         assert err.getvalue() == ''
         assert out.getvalue().strip() == EXPECTED
+
         with S(d0) as s0, S(d1) as s1:
             m = Migration(s0, s1)
 
@@ -83,6 +84,7 @@ def test_all():
 
             # check for changes again and make sure none are pending
             m.add_all_changes()
+            assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
 
         out, err = outs()
