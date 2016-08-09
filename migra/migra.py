@@ -44,7 +44,7 @@ class Migration(object):
         self.statements.safe = safety_on
 
     def add_all_changes(self):
-        self.add(self.changes.enums(modifications=False))
+        self.add(self.changes.enums(creations_only=True, modifications=False))
 
         self.add(self.changes.sequences(creations_only=True))
 
@@ -59,6 +59,8 @@ class Migration(object):
         self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.views(creations_only=True))
         self.add(self.changes.functions(creations_only=True))
+
+        self.add(self.changes.enums(drops_only=True, modifications=False))
 
     @property
     def sql(self):

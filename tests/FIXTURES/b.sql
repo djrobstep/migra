@@ -3,6 +3,12 @@ create extension postgis;
 
 CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped', 'delivered');
 
+CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');
+
+CREATE TYPE unused_enum AS ENUM ('a', 'b', 'c');
+
+CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
+
 CREATE TABLE products (
     product_no serial primary key,
     name text,
@@ -19,7 +25,8 @@ create index on products(name);
 CREATE TABLE orders (
     order_id integer primary key unique,
     shipping_address text,
-    status shipping_status
+    status shipping_status,
+    status2 text
 );
 
 CREATE TABLE order_items (
@@ -52,9 +59,6 @@ $$
 LANGUAGE PLPGSQL STABLE returns null on null input security invoker;
 
 create view vvv as select 2;
-
-
-CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');
 
 CREATE TABLE bug (
     id serial,

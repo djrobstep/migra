@@ -1,5 +1,3 @@
-drop type "public"."unwanted_enum";
-
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
 create sequence "public"."bug_id_seq";
@@ -42,9 +40,15 @@ drop type "public"."shipping_status";
 
 create type "public"."shipping_status" as enum ('not shipped', 'shipped', 'delivered');
 
+drop type "public"."unused_enum";
+
+create type "public"."unused_enum" as enum ('a', 'b', 'c');
+
 alter table "public"."orders" alter column "status" set data type shipping_status using "status"::shipping_status;
 
 alter table "public"."orders" alter column "order_id" drop default;
+
+alter table "public"."orders" alter column "status2" set data type text;
 
 alter table "public"."products" drop column "oldcolumn";
 
@@ -112,3 +116,5 @@ $$
 
 $$
 language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
+
+drop type "public"."unwanted_enum";

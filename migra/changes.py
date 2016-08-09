@@ -46,14 +46,20 @@ def statements_for_changes(
     return statements
 
 
-def get_enum_modifications(tables_from, tables_target):
+def get_enum_modifications(
+        tables_from,
+        tables_target,
+        enums_from,
+        enums_target):
+
+    _, _, e_modified, _ = differences(enums_from, enums_target)
     _, _, t_modified, _ = differences(tables_from, tables_target)
 
     pre = Statements()
     recreate = Statements()
     post = Statements()
 
-    enums_to_change = {}
+    enums_to_change = e_modified
 
     for t, v in t_modified.items():
         t_before = tables_from[t]
@@ -65,7 +71,6 @@ def get_enum_modifications(tables_from, tables_target):
 
             if c.is_enum == before.is_enum and c.dbtypestr == before.dbtypestr and c.enum != before.enum:
                 pre.append(before.change_enum_to_string_statement(t))
-                enums_to_change[c.enum.name] = c.enum
                 post.append(before.change_string_to_enum_statement(t))
 
     for e in enums_to_change.values():
@@ -75,7 +80,12 @@ def get_enum_modifications(tables_from, tables_target):
     return pre + recreate + post
 
 
-def get_schema_changes(tables_from, tables_target):
+def get_schema_changes(
+        tables_from,
+        tables_target,
+        enums_from,
+        enums_target):
+
     added, removed, modified, _ = differences(tables_from, tables_target)
 
     statements = Statements()
@@ -92,7 +102,7 @@ def get_schema_changes(tables_from, tables_target):
     for t, v in added.items():
         statements += [c.create_statement for c in v.constraints.values()]
 
-    statements += get_enum_modifications(tables_from, tables_target)
+    statements += get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
 
     for t, v in modified.items():
         before = tables_from[t]
@@ -126,7 +136,9 @@ class Changes(object):
             return partial(
                 get_schema_changes,
                 self.i_from.tables,
-                self.i_target.tables)
+                self.i_target.tables,
+                self.i_from.enums,
+                self.i_target.enums)
         elif name in THINGS:
             return partial(
                 statements_for_changes,
