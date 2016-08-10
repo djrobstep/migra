@@ -10,6 +10,10 @@ drop view if exists "public"."vvv" cascade;
 
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
 
+create extension "hstore" with schema "public" version '1.3';
+
+create extension "postgis" with schema "public" version '2.2.1';
+
 drop table "public"."unwanted";
 
 create table "public"."bug" (
@@ -45,6 +49,8 @@ drop type "public"."unused_enum";
 create type "public"."unused_enum" as enum ('a', 'b', 'c');
 
 alter table "public"."orders" alter column "status" set data type shipping_status using "status"::shipping_status;
+
+alter table "public"."orders" add column "h" hstore;
 
 alter table "public"."orders" alter column "order_id" drop default;
 
@@ -84,14 +90,6 @@ drop index if exists "public"."products_price_idx";
 
 CREATE INDEX products_name_idx ON products USING btree (name);
 
-drop sequence if exists "public"."orders_order_id_seq";
-
-drop sequence if exists "public"."unwanted_id_seq";
-
-create extension "hstore" with schema "public" version '1.3';
-
-create extension "postgis" with schema "public" version '2.2.1';
-
 create view "public"."vvv" as  SELECT 2;
 
 
@@ -116,5 +114,9 @@ $$
 
 $$
 language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
+
+drop sequence if exists "public"."orders_order_id_seq";
+
+drop sequence if exists "public"."unwanted_id_seq";
 
 drop type "public"."unwanted_enum";

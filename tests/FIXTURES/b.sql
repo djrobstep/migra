@@ -26,7 +26,8 @@ CREATE TABLE orders (
     order_id integer primary key unique,
     shipping_address text,
     status shipping_status,
-    status2 text
+    status2 text,
+    h hstore
 );
 
 CREATE TABLE order_items (

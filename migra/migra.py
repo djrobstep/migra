@@ -52,14 +52,14 @@ class Migration(object):
         self.add(self.changes.views(drops_only=True))
         self.add(self.changes.functions(drops_only=True))
 
+        self.add(self.changes.extensions(creations_only=True))
+
         self.add(self.changes.schema())
 
-        self.add(self.changes.sequences(drops_only=True))
-
-        self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.views(creations_only=True))
         self.add(self.changes.functions(creations_only=True))
 
+        self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))
 
     @property
