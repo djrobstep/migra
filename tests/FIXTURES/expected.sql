@@ -4,11 +4,11 @@ create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
 
-drop extension if exists "pg_trgm";
-
 drop view if exists "public"."vvv" cascade;
 
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
+
+drop extension if exists "pg_trgm";
 
 create extension "hstore" with schema "public" version '1.3';
 
