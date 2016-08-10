@@ -1,5 +1,9 @@
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
+create extension "hstore" with schema "public" version '1.3';
+
+create extension "postgis" with schema "public" version '2.2.1';
+
 create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
@@ -7,12 +11,6 @@ create sequence "public"."products_product_no_seq";
 drop view if exists "public"."vvv" cascade;
 
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
-
-drop extension if exists "pg_trgm";
-
-create extension "hstore" with schema "public" version '1.3';
-
-create extension "postgis" with schema "public" version '2.2.1';
 
 drop table "public"."unwanted";
 
@@ -120,3 +118,5 @@ drop sequence if exists "public"."orders_order_id_seq";
 drop sequence if exists "public"."unwanted_id_seq";
 
 drop type "public"."unwanted_enum";
+
+drop extension if exists "pg_trgm";
