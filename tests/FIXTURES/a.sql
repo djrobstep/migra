@@ -9,7 +9,7 @@ CREATE TYPE unused_enum AS ENUM ('a', 'b');
 CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
 
 CREATE TABLE products (
-    product_no integer PRIMARY KEY,
+    product_no integer,
     name varchar(10) not null unique,
     price numeric,
     x integer not null default 7,

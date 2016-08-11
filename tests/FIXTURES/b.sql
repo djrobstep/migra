@@ -1,5 +1,5 @@
 create extension hstore;
-create extension postgis;
+create extension citext;
 
 CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped', 'delivered');
 

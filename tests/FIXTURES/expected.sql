@@ -1,12 +1,20 @@
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
-create extension "hstore" with schema "public" version '1.3';
+create extension "citext" with schema "public" version '1.1';
 
-create extension "postgis" with schema "public" version '2.2.1';
+create extension "hstore" with schema "public" version '1.3';
 
 create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
+
+alter table "public"."products" drop constraint "products_name_key";
+
+alter table "public"."products" drop constraint "x";
+
+drop index if exists "public"."products_name_key";
+
+drop index if exists "public"."products_price_idx";
 
 drop view if exists "public"."vvv" cascade;
 
@@ -27,14 +35,6 @@ create table "public"."order_items" (
     "quantity" integer
 );
 
-
-CREATE UNIQUE INDEX order_items_pkey ON order_items USING btree (product_no, order_id);
-
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
-
-alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
-
-alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
 
 alter table "public"."orders" alter column "status" set data type varchar;
 
@@ -68,25 +68,13 @@ alter table "public"."products" alter column "price" set not null;
 
 alter table "public"."products" alter column "price" set default 100;
 
+alter table "public"."products" alter column "product_no" set not null;
+
 alter table "public"."products" alter column "product_no" set default nextval('products_product_no_seq'::regclass);
 
 alter table "public"."products" alter column "x" drop not null;
 
 alter table "public"."products" alter column "x" drop default;
-
-alter table "public"."products" drop constraint "products_name_key";
-
-alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
-
-alter table "public"."products" drop constraint "x";
-
-alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
-
-drop index if exists "public"."products_name_key";
-
-drop index if exists "public"."products_price_idx";
-
-CREATE INDEX products_name_idx ON products USING btree (name);
 
 create view "public"."vvv" as  SELECT 2;
 
@@ -120,3 +108,21 @@ drop sequence if exists "public"."unwanted_id_seq";
 drop type "public"."unwanted_enum";
 
 drop extension if exists "pg_trgm";
+
+CREATE UNIQUE INDEX order_items_pkey ON order_items USING btree (product_no, order_id);
+
+CREATE INDEX products_name_idx ON products USING btree (name);
+
+CREATE UNIQUE INDEX products_pkey ON products USING btree (product_no);
+
+alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+
+alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
+
+alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
+
+alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
+
+alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
+
+alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));

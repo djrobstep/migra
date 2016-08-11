@@ -96,12 +96,6 @@ def get_schema_changes(
     for t, v in added.items():
         statements.append(v.create_statement)
 
-    for t, v in added.items():
-        statements += [i.create_statement for i in v.indexes.values()]
-
-    for t, v in added.items():
-        statements += [c.create_statement for c in v.constraints.values()]
-
     statements += get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
 
     for t, v in modified.items():
@@ -119,9 +113,6 @@ def get_schema_changes(
 
         for k, c in c_modified.items():
             statements += c.alter_table_statements(before.columns[k], t)
-
-        statements += statements_for_changes(before.constraints, v.constraints)
-        statements += statements_for_changes(before.indexes, v.indexes)
 
     return statements
 
