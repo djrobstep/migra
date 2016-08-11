@@ -1,8 +1,8 @@
-create type "public"."bug_status" as enum ('new', 'open', 'closed');
-
 create extension "citext" with schema "public" version '1.1';
 
 create extension "hstore" with schema "public" version '1.3';
+
+create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
 create sequence "public"."bug_id_seq";
 
@@ -10,17 +10,33 @@ create sequence "public"."products_product_no_seq";
 
 alter table "public"."products" drop constraint "products_name_key";
 
+alter table "public"."products" drop constraint "products_x_key";
+
+alter table "public"."products" drop constraint "products_z_fkey";
+
+alter table "public"."products" drop constraint "products_zz_fkey";
+
 alter table "public"."products" drop constraint "x";
+
+alter table "public"."aunwanted" drop constraint "aunwanted_pkey";
+
+drop index if exists "public"."aunwanted_pkey";
+
+drop index if exists "public"."orders_order_id_idx";
 
 drop index if exists "public"."products_name_key";
 
 drop index if exists "public"."products_price_idx";
 
+drop index if exists "public"."products_x_idx";
+
+drop index if exists "public"."products_x_key";
+
 drop view if exists "public"."vvv" cascade;
 
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
 
-drop table "public"."unwanted";
+drop table "public"."aunwanted";
 
 create table "public"."bug" (
     "id" integer not null default nextval('bug_id_seq'::regclass),
@@ -55,6 +71,10 @@ alter table "public"."orders" alter column "order_id" drop default;
 alter table "public"."orders" alter column "status2" set data type text;
 
 alter table "public"."products" drop column "oldcolumn";
+
+alter table "public"."products" drop column "z";
+
+alter table "public"."products" drop column "zz";
 
 alter table "public"."products" add column "newcolumn" text;
 
@@ -101,9 +121,9 @@ $$
 $$
 language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
 
-drop sequence if exists "public"."orders_order_id_seq";
+drop sequence if exists "public"."aunwanted_id_seq";
 
-drop sequence if exists "public"."unwanted_id_seq";
+drop sequence if exists "public"."orders_order_id_seq";
 
 drop type "public"."unwanted_enum";
 
@@ -115,13 +135,13 @@ CREATE INDEX products_name_idx ON products USING btree (name);
 
 CREATE UNIQUE INDEX products_pkey ON products USING btree (product_no);
 
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
-
 alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
 
-alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
-
 alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
+
+alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+
+alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
 
 alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
 

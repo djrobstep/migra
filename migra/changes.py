@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from .util import differences
 from .statements import Statements
 from functools import partial
-
+from collections import OrderedDict as od
 
 THINGS = [
     'enums',
@@ -14,6 +14,8 @@ THINGS = [
     'indexes',
     'extensions'
 ]
+
+PK = 'PRIMARY KEY'
 
 
 def statements_for_changes(
@@ -130,6 +132,22 @@ class Changes(object):
                 self.i_target.tables,
                 self.i_from.enums,
                 self.i_target.enums)
+        elif name == 'non_pk_constraints':
+            a = self.i_from.constraints.items()
+            b = self.i_target.constraints.items()
+
+            a_od = od((k, v) for k, v in a if v.constraint_type != PK)
+            b_od = od((k, v) for k, v in b if v.constraint_type != PK)
+
+            return partial(statements_for_changes, a_od, b_od)
+        elif name == 'pk_constraints':
+            a = self.i_from.constraints.items()
+            b = self.i_target.constraints.items()
+
+            a_od = od((k, v) for k, v in a if v.constraint_type == PK)
+            b_od = od((k, v) for k, v in b if v.constraint_type == PK)
+
+            return partial(statements_for_changes, a_od, b_od)
         elif name in THINGS:
             return partial(
                 statements_for_changes,

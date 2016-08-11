@@ -8,18 +8,10 @@ CREATE TYPE unused_enum AS ENUM ('a', 'b');
 
 CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
 
-CREATE TABLE products (
-    product_no integer,
-    name varchar(10) not null unique,
-    price numeric,
-    x integer not null default 7,
-    oldcolumn text,
-    constraint x check (price > 0)
+CREATE TABLE aunwanted (
+    id serial primary key,
+    name text not null
 );
-
-create index on products(price);
-
-create view vvv as select * from products;
 
 CREATE TABLE orders (
     order_id serial primary key,
@@ -28,10 +20,24 @@ CREATE TABLE orders (
     status2 usage_dropped_enum
 );
 
-CREATE TABLE unwanted (
-    id serial,
-    name text not null
+CREATE TABLE products (
+    product_no integer,
+    name varchar(10) not null unique,
+    price numeric,
+    x integer not null default 7 unique,
+    oldcolumn text,
+    constraint x check (price > 0),
+    z integer REFERENCES orders ON DELETE CASCADE,
+    zz integer REFERENCES aunwanted ON DELETE CASCADE
 );
+
+create unique index on products(x);
+
+create unique index on orders(order_id);
+
+create index on products(price);
+
+create view vvv as select * from products;
 
 create or replace function public.changed(i integer, t text[])
 returns TABLE(a text, c integer) as

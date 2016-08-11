@@ -22,7 +22,7 @@ B = 'alter table "public"."products" add column "newcolumn" text;\n\n'
 A = 'alter table "public"."products" drop column "oldcolumn";\n\n'
 
 EXPECTED = io.open('tests/FIXTURES/expected.sql').read().strip()
-EXPECTED2 = EXPECTED.replace(A + B, '')
+EXPECTED2 = EXPECTED.replace(A, '').replace(B, '')
 
 
 def test_statements():
