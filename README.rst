@@ -5,6 +5,7 @@ Schema migrations are without doubt the most cumbersome and annoying part of wor
 
 But schemas are actually good. Enforcing data consistency and structure is a good thing. It’s the migration tooling that is bad, because it’s harder to use than it should be. ``migra`` is an attempt to change that, and make migrations easy, safe, and reliable instead of something to dread.
 
+**Migra supports PostgreSQL >= 9.4.** Known issues exist with earlier versions.
 
 How it Works
 ------------
