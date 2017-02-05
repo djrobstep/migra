@@ -7,7 +7,7 @@ from pytest import raises
 from migra import Statements, UnsafeMigrationException, Migration
 from migra.command import run
 from sqlbag import temporary_database, S, load_sql_from_file
-
+from schemainspect import get_inspector
 from migra.command import parse_args
 
 SQL = """select 1;
@@ -70,6 +70,8 @@ def test_all():
 
         with S(d0) as s0, S(d1) as s1:
             m = Migration(s0, s1)
+            m.inspect_from()
+            m.inspect_target()
 
             with raises(AttributeError):
                 m.changes.nonexist
@@ -87,5 +89,27 @@ def test_all():
             assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
 
+        out, err = outs()
+        assert run(args, out=out, err=err) == 0
+
+        # test alternative parameters
+
+        with S(d0) as s0, S(d1) as s1:
+            m = Migration(
+                get_inspector(s0),
+                get_inspector(s1)
+            )
+
+        # test empty
+        m = Migration(None, None)
+        m.add_all_changes()
+
+        with raises(AttributeError):
+            m.s_from
+
+        with raises(AttributeError):
+            m.s_target
+
+        args = parse_args(['--unsafe', 'EMPTY', 'EMPTY'])
         out, err = outs()
         assert run(args, out=out, err=err) == 0

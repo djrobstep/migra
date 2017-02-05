@@ -3,9 +3,19 @@ from __future__ import unicode_literals, print_function
 from sqlbag import S
 import argparse
 import sys
+from contextlib import contextmanager
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
+
+
+@contextmanager
+def arg_context(x):
+    if x == 'EMPTY':
+        yield None
+    else:
+        with S(x) as s:
+            yield s
 
 
 def parse_args(args):
@@ -36,8 +46,10 @@ def run(args, out=None, err=None):
     if not err:
         err = sys.stderr  # pragma: no cover
 
-    with S(args.dburl_from) as s0, S(args.dburl_target) as s1:
-        m = Migration(s0, s1)
+    with \
+            arg_context(args.dburl_from) as ac0, \
+            arg_context(args.dburl_target) as ac1:
+        m = Migration(ac0, ac1)
 
         if args.unsafe:
             m.set_safety(False)

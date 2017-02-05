@@ -1,23 +1,29 @@
 from __future__ import unicode_literals
 
 from sqlbag import raw_execute
-from schemainspect import get_inspector
+from schemainspect import get_inspector, DBInspector
 from .changes import Changes
 from .statements import Statements
 
 
 class Migration(object):
-    def __init__(self, s_from, s_target):
-        self.s_from = s_from
-        self.s_target = s_target
-
+    def __init__(self, x_from, x_target):
+        self.statements = Statements()
         self.changes = Changes(None, None)
-        self.inspect_from()
-        self.inspect_target()
-        self.statements = Statements()
 
-    def clear(self):
-        self.statements = Statements()
+        if isinstance(x_from, DBInspector):
+            self.changes.i_from = x_from
+        else:
+            self.changes.i_from = get_inspector(x_from)
+            if x_from:
+                self.s_from = x_from
+
+        if isinstance(x_target, DBInspector):
+            self.changes.i_target = x_target
+        else:
+            self.changes.i_target = get_inspector(x_target)
+            if x_target:
+                self.s_target = x_target
 
     def inspect_from(self):
         self.changes.i_from = get_inspector(self.s_from)
@@ -25,11 +31,14 @@ class Migration(object):
     def inspect_target(self):
         self.changes.i_target = get_inspector(self.s_target)
 
+    def clear(self):
+        self.statements = Statements()
+
     def apply(self):
         for stmt in self.statements:
             raw_execute(self.s_from, stmt)
 
-        self.inspect_from()
+        self.changes.i_from = get_inspector(self.s_from)
         safety_on = self.statements.safe
         self.clear()
         self.set_safety(safety_on)
