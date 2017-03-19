@@ -56,7 +56,8 @@ def run(args, out=None, err=None):
         m.add_all_changes()
 
         try:
-            print(m.sql, file=out)
+            if m.statements:
+                print(m.sql, file=out)
         except UnsafeMigrationException:
             print('-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.', file=err)
             return 3
