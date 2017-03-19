@@ -23,7 +23,7 @@ Usually you'll have an intended state in mind for your database. This is often d
 
 As your app and database develop and evolve, you'll want to keep your local database in sync with your intended state, without dropping everything and recreating each time. Ideally we would have a single command to do this.
 
-Using ``migra`` and ``sqlbag`` (a library created alongside SQL bag to do things like database connections with less boilerplate), we can achieve that simple command with not too much fuss.
+Using ``migra`` and ``sqlbag`` (a library created alongside migra to do things like database connections with less boilerplate), we can achieve that simple command with not too much fuss.
 
 Let's break it down:
 
