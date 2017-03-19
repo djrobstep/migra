@@ -88,6 +88,7 @@ def test_all():
             m.add_all_changes()
             assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
+            assert m.sql == ''
 
         out, err = outs()
         assert run(args, out=out, err=err) == 0

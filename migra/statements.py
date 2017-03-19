@@ -16,6 +16,8 @@ class Statements(list):
     def sql(self):
         if self.safe:
             self.raise_if_unsafe()
+        if not self:
+            return ''
         return '\n\n'.join(self) + '\n\n'
 
     def raise_if_unsafe(self):
