@@ -33,7 +33,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon',
-    'sphinxcontrib.fulltoc'
+    # 'sphinxcontrib.fulltoc'  ## causes error on trfd.org
 ]
 
 # Add any paths that contain templates here, relative to this directory.
