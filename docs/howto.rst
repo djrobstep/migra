@@ -140,7 +140,7 @@ If we define methods to load each of these two conditions, then we can configure
 
 Using python's pytest library, this is fairly straightforward.
 
-.. code-block: python
+.. code-block:: python
 
     from migrations import load_pre_migration, load_post_migration
 
