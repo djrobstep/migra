@@ -5,17 +5,13 @@ Schema migrations are without doubt the most cumbersome and annoying part of wor
 
 But schemas are actually good. Enforcing data consistency and structure is a good thing. It’s the migration tooling that is bad, because it’s harder to use than it should be. ``migra`` is an attempt to change that, and make migrations easy, safe, and reliable instead of something to dread.
 
+
 **Migra supports PostgreSQL >= 9.4.** Known issues exist with earlier versions.
 
-Full documentation
-------------------
+Think of `migra` as a diff tool for schemas
+-------------------------------------------
 
-Official documentation is at `migra.readthedocs.io <https://csvx.readthedocs.io/en/latest/>`_
-
-How it Works
-------------
-
-Think of ``migra`` as a diff tool for schemas. Suppose database A and database B have similar but slightly different schemas. `migra` will detect the differences and output the SQL needed to transform A to B.
+Suppose database A and database B have similar but slightly different schemas. `migra` will detect the differences and output the SQL needed to transform A to B.
 
 This includes changes to tables, views, functions, indexes, constraints, enums, sequences, and installed extensions.
 
@@ -75,12 +71,6 @@ As you can see, it's pretty simple (`S` here is a context manager that creates a
 Here the code just opens connections to both databases for the Migration object to analyse. ``m.add_all_changes()`` generates the SQL statements for the changes required, and adds to the migration object's list of pending changes. The necessary SQL is now available as a property.
 
 
-Documentation
--------------
-
-`migra` is in early alpha and documentation is scarce so far. We are working on remedying this. Watch this space.
-
-
 Features and Limitations
 ------------------------
 
@@ -103,3 +93,24 @@ If you don't have psycopg2 (the PostgreSQL driver) installed yet, you can instal
 .. code-block:: shell
 
     $ pip install migra[pg]
+
+
+Table of contents
+-----------------
+
+.. toctree::
+   :maxdepth: 3
+
+   howto.rst
+
+API/Interface Details
+---------------------
+
+* :ref:`genindex`
+
+Useful Links
+------------
+
+Source Code: `github.com/djrobstep/migra <https://github.com/djrobstep/migra>`_
+
+PyPI package info: `migra@PyPI <https://pypi.python.org/pypi/migra>`_

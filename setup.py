@@ -8,7 +8,7 @@ readme = io.open('README.rst').read()
 
 setup(
     name='migra',
-    version='0.1.1470919406',
+    version='1.0.1489900901',
     url='https://github.com/djrobstep/migra',
     description='Like diff but for PostgreSQL schemas',
     long_description=readme,
@@ -22,7 +22,14 @@ setup(
     zip_safe=False,
     packages=find_packages(),
     classifiers=[
-        'Development Status :: 3 - Alpha'
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
     ],
     entry_points={
         'console_scripts': [
