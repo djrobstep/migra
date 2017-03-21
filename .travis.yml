@@ -5,6 +5,8 @@ python:
 
 sudo: required
 
+dist: trusty
+
 services:
   - postgresql
 
