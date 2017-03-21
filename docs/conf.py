@@ -124,7 +124,8 @@ html_theme_options = {
     'github_user': 'djrobstep',
     'github_repo': 'migra',
     'github_banner': True,
-    'logo': 'migration.jpg'
+    'logo': 'migration.jpg',
+    'analytics_id': 'UA-94078517-1'
 }
 
 
