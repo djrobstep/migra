@@ -13,9 +13,6 @@ services:
 addons:
   postgresql: "9.6"
 
-before_script:
-  - psql -c 'create user travis;' -U postgres
-
 # command to install dependencies
 install: make pipupgrade
 
