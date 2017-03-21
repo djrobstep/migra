@@ -17,4 +17,4 @@ addons:
 install: make pipupgrade
 
 # command to run tests
-script: make tox
+script: make test
