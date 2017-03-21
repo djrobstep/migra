@@ -3,6 +3,8 @@ python:
   - "2.7"
   - "3.6"
 
+sudo: required
+
 services:
   - postgresql
 
