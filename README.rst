@@ -10,7 +10,7 @@ But schemas are actually good. Enforcing data consistency and structure is a goo
 Full documentation
 ------------------
 
-Official documentation is at `migra.readthedocs.io <https://csvx.readthedocs.io/en/latest/>`_
+Official documentation is at `migra.readthedocs.io <https://migra.readthedocs.io/en/latest/>`_
 
 How it Works
 ------------
