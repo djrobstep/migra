@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.7"
+  - "3.6"
+
+# command to install dependencies
+install: make pipupgrade
+
+# command to run tests
+script: make tox
