@@ -1,6 +1,8 @@
 HOWTO: Do migrations
 ====================
 
+Let's discuss a very different way to manage database migrations, that doesn't rely on accumulating historical migration files and version numbers the way that traditional migration tools (rails migrations, alembic etc) do.
+
 Sample app
 ----------
 
