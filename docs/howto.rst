@@ -6,7 +6,7 @@ Sample app
 
 The techniques discussed below are also demonstrated in a sample flask application available here:
 
-`https://githug.com/djrobstep/bookapp <https://csvx.readthedocs.io/en/latest/>`_
+`https://github.com/djrobstep/bookapp <https://github.com/djrobstep/bookapp>`_
 
 Two scenarios
 -------------
@@ -86,7 +86,7 @@ Generating a (preliminary) migration script then works very similarly:
         load_sql_from_file
     import io
 
-    def setup_intended_db_state(temp_db_url):
+    def setup_current_production_state(temp_db_url):
         with S(temp_db_url) as s:
             load_sql_from_file(s, 'out.dump.sql')
 
