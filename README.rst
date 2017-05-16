@@ -86,6 +86,8 @@ Features and Limitations
 
 ``migra`` plays nicely with extensions. Schema contents belonging to extensions will be ignored and left to the extension to manage.
 
+**New:** ``migra`` now plays nicely with view dependencies too, and will drop/create them in the correct order.
+
 Only SQL/PLPGSQL functions are confirmed to work so far. ``migra`` ignores functions that use other languages.
 
 

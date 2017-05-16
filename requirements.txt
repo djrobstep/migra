@@ -1,3 +1,24 @@
-six
+-e .
+
 sqlbag
-schemainspect
+
+pytest
+pytest-cov
+pytest-xdist
+mock
+
+pylint
+autopep8
+flake8
+
+psycopg2
+
+tox
+yapf
+
+pep8
+wheel
+twine
+
+sphinx
+sphinxcontrib-fulltoc

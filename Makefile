@@ -6,17 +6,11 @@ tmessy = -svv
 targs = --cov-report term-missing --cov migra
 
 pip:
-	pip install -r requirements-dev.txt
+	pip install -r requirements.txt
 
 pipupgrade:
 	pip install --upgrade pip
-	pip install --upgrade -r requirements-dev.txt
-
-pipreqs:
-	pip install -r requirements.txt
-
-pipeditable:
-	pip install -e .
+	pip install --upgrade -r requirements.txt
 
 tox:
 	tox tests
@@ -26,9 +20,6 @@ test:
 
 stest:
 	$(tcommand) $(tmessy) $(targs) tests
-
-stestfast:
-	$(tcommand) -n 2 $(tmessy) $(targs) tests
 
 clean:
 	git clean -fXd
@@ -49,10 +40,6 @@ tidy: clean fmt lint
 
 all: updatereqs clean fmt lint tox checksetup
 
-testpublish:
-	python setup.py register -r https://testpypi.python.org/pypi
-	python setup.py sdist bdist_wheel --universal upload -r https://testpypi.python.org/pypi
-
 publish:
-	python setup.py register
-	python setup.py sdist bdist_wheel --universal upload
+	python setup.py sdist bdist_wheel --universal
+	twine upload dist/*

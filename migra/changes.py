@@ -23,7 +23,8 @@ def statements_for_changes(
         things_target,
         creations_only=False,
         drops_only=False,
-        modifications=True):
+        modifications=True,
+        dependency_ordering=False):
 
     added, removed, modified, _ = \
         differences(things_from, things_target)
@@ -31,19 +32,69 @@ def statements_for_changes(
     statements = Statements()
 
     if not creations_only:
-        for k, v in removed.items():
-            statements.append(v.drop_statement)
+        pending_drops = set(removed)
+
+        if modifications:
+            pending_drops |= set(modified)
+    else:
+        pending_drops = set()
 
     if not drops_only:
-        for k, v in added.items():
-            statements.append(v.create_statement)
+        pending_creations = set(added)
 
-    if modifications:
-        for k, v in modified.items():
-            if not creations_only:
-                statements.append(v.drop_statement)
-            if not drops_only:
-                statements.append(v.create_statement)
+        if modifications:
+            pending_creations |= set(modified)
+    else:
+        pending_creations = set()
+
+    def has_remaining_dependents(v, pending_drops):
+        if not dependency_ordering:
+            return False
+        return bool(set(v.dependents) & pending_drops)
+
+    def has_uncreated_dependencies(v, pending_creations):
+        if not dependency_ordering:
+            return False
+        return bool(set(v.dependent_on) & pending_creations)
+
+    while True:
+        before = pending_drops | pending_creations
+
+        if not creations_only:
+            for k, v in removed.items():
+                if not has_remaining_dependents(v, pending_drops):
+                    if k in pending_drops:
+                        statements.append(v.drop_statement)
+                        pending_drops.remove(k)
+
+        if not drops_only:
+            for k, v in added.items():
+                if not has_uncreated_dependencies(v, pending_creations):
+                    if k in pending_creations:
+                        statements.append(v.create_statement)
+                        pending_creations.remove(k)
+
+        if modifications:
+            for k, v in modified.items():
+                if not creations_only:
+                    if not has_remaining_dependents(v, pending_drops):
+                        if k in pending_drops:
+                            statements.append(v.drop_statement)
+                            pending_drops.remove(k)
+
+                if not drops_only:
+                    if not has_uncreated_dependencies(v, pending_creations):
+                        if k in pending_creations:
+                            statements.append(v.create_statement)
+                            pending_creations.remove(k)
+
+        after = pending_drops | pending_creations
+
+        if not after:
+            break
+
+        elif after == before:  # this should never happen because there shouldn't be circular dependencies
+            raise ValueError('cannot resolve dependencies')  # pragma: no cover
 
     return statements
 
