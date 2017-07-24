@@ -1,7 +1,21 @@
-create table basetable(id serial primary key, name text);
+alter table "public"."basetable" drop constraint "basetable_pkey";
 
-create view aaa_view1 as select name from basetable;
+drop index if exists "public"."basetable_pkey";
 
-create view bbb_view2 as select name from aaa_view1;
+drop view if exists "public"."ccc_view3" cascade;
 
-create view ccc_view3 as select name from bbb_view2;
+drop view if exists "public"."ddd" cascade;
+
+drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
+
+drop view if exists "public"."eee" cascade;
+
+drop function if exists "public"."fff"(t text) cascade;
+
+drop view if exists "public"."bbb_view2" cascade;
+
+drop view if exists "public"."aaa_view1" cascade;
+
+drop table "public"."basetable";
+
+drop sequence if exists "public"."basetable_id_seq";

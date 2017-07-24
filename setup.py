@@ -8,7 +8,7 @@ readme = io.open('README.rst').read()
 
 setup(
     name='migra',
-    version='1.0.1494928440',
+    version='1.0.1500870460',
     url='https://github.com/djrobstep/migra',
     description='Like diff but for PostgreSQL schemas',
     long_description=readme,

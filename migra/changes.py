@@ -199,6 +199,20 @@ class Changes(object):
             b_od = od((k, v) for k, v in b if v.constraint_type == PK)
 
             return partial(statements_for_changes, a_od, b_od)
+        elif name == 'views_and_functions':
+            av = self.i_from.views.items()
+            bv = self.i_target.views.items()
+
+            af = self.i_from.functions.items()
+            bf = self.i_target.functions.items()
+
+            avf = list(av) + list(af)
+            bvf = list(bv) + list(bf)
+
+            avf = od(sorted(avf))
+            bvf = od(sorted(bvf))
+
+            return partial(statements_for_changes, avf, bvf)
         elif name in THINGS:
             return partial(
                 statements_for_changes,

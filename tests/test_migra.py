@@ -87,6 +87,7 @@ def do_fixture_test(fixture_name):
                 m.add_sql(ADDITIONS)
                 m.apply()
                 m.add_all_changes()
+
                 assert m.sql.strip() == EXPECTED2  # sql generated OK
                 m.apply()
 

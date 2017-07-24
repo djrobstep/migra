@@ -61,13 +61,11 @@ class Migration(object):
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
 
-        self.add(self.changes.views(drops_only=True, dependency_ordering=True))
-        self.add(self.changes.functions(drops_only=True))
+        self.add(self.changes.views_and_functions(drops_only=True, dependency_ordering=True))
 
         self.add(self.changes.schema())
 
-        self.add(self.changes.views(creations_only=True, dependency_ordering=True))
-        self.add(self.changes.functions(creations_only=True))
+        self.add(self.changes.views_and_functions(creations_only=True, dependency_ordering=True))
 
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))

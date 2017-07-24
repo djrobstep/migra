@@ -32,9 +32,9 @@ drop index if exists "public"."products_x_idx";
 
 drop index if exists "public"."products_x_key";
 
-drop view if exists "public"."vvv" cascade;
-
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
+
+drop view if exists "public"."vvv" cascade;
 
 drop table "public"."aunwanted";
 
@@ -92,9 +92,6 @@ alter table "public"."products" alter column "x" drop default;
 
 alter table "public"."products" alter column "x" drop not null;
 
-create view "public"."vvv" as  SELECT 2;
-
-
 create or replace function "public"."newfunc"(i integer, t text[])
 returns TABLE(a text, c integer) as
 $$
@@ -116,6 +113,9 @@ $$
 
 $$
 language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
+
+create view "public"."vvv" as  SELECT 2;
+
 
 drop sequence if exists "public"."aunwanted_id_seq";
 

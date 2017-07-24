@@ -4,6 +4,8 @@ drop index if exists "public"."basetable_pkey";
 
 drop view if exists "public"."ccc_view3" cascade;
 
+drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
+
 drop view if exists "public"."bbb_view2" cascade;
 
 drop view if exists "public"."aaa_view1" cascade;
