@@ -6,9 +6,6 @@ tmessy = -svv
 targs = --cov-report term-missing --cov migra
 
 pip:
-	pip install -r requirements.txt
-
-pipupgrade:
 	pip install --upgrade pip
 	pip install --upgrade -r requirements.txt
 
@@ -27,18 +24,18 @@ clean:
 	rm -rf .cache
 
 docs:
-	cd docs && make clean && make html
+	cd docs && mkdocs build
 
-opendocs:
-	BROWSER=firefox python -c 'import os;import webbrowser;webbrowser.open_new_tab("file://" + os.getcwd() + "/docs/_build/html/index.html")'
+docsserve:
+	cd docs && mkdocs serve
 
 lint:
 	flake8 migra
 	flake8 tests
 
-tidy: clean fmt lint
+tidy: clean lint
 
-all: updatereqs clean fmt lint tox checksetup
+all: tidy docs tox
 
 publish:
 	python setup.py sdist bdist_wheel --universal

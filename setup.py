@@ -4,11 +4,11 @@ import io
 
 from setuptools import setup, find_packages
 
-readme = io.open('README.rst').read()
+readme = io.open('README.md').read()
 
 setup(
     name='migra',
-    version='1.0.1500870460',
+    version='1.0.1503199248',
     url='https://github.com/djrobstep/migra',
     description='Like diff but for PostgreSQL schemas',
     long_description=readme,

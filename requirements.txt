@@ -20,5 +20,5 @@ pep8
 wheel
 twine
 
-sphinx
-sphinxcontrib-fulltoc
+mkdocs
+doc2md

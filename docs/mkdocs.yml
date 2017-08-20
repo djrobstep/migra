@@ -1,0 +1,17 @@
+site_name: migra.djrobstep.com
+pages:
+    - migra: index.md
+    - Quickstart: quickstart.md
+    - Development usage: dev_usage.md
+    - Deployment usage: deploy_usage.md
+
+theme: 'material'
+
+repo_url: https://github.com/djrobstep/migra
+google_analytics: ['UA-94078517-1', 'migra.djrobstep.com']
+
+markdown_extensions:
+    - fenced_code
+    - meta
+    - toc
+    - codehilite

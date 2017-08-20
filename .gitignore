@@ -38,6 +38,6 @@ nosetests.xml
 
 .cache
 
-docs/_build
+docs/site
 
 scratch
