@@ -8,7 +8,7 @@ But schemas are actually good. Enforcing data consistency and structure is a goo
 
 ## Full documentation
 
-Official documentation is at [migra.djrobstep.com](migra.djrobstep.com).
+Official documentation is at [migra.djrobstep.com](https://migra.djrobstep.com).
 
 ## How it Works
 
