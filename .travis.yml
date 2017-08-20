@@ -14,7 +14,7 @@ addons:
   postgresql: "9.6"
 
 # command to install dependencies
-install: make pipupgrade
+install: make pip
 
 # command to run tests
 script: make test

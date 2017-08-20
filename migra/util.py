@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from collections import OrderedDict as od
 
 
-def differences(a, b):
+def differences(a, b, add_dependencies_for_modifications=True):
+
     a_keys = set(a.keys())
     b_keys = set(b.keys())
 

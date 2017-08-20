@@ -24,10 +24,18 @@ def statements_for_changes(
         creations_only=False,
         drops_only=False,
         modifications=True,
-        dependency_ordering=False):
+        dependency_ordering=False,
+        add_dependents_for_modified=False):
 
-    added, removed, modified, _ = \
+    added, removed, modified, unmodified = \
         differences(things_from, things_target)
+
+    if add_dependents_for_modified:
+        for k, m in list(modified.items()):
+            for d in m.dependents_all:
+                if d in unmodified:
+                    modified[d] = unmodified.pop(d)
+        modified = od(sorted(modified.items()))
 
     statements = Statements()
 
@@ -212,7 +220,11 @@ class Changes(object):
             avf = od(sorted(avf))
             bvf = od(sorted(bvf))
 
-            return partial(statements_for_changes, avf, bvf)
+            return partial(
+                statements_for_changes,
+                avf,
+                bvf,
+                add_dependents_for_modified=True)
         elif name in THINGS:
             return partial(
                 statements_for_changes,

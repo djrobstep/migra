@@ -7,6 +7,9 @@ from .statements import Statements
 
 
 class Migration(object):
+    """
+    The main class of migra
+    """
     def __init__(self, x_from, x_target):
         self.statements = Statements()
         self.changes = Changes(None, None)
