@@ -57,7 +57,7 @@ def run(args, out=None, err=None):
 
         try:
             if m.statements:
-                print(m.sql, file=out)
+                print(m.sql.encode('utf-8'), file=out)
         except UnsafeMigrationException:
             print('-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.', file=err)
             return 3
