@@ -1,4 +1,4 @@
-create extension "citext" with schema "public" version '1.3';
+create extension "citext" with schema "public" version '1.4';
 
 create extension "hstore" with schema "public" version '1.4';
 
@@ -91,6 +91,8 @@ alter table "public"."products" alter column "product_no" set not null;
 alter table "public"."products" alter column "x" drop default;
 
 alter table "public"."products" alter column "x" drop not null;
+
+set check_function_bodies = off;
 
 create or replace function "public"."newfunc"(i integer, t text[])
 returns TABLE(a text, c integer) as
