@@ -11,7 +11,7 @@ services:
   - postgresql
 
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
 
 # command to install dependencies
 install: make pip
