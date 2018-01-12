@@ -12,6 +12,8 @@ services:
 
 addons:
   postgresql: "9.6"
+before_script:
+  - bash install-postgres-10.sh
 
 # command to install dependencies
 install: make pip
