@@ -1,5 +1,8 @@
 create extension pg_trgm;
 
+create schema goodschema;
+create schema badschema;
+
 CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped');
 
 CREATE TYPE unwanted_enum AS ENUM ('unwanted', 'not wanted');

@@ -1,6 +1,9 @@
 create extension hstore;
 create extension citext;
 
+create schema goodschema;
+create schema evenbetterschema;
+
 CREATE TYPE shipping_status AS ENUM ('not shipped', 'shipped', 'delivered');
 
 CREATE TYPE bug_status AS ENUM ('new', 'open', 'closed');

@@ -6,6 +6,7 @@ from functools import partial
 from collections import OrderedDict as od
 
 THINGS = [
+    'schemas',
     'enums',
     'sequences',
     'constraints',

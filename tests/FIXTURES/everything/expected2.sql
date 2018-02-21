@@ -1,3 +1,5 @@
+create schema if not exists "evenbetterschema";
+
 create extension "citext" with schema "public" version '1.4';
 
 create extension "hstore" with schema "public" version '1.4';
@@ -144,3 +146,5 @@ alter table "public"."order_items" add constraint "order_items_product_no_fkey" 
 alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
 
 alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+
+drop schema if exists "badschema";
