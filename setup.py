@@ -12,6 +12,7 @@ setup(
     url='https://github.com/djrobstep/migra',
     description='Like diff but for PostgreSQL schemas',
     long_description=readme,
+    long_description_content_type='text/markdown',
     author='Robert Lechte',
     author_email='robertlechte@gmail.com',
     install_requires=[
@@ -36,5 +37,5 @@ setup(
             'migra = migra:do_command',
         ],
     },
-    extras_require={'pg': ['psycopg2']}
+    extras_require={'pg': ['psycopg2-binary']}
 )
