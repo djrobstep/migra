@@ -1,25 +1,19 @@
 #!/usr/bin/env python
-
 import io
 
 from setuptools import setup, find_packages
 
 readme = io.open('README.md').read()
-
 setup(
     name='migra',
-    version='1.0.1519192543',
+    version='1.0.1521442627',
     url='https://github.com/djrobstep/migra',
     description='Like diff but for PostgreSQL schemas',
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Robert Lechte',
     author_email='robertlechte@gmail.com',
-    install_requires=[
-        'sqlbag',
-        'six',
-        'schemainspect'
-    ],
+    install_requires=['sqlbag', 'six', 'schemainspect'],
     zip_safe=False,
     packages=find_packages(),
     classifiers=[
@@ -32,10 +26,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
     ],
-    entry_points={
-        'console_scripts': [
-            'migra = migra:do_command',
-        ],
-    },
-    extras_require={'pg': ['psycopg2-binary']}
+    entry_points={'console_scripts': ['migra = migra:do_command']},
+    extras_require={'pg': ['psycopg2-binary']},
 )

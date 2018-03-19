@@ -11,7 +11,7 @@ pylint
 autopep8
 flake8
 
-psycopg2
+psycopg2-binary
 
 tox
 yapf
@@ -22,3 +22,4 @@ twine
 
 mkdocs
 doc2md
+black

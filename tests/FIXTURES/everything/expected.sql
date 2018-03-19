@@ -1,8 +1,8 @@
 create schema if not exists "evenbetterschema";
 
-create extension "citext" with schema "public" version '1.4';
+create extension if not exists "citext" with schema "public" version '1.4';
 
-create extension "hstore" with schema "public" version '1.4';
+create extension if not exists "hstore" with schema "public" version '1.4';
 
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 

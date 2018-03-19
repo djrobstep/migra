@@ -6,8 +6,5 @@ from .migra import Migration
 from .command import do_command
 
 __all__ = [
-    'Migration',
-    'Changes',
-    'Statements',
-    'UnsafeMigrationException',
-    'do_command']
+    'Migration', 'Changes', 'Statements', 'UnsafeMigrationException', 'do_command'
+]

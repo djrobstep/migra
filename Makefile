@@ -29,9 +29,11 @@ docs:
 docsserve:
 	cd docs && mkdocs serve
 
+fmt:
+	black .
+
 lint:
-	flake8 migra
-	flake8 tests
+	flake8 .
 
 tidy: clean lint
 

@@ -13,57 +13,67 @@ from .statements import UnsafeMigrationException
 def arg_context(x):
     if x == 'EMPTY':
         yield None
+
     else:
         with S(x) as s:
             yield s
 
 
 def parse_args(args):
-    parser = argparse.ArgumentParser(
-        description='Generate a database migration.')
-
+    parser = argparse.ArgumentParser(description='Generate a database migration.')
     parser.add_argument(
         '--unsafe',
         dest='unsafe',
         action='store_true',
-        help='Prevent migra from erroring upon generation of drop statements.')
-
+        help='Prevent migra from erroring upon generation of drop statements.',
+    )
     parser.add_argument(
-        'dburl_from',
-        help='The database you want to migrate.')
-
+        '--schema',
+        dest='schema',
+        default=None,
+        help='Restrict output to statements for a particular schema',
+    ),
     parser.add_argument(
-        'dburl_target',
-        help='The database you want to use as the target.')
-
+        '--create-extensions-only',
+        dest='create_extensions_only',
+        action='store_true',
+        default=False,
+        help='Only output "create extension..." statements, nothing else.',
+    ),
+    parser.add_argument('dburl_from', help='The database you want to migrate.')
+    parser.add_argument(
+        'dburl_target', help='The database you want to use as the target.'
+    )
     return parser.parse_args(args)
 
 
 def run(args, out=None, err=None):
+    schema = args.schema
     if not out:
         out = sys.stdout  # pragma: no cover
-
     if not err:
         err = sys.stderr  # pragma: no cover
-
-    with \
-            arg_context(args.dburl_from) as ac0, \
-            arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1)
-
+    with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
+        m = Migration(ac0, ac1, schema=schema)
         if args.unsafe:
             m.set_safety(False)
-        m.add_all_changes()
-
+        if args.create_extensions_only:
+            m.add_extension_changes(drops=False)
+        else:
+            m.add_all_changes()
         try:
             if m.statements:
                 print(m.sql, file=out)
         except UnsafeMigrationException:
-            print('-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.', file=err)
+            print(
+                '-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.',
+                file=err,
+            )
             return 3
 
         if not m.statements:
             return 0
+
         else:
             return 2
 
