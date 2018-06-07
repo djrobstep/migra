@@ -1,14 +1,13 @@
-FROM python:3.6
+FROM alpine:3.7
 
-WORKDIR /usr/src/app
+RUN apk add --no-cache python3 ca-certificates postgresql-dev && \
+    apk add --no-cache --virtual=build-dependencies build-base python3-dev && \
+    pip3 install --upgrade --no-cache-dir pip && \
+    pip3 install --no-cache-dir psycopg2-binary migra && \
+    apk del build-dependencies && \
+    rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
-COPY \
-    requirements.txt \
-    setup.py \
-    README.md \
-    ./
-RUN pip install --no-cache-dir -r requirements.txt
+ENTRYPOINT [ "/usr/bin/migra" ]
 
-COPY . .
+CMD ["--help"]
 
-ENTRYPOINT [ "migra" ]
