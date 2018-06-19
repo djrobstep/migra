@@ -129,11 +129,11 @@ drop type "public"."unwanted_enum";
 
 drop extension if exists "pg_trgm";
 
-CREATE UNIQUE INDEX order_items_pkey ON order_items USING btree (product_no, order_id);
+CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (product_no, order_id);
 
-CREATE INDEX products_name_idx ON products USING btree (name);
+CREATE INDEX products_name_idx ON public.products USING btree (name);
 
-CREATE UNIQUE INDEX products_pkey ON products USING btree (product_no);
+CREATE UNIQUE INDEX products_pkey ON public.products USING btree (product_no);
 
 alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
 
