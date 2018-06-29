@@ -14,6 +14,7 @@ THINGS = [
     'views',
     'indexes',
     'extensions',
+    'privileges',
 ]
 PK = 'PRIMARY KEY'
 
