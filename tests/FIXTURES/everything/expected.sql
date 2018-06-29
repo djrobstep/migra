@@ -10,6 +10,8 @@ create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
 
+revoke select on table "public"."products" from postgres;
+
 alter table "public"."products" drop constraint "products_name_key";
 
 alter table "public"."products" drop constraint "products_x_key";
@@ -150,5 +152,7 @@ alter table "public"."order_items" add constraint "order_items_product_no_fkey" 
 alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
 
 alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+
+grant update on table "public"."products" to postgres;
 
 drop schema if exists "badschema";
