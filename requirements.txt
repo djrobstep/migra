@@ -22,4 +22,4 @@ twine
 
 mkdocs
 doc2md
-black
+black ; python_version > "3.0.0"
