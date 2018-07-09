@@ -42,6 +42,8 @@ def test_with_fixtures():
         do_fixture_test(FIXTURE_NAME, schema='goodschema')
     for FIXTURE_NAME in ['singleschema_ext']:
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
+    for FIXTURE_NAME in ['privileges']:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
 def do_fixture_test(fixture_name, schema=None, create_extensions_only=False, with_privileges=False):
