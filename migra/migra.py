@@ -60,12 +60,13 @@ class Migration(object):
         if drops:
             self.add(self.changes.extensions(drops_only=True))
 
-    def add_all_changes(self):
+    def add_all_changes(self, privileges=False):
         self.add(self.changes.schemas(creations_only=True))
         self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.enums(creations_only=True, modifications=False))
         self.add(self.changes.sequences(creations_only=True))
-        self.add(self.changes.privileges(drops_only=True))
+        if privileges:
+            self.add(self.changes.privileges(drops_only=True))
         self.add(self.changes.non_pk_constraints(drops_only=True))
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
@@ -85,7 +86,8 @@ class Migration(object):
         self.add(self.changes.indexes(creations_only=True))
         self.add(self.changes.pk_constraints(creations_only=True))
         self.add(self.changes.non_pk_constraints(creations_only=True))
-        self.add(self.changes.privileges(creations_only=True))
+        if privileges:
+            self.add(self.changes.privileges(creations_only=True))
         self.add(self.changes.schemas(drops_only=True))
 
     @property
