@@ -44,12 +44,14 @@ def test_with_fixtures():
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
 
 
-def do_fixture_test(fixture_name, schema=None, create_extensions_only=False):
+def do_fixture_test(fixture_name, schema=None, create_extensions_only=False, with_privileges=False):
     flags = ['--unsafe']
     if schema:
         flags += ['--schema', schema]
     if create_extensions_only:
         flags += ['--create-extensions-only']
+    if with_privileges:
+        flags += ['--with-privileges']
     fixture_path = 'tests/FIXTURES/{}/'.format(fixture_name)
     EXPECTED = io.open(fixture_path + 'expected.sql').read().strip()
     with temporary_database() as d0, temporary_database() as d1:
@@ -82,11 +84,11 @@ def do_fixture_test(fixture_name, schema=None, create_extensions_only=False):
                 m.set_safety(False)
                 m.add_sql(ADDITIONS)
                 m.apply()
-                m.add_all_changes()
+                m.add_all_changes(privileges=with_privileges)
                 assert m.sql.strip() == EXPECTED2  # sql generated OK
                 m.apply()
                 # check for changes again and make sure none are pending
-                m.add_all_changes()
+                m.add_all_changes(privileges=with_privileges)
                 assert m.changes.i_from == m.changes.i_target
                 assert not m.statements  # no further statements to apply
                 assert m.sql == ''
@@ -97,7 +99,7 @@ def do_fixture_test(fixture_name, schema=None, create_extensions_only=False):
             m = Migration(get_inspector(s0), get_inspector(s1))
         # test empty
         m = Migration(None, None)
-        m.add_all_changes()
+        m.add_all_changes(privileges=with_privileges)
         with raises(AttributeError):
             m.s_from
         with raises(AttributeError):
