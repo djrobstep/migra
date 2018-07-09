@@ -36,8 +36,10 @@ def outs():
 
 
 def test_with_fixtures():
-    for FIXTURE_NAME in ['dependencies', 'everything']:
+    for FIXTURE_NAME in ['dependencies']:
         do_fixture_test(FIXTURE_NAME)
+    for FIXTURE_NAME in ['everything']:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
     for FIXTURE_NAME in ['singleschema']:
         do_fixture_test(FIXTURE_NAME, schema='goodschema')
     for FIXTURE_NAME in ['singleschema_ext']:
