@@ -32,14 +32,21 @@ def parse_args(args):
         dest='schema',
         default=None,
         help='Restrict output to statements for a particular schema',
-    ),
+    )
     parser.add_argument(
         '--create-extensions-only',
         dest='create_extensions_only',
         action='store_true',
         default=False,
         help='Only output "create extension..." statements, nothing else.',
-    ),
+    )
+    parser.add_argument(
+        '--with-privileges',
+        dest='with_privileges',
+        action='store_true',
+        default=False,
+        help='Also output privilege differences (ie. grant/revoke statements)',
+    )
     parser.add_argument('dburl_from', help='The database you want to migrate.')
     parser.add_argument(
         'dburl_target', help='The database you want to use as the target.'
@@ -60,7 +67,7 @@ def run(args, out=None, err=None):
         if args.create_extensions_only:
             m.add_extension_changes(drops=False)
         else:
-            m.add_all_changes()
+            m.add_all_changes(privileges=args.with_privileges)
         try:
             if m.statements:
                 print(m.sql, file=out)
