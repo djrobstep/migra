@@ -11,3 +11,5 @@ CREATE TYPE goodschema.sdfasdfasdf AS ENUM ('not shipped', 'shipped', 'delivered
 create index on goodschema.t(id);
 
 create view goodschema.v as select 1;
+
+grant select on table t to postgres;
