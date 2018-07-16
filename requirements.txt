@@ -8,7 +8,6 @@ pytest-xdist
 mock
 
 pylint
-autopep8
 flake8
 
 psycopg2-binary
