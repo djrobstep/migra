@@ -78,7 +78,7 @@ class Migration(object):
             creations_only=True, dependency_ordering=True
         )
         if v_and_f_changes:
-            self.add(['set check_function_bodies = off;'])
+            self.add(["set check_function_bodies = off;"])
             self.add(v_and_f_changes)
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))

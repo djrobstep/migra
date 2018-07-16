@@ -6,17 +6,17 @@ from functools import partial
 from collections import OrderedDict as od
 
 THINGS = [
-    'schemas',
-    'enums',
-    'sequences',
-    'constraints',
-    'functions',
-    'views',
-    'indexes',
-    'extensions',
-    'privileges',
+    "schemas",
+    "enums",
+    "sequences",
+    "constraints",
+    "functions",
+    "views",
+    "indexes",
+    "extensions",
+    "privileges",
 ]
-PK = 'PRIMARY KEY'
+PK = "PRIMARY KEY"
 
 
 def statements_for_changes(
@@ -91,8 +91,10 @@ def statements_for_changes(
         if not after:
             break
 
-        elif after == before:  # this should never happen because there shouldn't be circular dependencies
-            raise ValueError('cannot resolve dependencies')  # pragma: no cover
+        elif (
+            after == before
+        ):  # this should never happen because there shouldn't be circular dependencies
+            raise ValueError("cannot resolve dependencies")  # pragma: no cover
 
     return statements
 
@@ -109,7 +111,11 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
         _, _, c_modified, _ = differences(t_before.columns, v.columns)
         for k, c in c_modified.items():
             before = t_before.columns[k]
-            if c.is_enum == before.is_enum and c.dbtypestr == before.dbtypestr and c.enum != before.enum:
+            if (
+                c.is_enum == before.is_enum
+                and c.dbtypestr == before.dbtypestr
+                and c.enum != before.enum
+            ):
                 pre.append(before.change_enum_to_string_statement(t))
                 post.append(before.change_string_to_enum_statement(t))
     for e in enums_to_change.values():
@@ -143,13 +149,12 @@ def get_schema_changes(tables_from, tables_target, enums_from, enums_target):
 
 
 class Changes(object):
-
     def __init__(self, i_from, i_target):
         self.i_from = i_from
         self.i_target = i_target
 
     def __getattr__(self, name):
-        if name == 'schema':
+        if name == "schema":
             return partial(
                 get_schema_changes,
                 self.i_from.tables,
@@ -158,21 +163,21 @@ class Changes(object):
                 self.i_target.enums,
             )
 
-        elif name == 'non_pk_constraints':
+        elif name == "non_pk_constraints":
             a = self.i_from.constraints.items()
             b = self.i_target.constraints.items()
             a_od = od((k, v) for k, v in a if v.constraint_type != PK)
             b_od = od((k, v) for k, v in b if v.constraint_type != PK)
             return partial(statements_for_changes, a_od, b_od)
 
-        elif name == 'pk_constraints':
+        elif name == "pk_constraints":
             a = self.i_from.constraints.items()
             b = self.i_target.constraints.items()
             a_od = od((k, v) for k, v in a if v.constraint_type == PK)
             b_od = od((k, v) for k, v in b if v.constraint_type == PK)
             return partial(statements_for_changes, a_od, b_od)
 
-        elif name == 'views_and_functions':
+        elif name == "views_and_functions":
             av = self.i_from.views.items()
             bv = self.i_target.views.items()
             af = self.i_from.functions.items()

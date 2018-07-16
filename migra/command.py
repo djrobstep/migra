@@ -11,7 +11,7 @@ from .statements import UnsafeMigrationException
 
 @contextmanager
 def arg_context(x):
-    if x == 'EMPTY':
+    if x == "EMPTY":
         yield None
 
     else:
@@ -20,36 +20,36 @@ def arg_context(x):
 
 
 def parse_args(args):
-    parser = argparse.ArgumentParser(description='Generate a database migration.')
+    parser = argparse.ArgumentParser(description="Generate a database migration.")
     parser.add_argument(
-        '--unsafe',
-        dest='unsafe',
-        action='store_true',
-        help='Prevent migra from erroring upon generation of drop statements.',
+        "--unsafe",
+        dest="unsafe",
+        action="store_true",
+        help="Prevent migra from erroring upon generation of drop statements.",
     )
     parser.add_argument(
-        '--schema',
-        dest='schema',
+        "--schema",
+        dest="schema",
         default=None,
-        help='Restrict output to statements for a particular schema',
+        help="Restrict output to statements for a particular schema",
     )
     parser.add_argument(
-        '--create-extensions-only',
-        dest='create_extensions_only',
-        action='store_true',
+        "--create-extensions-only",
+        dest="create_extensions_only",
+        action="store_true",
         default=False,
         help='Only output "create extension..." statements, nothing else.',
     )
     parser.add_argument(
-        '--with-privileges',
-        dest='with_privileges',
-        action='store_true',
+        "--with-privileges",
+        dest="with_privileges",
+        action="store_true",
         default=False,
-        help='Also output privilege differences (ie. grant/revoke statements)',
+        help="Also output privilege differences (ie. grant/revoke statements)",
     )
-    parser.add_argument('dburl_from', help='The database you want to migrate.')
+    parser.add_argument("dburl_from", help="The database you want to migrate.")
     parser.add_argument(
-        'dburl_target', help='The database you want to use as the target.'
+        "dburl_target", help="The database you want to use as the target."
     )
     return parser.parse_args(args)
 
@@ -73,7 +73,7 @@ def run(args, out=None, err=None):
                 print(m.sql, file=out)
         except UnsafeMigrationException:
             print(
-                '-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.',
+                "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
                 file=err,
             )
             return 3
