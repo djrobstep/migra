@@ -102,3 +102,13 @@ If you don't have psycopg2-binary (the PostgreSQL driver) installed yet, you can
 ## Contributing
 
 Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/issues), find a feature or fix you'd like to work on, and get involved. Or create a new issue and suggest something completely different. Beginner-friendly issues are tagged "good first issue", and if you're unsure about any aspect of the process, just ask.
+
+## Credits
+
+- [https://github.com/djrobstep](djrobstep): initial development, maintenance
+- [https://github.com/alvarogzp](alvarogzp): privileges support
+- [https://github.com/seblucas](seblucas): docker improvements
+- [https://github.com/MOZGIII](MOZGIII): docker support
+
+
+
