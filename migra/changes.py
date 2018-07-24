@@ -8,6 +8,7 @@ from collections import OrderedDict as od
 THINGS = [
     "schemas",
     "enums",
+    "types",
     "sequences",
     "constraints",
     "functions",

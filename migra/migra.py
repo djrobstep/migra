@@ -64,6 +64,7 @@ class Migration(object):
         self.add(self.changes.schemas(creations_only=True))
         self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.enums(creations_only=True, modifications=False))
+        self.add(self.changes.types(creations_only=True, modifications=False)) # TODO: Use alters
         self.add(self.changes.sequences(creations_only=True))
         if privileges:
             self.add(self.changes.privileges(drops_only=True))
