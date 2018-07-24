@@ -80,6 +80,7 @@ class Migration(object):
         if v_and_f_changes:
             self.add(["set check_function_bodies = off;"])
             self.add(v_and_f_changes)
+        self.add(self.changes.triggers(creations_only=True))
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))
         self.add(self.changes.extensions(drops_only=True))
