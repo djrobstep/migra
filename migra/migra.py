@@ -88,6 +88,7 @@ class Migration(object):
         self.add(self.changes.non_pk_constraints(creations_only=True))
         if privileges:
             self.add(self.changes.privileges(creations_only=True))
+        self.add(self.changes.comments(creations_only=True))
         self.add(self.changes.schemas(drops_only=True))
 
     @property
