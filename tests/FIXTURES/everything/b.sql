@@ -12,6 +12,8 @@ CREATE TYPE unused_enum AS ENUM ('a', 'b', 'c');
 
 CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
 
+create table columnless_table2();
+
 CREATE TABLE products (
     product_no serial primary key,
     name text,

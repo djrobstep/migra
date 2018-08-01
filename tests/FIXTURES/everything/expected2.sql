@@ -42,10 +42,16 @@ drop view if exists "public"."vvv" cascade;
 
 drop table "public"."aunwanted";
 
+drop table "public"."columnless_table";
+
 create table "public"."bug" (
     "id" integer not null default nextval('bug_id_seq'::regclass),
     "description" text,
     "status" text
+);
+
+
+create table "public"."columnless_table2" (
 );
 
 

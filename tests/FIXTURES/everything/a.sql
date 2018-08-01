@@ -11,6 +11,8 @@ CREATE TYPE unused_enum AS ENUM ('a', 'b');
 
 CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
 
+create table columnless_table();
+
 CREATE TABLE aunwanted (
     id serial primary key,
     name text not null
