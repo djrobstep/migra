@@ -44,6 +44,8 @@ create index on products(price);
 
 create view vvv as select * from products;
 
+create materialized view matvvv as select * from products;
+
 grant select, insert on table products to postgres;
 
 create or replace function public.changed(i integer, t text[])

@@ -38,6 +38,8 @@ drop index if exists "public"."products_x_key";
 
 drop function if exists "public"."changed"(i integer, t text[]) cascade;
 
+drop materialized view if exists "public"."matvvv" cascade;
+
 drop view if exists "public"."vvv" cascade;
 
 drop table "public"."aunwanted";
@@ -125,6 +127,9 @@ $$
 
 $$
 language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
+
+create materialized view "public"."matvvv" as  SELECT 2;
+
 
 create view "public"."vvv" as  SELECT 2;
 

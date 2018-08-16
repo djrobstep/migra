@@ -180,10 +180,12 @@ class Changes(object):
         elif name == "views_and_functions":
             av = self.i_from.views.items()
             bv = self.i_target.views.items()
+            am = self.i_from.materialized_views.items()
+            bm = self.i_target.materialized_views.items()
             af = self.i_from.functions.items()
             bf = self.i_target.functions.items()
-            avf = list(av) + list(af)
-            bvf = list(bv) + list(bf)
+            avf = list(av) + list(am) + list(af)
+            bvf = list(bv) + list(bm) + list(bf)
             avf = od(sorted(avf))
             bvf = od(sorted(bvf))
             return partial(

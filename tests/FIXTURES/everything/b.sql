@@ -68,6 +68,8 @@ LANGUAGE PLPGSQL STABLE returns null on null input security invoker;
 
 create view vvv as select 2;
 
+create materialized view matvvv as select 2;
+
 CREATE TABLE bug (
     id serial,
     description text,
