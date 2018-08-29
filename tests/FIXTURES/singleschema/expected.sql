@@ -8,6 +8,4 @@ create type "goodschema"."sdfasdfasdf" as enum ('not shipped', 'shipped', 'deliv
 
 alter table "goodschema"."t" add column "name" text;
 
-set check_function_bodies = off;
-
 create view "goodschema"."v" as  SELECT 2;

@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 readme = io.open("README.md").read()
 setup(
     name="migra",
-    version="1.0.1531741707",
+    version="1.0.1535509978",
     url="https://github.com/djrobstep/migra",
     description="Like diff but for PostgreSQL schemas",
     long_description=readme,

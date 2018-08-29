@@ -16,8 +16,6 @@ drop view if exists "public"."ddd_changed" cascade;
 
 drop view if exists "public"."aaa_view1" cascade;
 
-set check_function_bodies = off;
-
 create view "public"."ddd_changed" as  SELECT basetable.name,
     'x'::text AS x
    FROM basetable;

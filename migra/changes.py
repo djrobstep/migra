@@ -5,6 +5,7 @@ from .statements import Statements
 from functools import partial
 from collections import OrderedDict as od
 
+
 THINGS = [
     "schemas",
     "enums",
@@ -29,12 +30,27 @@ def statements_for_changes(
     add_dependents_for_modified=False,
 ):
     added, removed, modified, unmodified = differences(things_from, things_target)
-    if add_dependents_for_modified:
-        for k, m in list(modified.items()):
-            for d in m.dependents_all:
-                if d in unmodified:
-                    modified[d] = unmodified.pop(d)
-        modified = od(sorted(modified.items()))
+
+    return statements_from_differences(
+        added,
+        removed,
+        modified,
+        creations_only,
+        drops_only,
+        modifications,
+        dependency_ordering,
+    )
+
+
+def statements_from_differences(
+    added,
+    removed,
+    modified,
+    creations_only=False,
+    drops_only=False,
+    modifications=True,
+    dependency_ordering=False,
+):
     statements = Statements()
     if not creations_only:
         pending_drops = set(removed)
@@ -124,8 +140,9 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
     return pre + recreate + post
 
 
-def get_schema_changes(tables_from, tables_target, enums_from, enums_target):
+def get_table_changes(tables_from, tables_target, enums_from, enums_target):
     added, removed, modified, _ = differences(tables_from, tables_target)
+
     statements = Statements()
     for t, v in removed.items():
         statements.append(v.drop_statement)
@@ -148,22 +165,84 @@ def get_schema_changes(tables_from, tables_target, enums_from, enums_target):
     return statements
 
 
+def get_selectable_changes(
+    selectables_from,
+    selectables_target,
+    enums_from,
+    enums_target,
+    add_dependents_for_modified=True,
+):
+    tables_from = od(
+        (k, v) for k, v in selectables_from.items() if v.relationtype == "r"
+    )
+    tables_target = od(
+        (k, v) for k, v in selectables_target.items() if v.relationtype == "r"
+    )
+
+    other_from = od(
+        (k, v) for k, v in selectables_from.items() if v.relationtype != "r"
+    )
+    other_target = od(
+        (k, v) for k, v in selectables_target.items() if v.relationtype != "r"
+    )
+
+    added_tables, removed_tables, modified_tables, unmodified_tables = differences(
+        tables_from, tables_target
+    )
+    added_other, removed_other, modified_other, unmodified_other = differences(
+        other_from, other_target
+    )
+
+    m_all = {}
+    m_all.update(modified_tables)
+    m_all.update(modified_other)
+    m_all.update(removed_tables)
+    m_all.update(removed_other)
+
+    if add_dependents_for_modified:
+        for k, m in m_all.items():
+            for d in m.dependents_all:
+                if d in unmodified_other:
+                    modified_other[d] = unmodified_other.pop(d)
+        modified_other = od(sorted(modified_other.items()))
+
+    statements = Statements()
+
+    def functions(d):
+        return {k: v for k, v in d.items() if v.relationtype == "f"}
+
+    statements += statements_from_differences(
+        added_other,
+        removed_other,
+        modified_other,
+        drops_only=True,
+        dependency_ordering=True,
+    )
+
+    statements += get_table_changes(
+        tables_from, tables_target, enums_from, enums_target
+    )
+
+    if any([functions(added_other), functions(modified_other)]):
+        statements += ["set check_function_bodies = off;"]
+
+    statements += statements_from_differences(
+        added_other,
+        removed_other,
+        modified_other,
+        creations_only=True,
+        dependency_ordering=True,
+    )
+    return statements
+
+
 class Changes(object):
     def __init__(self, i_from, i_target):
         self.i_from = i_from
         self.i_target = i_target
 
     def __getattr__(self, name):
-        if name == "schema":
-            return partial(
-                get_schema_changes,
-                self.i_from.tables,
-                self.i_target.tables,
-                self.i_from.enums,
-                self.i_target.enums,
-            )
-
-        elif name == "non_pk_constraints":
+        if name == "non_pk_constraints":
             a = self.i_from.constraints.items()
             b = self.i_target.constraints.items()
             a_od = od((k, v) for k, v in a if v.constraint_type != PK)
@@ -177,19 +256,13 @@ class Changes(object):
             b_od = od((k, v) for k, v in b if v.constraint_type == PK)
             return partial(statements_for_changes, a_od, b_od)
 
-        elif name == "views_and_functions":
-            av = self.i_from.views.items()
-            bv = self.i_target.views.items()
-            am = self.i_from.materialized_views.items()
-            bm = self.i_target.materialized_views.items()
-            af = self.i_from.functions.items()
-            bf = self.i_target.functions.items()
-            avf = list(av) + list(am) + list(af)
-            bvf = list(bv) + list(bm) + list(bf)
-            avf = od(sorted(avf))
-            bvf = od(sorted(bvf))
+        elif name == "selectables":
             return partial(
-                statements_for_changes, avf, bvf, add_dependents_for_modified=True
+                get_selectable_changes,
+                od(sorted(self.i_from.selectables.items())),
+                od(sorted(self.i_target.selectables.items())),
+                self.i_from.enums,
+                self.i_target.enums,
             )
 
         elif name in THINGS:

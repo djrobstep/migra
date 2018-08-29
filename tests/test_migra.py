@@ -35,15 +35,27 @@ def outs():
     return io.StringIO(), io.StringIO()
 
 
-def test_with_fixtures():
-    for FIXTURE_NAME in ["dependencies"]:
+def test_deps():
+    for FIXTURE_NAME in ["dependencies", "dependencies2"]:
         do_fixture_test(FIXTURE_NAME)
+
+
+def test_everything():
     for FIXTURE_NAME in ["everything"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
+
+
+def test_singleschemea():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
+
+
+def test_singleschema_ext():
     for FIXTURE_NAME in ["singleschema_ext"]:
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
+
+
+def test_privs():
     for FIXTURE_NAME in ["privileges"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
@@ -70,10 +82,11 @@ def do_fixture_test(
         out, err = outs()
         assert run(args, out=out, err=err) == 3
         assert out.getvalue() == ""
-        assert (
-            err.getvalue()
-            == "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.\n"
-        )
+
+        DESTRUCTIVE = "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.\n"
+
+        assert err.getvalue() == DESTRUCTIVE
+
         args = parse_args(flags + [d0, d1])
         assert args.unsafe
         assert args.schema == schema

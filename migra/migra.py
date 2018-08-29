@@ -70,16 +70,9 @@ class Migration(object):
         self.add(self.changes.non_pk_constraints(drops_only=True))
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
-        self.add(
-            self.changes.views_and_functions(drops_only=True, dependency_ordering=True)
-        )
-        self.add(self.changes.schema())
-        v_and_f_changes = self.changes.views_and_functions(
-            creations_only=True, dependency_ordering=True
-        )
-        if v_and_f_changes:
-            self.add(["set check_function_bodies = off;"])
-            self.add(v_and_f_changes)
+
+        self.add(self.changes.selectables())
+
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))
         self.add(self.changes.extensions(drops_only=True))
