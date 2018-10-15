@@ -77,10 +77,10 @@ def run(args, out=None, err=None):
             m.add_all_changes(privileges=args.with_privileges)
         try:
             if m.statements:
-								if args.encode_utf8:
-									print(m.sql.encode('utf8'), file=out)
-								else:
-									print(m.sql, file=out)
+                if args.encode_utf8:
+                    print(m.sql.encode('utf8'), file=out)
+                else:
+                    print(m.sql, file=out)
         except UnsafeMigrationException:
             print(
                 "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
