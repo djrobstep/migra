@@ -48,11 +48,11 @@ def parse_args(args):
         help="Also output privilege differences (ie. grant/revoke statements)",
     )
     parser.add_argument(
-        "--encode-utf8",
-        dest="encode_utf8",
+        "--force-utf8",
+        dest="force_utf8",
         action="store_true",
         default=False,
-        help="Use UTF-8 encoding for output",
+        help="Force UTF-8 encoding for output",
     )
     parser.add_argument("dburl_from", help="The database you want to migrate.")
     parser.add_argument(
@@ -77,7 +77,7 @@ def run(args, out=None, err=None):
             m.add_all_changes(privileges=args.with_privileges)
         try:
             if m.statements:
-                if args.encode_utf8:
+                if args.force_utf8:
                     print(m.sql.encode('utf8'), file=out)
                 else:
                     print(m.sql, file=out)
