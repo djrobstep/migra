@@ -47,6 +47,13 @@ def parse_args(args):
         default=False,
         help="Also output privilege differences (ie. grant/revoke statements)",
     )
+    parser.add_argument(
+        "--force-utf8",
+        dest="force_utf8",
+        action="store_true",
+        default=False,
+        help="Force UTF-8 encoding for output",
+    )
     parser.add_argument("dburl_from", help="The database you want to migrate.")
     parser.add_argument(
         "dburl_target", help="The database you want to use as the target."
@@ -70,7 +77,10 @@ def run(args, out=None, err=None):
             m.add_all_changes(privileges=args.with_privileges)
         try:
             if m.statements:
-                print(m.sql, file=out)
+                if args.force_utf8:
+                    print(m.sql.encode('utf8'), file=out)
+                else:
+                    print(m.sql, file=out)
         except UnsafeMigrationException:
             print(
                 "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
