@@ -106,27 +106,31 @@ alter table "public"."products" alter column "x" drop not null;
 
 set check_function_bodies = off;
 
-create or replace function "public"."newfunc"(i integer, t text[])
-returns TABLE(a text, c integer) as
-$$
+CREATE OR REPLACE FUNCTION public.newfunc(i integer, t text[])
+ RETURNS TABLE(a text, c integer)
+ LANGUAGE plpgsql
+ STABLE STRICT
+AS $function$
  declare
         BEGIN
                 select 'no', 1;
         END;
 
-$$
-language PLPGSQL STABLE RETURNS NULL ON NULL INPUT SECURITY INVOKER;
+$function$
 
-create or replace function "public"."changed"(i integer, t text[])
-returns TABLE(a text, c integer) as
-$$
+
+CREATE OR REPLACE FUNCTION public.changed(i integer, t text[])
+ RETURNS TABLE(a text, c integer)
+ LANGUAGE plpgsql
+ STRICT SECURITY DEFINER
+AS $function$
  declare
         BEGIN
                 select 'no', 1;
         END;
 
-$$
-language PLPGSQL VOLATILE RETURNS NULL ON NULL INPUT SECURITY DEFINER;
+$function$
+
 
 create materialized view "public"."matvvv" as  SELECT 2;
 
