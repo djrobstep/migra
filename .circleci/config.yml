@@ -1,0 +1,82 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/circleci
+    docker:
+      - image: circleci/python:3.7.0
+      - image: circleci/postgres:10
+        environment:
+          POSTGRES_USER: circleci
+          POSTGRES_DB: circleci
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Install poetry
+          command: |
+            sudo pip3 install poetry
+            poetry config settings.virtualenvs.create false
+      - run:
+          command: |
+            python3 -m venv ~/.venv
+            . ~/.venv/bin/activate
+
+            poetry install
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+          paths:
+            - "~/.venv"
+      - run:
+          name: Check formatting
+          command: |
+            . ~/.venv/bin/activate
+            make lint
+      - run:
+          command: |
+            . ~/.venv/bin/activate
+            make test
+      - store_artifacts:
+          path: test-reports/
+          destination: tr1
+
+  publish:
+    working_directory: ~/circleci
+    docker:
+      - image: circleci/python:3.7.0
+    steps:
+      - setup_remote_docker
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+      - run:
+          name: Install poetry, deps
+          command: |
+            sudo pip3 install poetry
+            poetry config settings.virtualenvs.create false
+            python3 -m venv ~/.venv
+            . ~/.venv/bin/activate
+            poetry install
+      - run:
+          name: Bump version, build, install
+          command: |
+            . ~/.venv/bin/activate
+            python deploy/vbump.py
+            poetry build
+            poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD
+
+
+workflows:
+  version: 2
+  build-then-publish:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

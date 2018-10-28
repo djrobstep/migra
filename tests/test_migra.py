@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 import io
 
 from pytest import raises
-
-from migra import Statements, UnsafeMigrationException, Migration
-from migra.command import run
-from sqlbag import temporary_database, S, load_sql_from_file
 from schemainspect import get_inspector
-from migra.command import parse_args
+from sqlbag import S, load_sql_from_file, temporary_database
+
+from migra import Migration, Statements, UnsafeMigrationException
+from migra.command import parse_args, run
 
 SQL = """select 1;
 

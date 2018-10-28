@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
-from .util import differences
-from .statements import Statements
-from functools import partial
 from collections import OrderedDict as od
+from functools import partial
 
+from .statements import Statements
+from .util import differences
 
 THINGS = [
     "schemas",
