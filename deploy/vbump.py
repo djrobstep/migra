@@ -1,7 +1,7 @@
 from pathlib import Path
 from time import time
 
-from toml import dumps, loads
+from toml import dumps, loads, TomlPreserveInlineDictEncoder as tpide
 
 PYPROJECT = "pyproject.toml"
 
@@ -17,5 +17,4 @@ parts.append(unix)
 
 v_with_timestamp = ".".join(parts)
 pyproject["tool"]["poetry"]["version"] = v_with_timestamp
-
-p.write_text(dumps(pyproject))
+p.write_text(dumps(pyproject, tpide()))
