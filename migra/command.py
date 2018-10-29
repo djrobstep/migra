@@ -1,9 +1,10 @@
-from __future__ import unicode_literals, print_function
+from __future__ import print_function, unicode_literals
 
-from sqlbag import S
 import argparse
 import sys
 from contextlib import contextmanager
+
+from sqlbag import S
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
@@ -78,7 +79,7 @@ def run(args, out=None, err=None):
         try:
             if m.statements:
                 if args.force_utf8:
-                    print(m.sql.encode('utf8'), file=out)
+                    print(m.sql.encode("utf8"), file=out)
                 else:
                     print(m.sql, file=out)
         except UnsafeMigrationException:

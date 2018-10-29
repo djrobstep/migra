@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 import io
 
 from pytest import raises
-
-from migra import Statements, UnsafeMigrationException, Migration
-from migra.command import run
-from sqlbag import temporary_database, S, load_sql_from_file
 from schemainspect import get_inspector
-from migra.command import parse_args
+from sqlbag import S, load_sql_from_file, temporary_database
+
+from migra import Migration, Statements, UnsafeMigrationException
+from migra.command import parse_args, run
 
 SQL = """select 1;
 
@@ -72,7 +71,7 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    with temporary_database() as d0, temporary_database() as d1:
+    with temporary_database(host='localhost') as d0, temporary_database(host='localhost') as d1:
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")

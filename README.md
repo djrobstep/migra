@@ -11,8 +11,6 @@
 
 You can also detect changes for a single specific schema only with `--schema myschema`.
 
-## Already use `migra`? [Let us know how you're using it and what features would make it more useful](https://github.com/djrobstep/migra/issues/25).
-
 ## Folks, schemas are good
 
 Schema migrations are without doubt the most cumbersome and annoying part of working with SQL databases. So much so that some people think that schemas themselves are bad!

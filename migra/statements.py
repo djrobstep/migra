@@ -4,7 +4,7 @@ import re
 
 
 def check_for_drop(s):
-    return not not re.search("(drop\s+)", s, re.IGNORECASE)
+    return not not re.search(r"(drop\s+)", s, re.IGNORECASE)
 
 
 class Statements(list):

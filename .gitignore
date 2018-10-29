@@ -42,3 +42,4 @@ nosetests.xml
 docs/site
 
 scratch
+poetry.lock
