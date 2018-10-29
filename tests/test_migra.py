@@ -71,7 +71,7 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    with temporary_database() as d0, temporary_database() as d1:
+    with temporary_database(host='localhost') as d0, temporary_database(host='localhost') as d1:
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
