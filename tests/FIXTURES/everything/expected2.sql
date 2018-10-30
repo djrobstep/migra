@@ -117,7 +117,7 @@ AS $function$
         END;
 
 $function$
-
+;
 
 CREATE OR REPLACE FUNCTION public.changed(i integer, t text[])
  RETURNS TABLE(a text, c integer)
@@ -130,7 +130,7 @@ AS $function$
         END;
 
 $function$
-
+;
 
 create materialized view "public"."matvvv" as  SELECT 2;
 
