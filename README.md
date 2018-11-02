@@ -107,6 +107,4 @@ Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/
 - [https://github.com/alvarogzp](alvarogzp): privileges support
 - [https://github.com/seblucas](seblucas): docker improvements
 - [https://github.com/MOZGIII](MOZGIII): docker support
-
-
-
+- [https://github.com/mshahbazi](mshahbazi): misc fixes and enhancements
