@@ -16,6 +16,7 @@ THINGS = [
     "indexes",
     "extensions",
     "privileges",
+    'triggers',
 ]
 PK = "PRIMARY KEY"
 
