@@ -1,7 +1,8 @@
 from pathlib import Path
 from time import time
 
-from toml import dumps, loads, TomlPreserveInlineDictEncoder as tpide
+from toml import TomlPreserveInlineDictEncoder as tpide
+from toml import dumps, loads
 
 PYPROJECT = "pyproject.toml"
 
