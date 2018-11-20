@@ -1,4 +1,4 @@
-CREATE COLLATION german FROM "de_DE";
+CREATE COLLATION german FROM "'en-u-kn-true'";
 
 create table t(
   a text,
