@@ -24,7 +24,7 @@ pytest-sugar = "*"
 psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"
-black = {version = "*", python = ">=3.6"}
+black = {python=">3.6", version=">=18.9b0", allow_prereleases=true}
 
 [tool.poetry.scripts]
 migra = 'migra:do_command'

@@ -44,6 +44,16 @@ def test_everything():
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
+def test_partitioning():
+    for FIXTURE_NAME in ["partitioning"]:
+        do_fixture_test(FIXTURE_NAME)
+
+
+def test_collations():
+    for FIXTURE_NAME in ["collations"]:
+        do_fixture_test(FIXTURE_NAME)
+
+
 def test_singleschemea():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
@@ -71,7 +81,9 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    with temporary_database(host='localhost') as d0, temporary_database(host='localhost') as d1:
+    with temporary_database(host="localhost") as d0, temporary_database(
+        host="localhost"
+    ) as d1:
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
@@ -95,26 +107,42 @@ def do_fixture_test(
         assert out.getvalue().strip() == EXPECTED
         ADDITIONS = io.open(fixture_path + "additions.sql").read().strip()
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
-        if ADDITIONS:
-            with S(d0) as s0, S(d1) as s1:
-                m = Migration(s0, s1)
-                m.inspect_from()
-                m.inspect_target()
-                with raises(AttributeError):
-                    m.changes.nonexist
-                m.set_safety(False)
+
+        with S(d0) as s0, S(d1) as s1:
+            m = Migration(s0, s1, schema=schema)
+            m.inspect_from()
+            m.inspect_target()
+            with raises(AttributeError):
+                m.changes.nonexist
+            m.set_safety(False)
+            if ADDITIONS:
                 m.add_sql(ADDITIONS)
-                m.apply()
+            m.apply()
+
+            if create_extensions_only:
+                m.add_extension_changes(drops=False)
+            else:
                 m.add_all_changes(privileges=with_privileges)
-                assert m.sql.strip() == EXPECTED2  # sql generated OK
-                m.apply()
-                # check for changes again and make sure none are pending
+
+            expected = EXPECTED2 if ADDITIONS else EXPECTED
+
+            assert m.sql.strip() == expected  # sql generated OK
+
+            m.apply()
+            # check for changes again and make sure none are pending
+            if create_extensions_only:
+                m.add_extension_changes(drops=False)
+                assert (
+                    m.changes.i_from.extensions.items()
+                    >= m.changes.i_target.extensions.items()
+                )
+            else:
                 m.add_all_changes(privileges=with_privileges)
                 assert m.changes.i_from == m.changes.i_target
-                assert not m.statements  # no further statements to apply
-                assert m.sql == ""
-                out, err = outs()
-                assert run(args, out=out, err=err) == 0
+            assert not m.statements  # no further statements to apply
+            assert m.sql == ""
+            out, err = outs()
+            assert run(args, out=out, err=err) == 0
         # test alternative parameters
         with S(d0) as s0, S(d1) as s1:
             m = Migration(get_inspector(s0), get_inspector(s1))
