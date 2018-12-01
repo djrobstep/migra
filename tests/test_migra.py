@@ -111,6 +111,8 @@ def do_fixture_test(
         host="localhost"
     ) as d1:
         with S(d0) as s0, S(d1) as s1:
+            create_role(s0, schemainspect_test_role)
+            create_role(s1, schemainspect_test_role)
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
         args = parse_args([d0, d1])
