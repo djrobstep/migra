@@ -17,6 +17,7 @@ THINGS = [
     "extensions",
     "privileges",
     "collations",
+    "rlspolicies",
 ]
 PK = "PRIMARY KEY"
 
@@ -173,6 +174,10 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
             statements.append(alter)
         for k, c in c_modified.items():
             statements += c.alter_table_statements(before.columns[k], t)
+
+        if v.rowsecurity != before.rowsecurity:
+            rls_alter = v.alter_rls_statement
+            statements += [rls_alter]
     return statements
 
 

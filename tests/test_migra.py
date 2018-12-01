@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 import io
 
 from pytest import raises
-from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
+from schemainspect import get_inspector
 
 SQL = """select 1;
 
@@ -66,6 +66,32 @@ def test_singleschema_ext():
 
 def test_privs():
     for FIXTURE_NAME in ["privileges"]:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+
+
+schemainspect_test_role = "schemainspect_test_role"
+
+
+def create_role(s, rolename):
+    role = s.execute(
+        f"""
+SELECT 1 FROM pg_roles WHERE rolname=:rolename
+    """,
+        dict(rolename=rolename),
+    )
+
+    role_exists = bool(list(role))
+
+    if not role_exists:
+        s.execute(
+            f"""
+            create role {rolename};
+        """
+        )
+
+
+def test_rls():
+    for FIXTURE_NAME in ["rls"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
