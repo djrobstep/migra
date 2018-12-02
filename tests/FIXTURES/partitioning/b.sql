@@ -16,5 +16,6 @@ CREATE TABLE measurement_y2006m03 (
     unitsales       int
 );
 
+CREATE TABLE reg2partitioned( city_id int not null, logdate date not null, peaktemp int, unitsales int) PARTITION BY RANGE (logdate);
 
---CREATE INDEX ON measurement (logdate);
+CREATE TABLE partitioned2reg( city_id int not null, logdate date not null, peaktemp int, unitsales int);

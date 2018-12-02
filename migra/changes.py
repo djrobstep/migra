@@ -156,8 +156,16 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
 
     for t, v in modified.items():
         before = tables_from[t]
+
+        # drop/recreate tables which have changed from partitioned to non-partitioned
+        if v.is_partitioned != before.is_partitioned:
+            statements.append(v.drop_statement)
+            statements.append(v.create_statement)
+            continue
+
         # attach/detach tables with changed parent tables
-        statements += v.attach_detach_statements(before)
+        if v.parent_table != before.parent_table:
+            statements += v.attach_detach_statements(before)
 
     for t, v in modified.items():
         before = tables_from[t]
