@@ -84,25 +84,25 @@ If you don't have psycopg2-binary (the PostgreSQL driver) installed yet, you can
 
     $ pip install migra[pg]
 
-    ## Python Code
+## In python
 
-    Here's how the migra command is implemented under the hood (with a few irrelevant lines removed).
+Here's how the migra command is implemented under the hood (with a few irrelevant lines removed).
 
-    As you can see, it's pretty simple (`S` here is a context manager that creates a database session from a database URL).
+As you can see, it's pretty simple (`S` here is a context manager that creates a database session from a database URL).
 
-        from migra import Migration
-        from sqlbag import S
+    from migra import Migration
+    from sqlbag import S
 
-        with S(args.dburl_from) as s0, S(args.dburl_target) as s1:
-            m = Migration(s0, s1)
+    with S(args.dburl_from) as s0, S(args.dburl_target) as s1:
+        m = Migration(s0, s1)
 
-            if args.unsafe:
-                m.set_safety(False)
+        if args.unsafe:
+            m.set_safety(False)
 
-            m.add_all_changes()
-            print(m.sql)
+        m.add_all_changes()
+        print(m.sql)
 
-    Here the code just opens connections to both databases for the Migration object to analyse. `m.add_all_changes()` generates the SQL statements for the changes required, and adds to the migration object's list of pending changes. The necessary SQL is now available as a property.
+Here the code just opens connections to both databases for the Migration object to analyse. `m.add_all_changes()` generates the SQL statements for the changes required, and adds to the migration object's list of pending changes. The necessary SQL is now available as a property.
 
 ## Contributing
 
