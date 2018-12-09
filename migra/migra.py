@@ -64,16 +64,19 @@ class Migration(object):
 
     def add_all_changes(self, privileges=False):
         self.add(self.changes.schemas(creations_only=True))
+
         self.add(self.changes.extensions(creations_only=True))
         self.add(self.changes.collations(creations_only=True))
         self.add(self.changes.enums(creations_only=True, modifications=False))
         self.add(self.changes.sequences(creations_only=True))
+        self.add(self.changes.triggers(drops_only=True))
         self.add(self.changes.rlspolicies(drops_only=True))
         if privileges:
             self.add(self.changes.privileges(drops_only=True))
         self.add(self.changes.non_pk_constraints(drops_only=True))
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
+
 
         self.add(self.changes.selectables())
 
@@ -86,6 +89,7 @@ class Migration(object):
         if privileges:
             self.add(self.changes.privileges(creations_only=True))
         self.add(self.changes.rlspolicies(creations_only=True))
+        self.add(self.changes.triggers(creations_only=True))
         self.add(self.changes.collations(drops_only=True))
         self.add(self.changes.schemas(drops_only=True))
 

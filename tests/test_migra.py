@@ -54,6 +54,11 @@ def test_collations():
         do_fixture_test(FIXTURE_NAME)
 
 
+def test_triggers():
+    for FIXTURE_NAME in ["triggers"]:
+        do_fixture_test(FIXTURE_NAME)
+
+
 def test_singleschemea():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")

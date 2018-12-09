@@ -18,6 +18,16 @@ You can also detect changes for a single specific schema only with `--schema mys
 
 **Migra supports PostgreSQL >= 10 only.** Known issues exist with earlier versions. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
 
+## Support `migra`'s maintenance and future development
+
+This project isn't sponsored by my employer or any other organisation: It's been built with many hours of voluntary unpaid work.
+
+I've recently set up [a Patreon](https://patreon.com/djrobstep) to help support future development of `migra` and related projects.
+
+If you or your employer uses `migra`, please consider [becoming a subscriber](https://patreon.com/djrobstep).
+
+If you require specific features or support, more formal commercial arrangements can be discussed (email me at the author email specified in this repo's `pyproject.toml`)
+
 ## Folks, schemas are good
 
 Schema migrations are without doubt the most cumbersome and annoying part of working with SQL databases. So much so that some people think that schemas themselves are bad!
@@ -66,9 +76,25 @@ If you want to generate `drop ...` statements, you need to use the `--unsafe` fl
 
 ## Features and Limitations
 
-`migra` plays nicely with extensions. Schema contents belonging to extensions will be ignored and left to the extension to manage.
+Table of supported features:
 
-`migra` supports most PostgreSQL features: tables (including partitioning), views, functions, constraints, indexes, enums, collations, extensions, row level security policies, schemas and sequences.
+Feature | Supported | Notes/limitations
+--- | --- | ---
+tables | ✔ |
+partitioned tables | ✔ | NEW!
+constraints | ✔ |
+views | ✔ |
+functions | ✔ | Dependency-aware. All languages except C/INTERNAL
+sequences | ✔ | Does not track sequence numbers
+schemas | ✔ |
+extensions | ✔ |
+enums | ✔ |
+privileges | ✔ | Not exhaustive. Requires --with-privileges flag
+row-level security | ✔ | NEW! Doesn't include role management
+triggers | ✔ | NEW!
+custom types/domains | In progress |
+
+`migra` plays nicely with extensions. Schema contents belonging to extensions will be ignored and left to the extension to manage.
 
 `migra` plays nicely with view/function dependencies, and will drop/create them in the correct order.
 
