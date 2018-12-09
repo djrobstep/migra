@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 
-from sqlbag import raw_execute
-
 from schemainspect import DBInspector, get_inspector
+from sqlbag import raw_execute
 
 from .changes import Changes
 from .statements import Statements
@@ -76,7 +75,6 @@ class Migration(object):
         self.add(self.changes.non_pk_constraints(drops_only=True))
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
-
 
         self.add(self.changes.selectables())
 
