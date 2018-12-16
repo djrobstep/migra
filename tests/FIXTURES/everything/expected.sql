@@ -64,7 +64,7 @@ create table "public"."order_items" (
 );
 
 
-alter table "public"."orders" alter column "status" set data type varchar;
+alter table "public"."orders" alter column "status" set data type varchar using "status"::varchar;
 
 drop type "public"."shipping_status";
 
@@ -80,7 +80,7 @@ alter table "public"."orders" add column "h" hstore;
 
 alter table "public"."orders" alter column "order_id" drop default;
 
-alter table "public"."orders" alter column "status2" set data type text;
+alter table "public"."orders" alter column "status2" set data type text using "status2"::text;
 
 alter table "public"."products" drop column "oldcolumn";
 
@@ -94,7 +94,7 @@ alter table "public"."products" add column "newcolumn2" interval;
 
 alter table "public"."products" alter column "name" drop not null;
 
-alter table "public"."products" alter column "name" set data type text;
+alter table "public"."products" alter column "name" set data type text using "name"::text;
 
 alter table "public"."products" alter column "price" set default 100;
 

@@ -16,7 +16,9 @@ THINGS = [
     "indexes",
     "extensions",
     "privileges",
-    'triggers',
+    "collations",
+    "rlspolicies",
+    "triggers",
 ]
 PK = "PRIMARY KEY"
 
@@ -152,8 +154,26 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
     statements += get_enum_modifications(
         tables_from, tables_target, enums_from, enums_target
     )
+
     for t, v in modified.items():
         before = tables_from[t]
+
+        # drop/recreate tables which have changed from partitioned to non-partitioned
+        if v.is_partitioned != before.is_partitioned:
+            statements.append(v.drop_statement)
+            statements.append(v.create_statement)
+            continue
+
+        # attach/detach tables with changed parent tables
+        if v.parent_table != before.parent_table:
+            statements += v.attach_detach_statements(before)
+
+    for t, v in modified.items():
+        before = tables_from[t]
+
+        if not v.is_alterable:
+            continue
+
         c_added, c_removed, c_modified, _ = differences(before.columns, v.columns)
         for k, c in c_removed.items():
             alter = v.alter_table_statement(c.drop_column_clause)
@@ -163,6 +183,10 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
             statements.append(alter)
         for k, c in c_modified.items():
             statements += c.alter_table_statements(before.columns[k], t)
+
+        if v.rowsecurity != before.rowsecurity:
+            rls_alter = v.alter_rls_statement
+            statements += [rls_alter]
     return statements
 
 
@@ -173,19 +197,11 @@ def get_selectable_changes(
     enums_target,
     add_dependents_for_modified=True,
 ):
-    tables_from = od(
-        (k, v) for k, v in selectables_from.items() if v.relationtype == "r"
-    )
-    tables_target = od(
-        (k, v) for k, v in selectables_target.items() if v.relationtype == "r"
-    )
+    tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
+    tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
 
-    other_from = od(
-        (k, v) for k, v in selectables_from.items() if v.relationtype != "r"
-    )
-    other_target = od(
-        (k, v) for k, v in selectables_target.items() if v.relationtype != "r"
-    )
+    other_from = od((k, v) for k, v in selectables_from.items() if not v.is_table)
+    other_target = od((k, v) for k, v in selectables_target.items() if not v.is_table)
 
     added_tables, removed_tables, modified_tables, unmodified_tables = differences(
         tables_from, tables_target

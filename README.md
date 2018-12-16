@@ -1,6 +1,11 @@
-# migra: PostgreSQL migrations made almost painless
+# migra: Like diff but for Postgres schemas
 
-`migra` is a schema diff tool for PostgreSQL. Use it to compare database schemas or autogenerate migration scripts. Use it in your python scripts, or from the command line like this:
+- ## compare schemas
+- ## autogenerate migration scripts
+- ## autosync your development database from your application models
+- ## make your schema changes testable, robust, and (mostly) automatic
+
+`migra` is a schema diff tool for PostgreSQL, written in Python. Use it in your python scripts, or from the command line like this:
 
     $ migra postgresql:///a postgresql:///b
     alter table "public"."products" add column newcolumn text;
@@ -11,13 +16,23 @@
 
 You can also detect changes for a single specific schema only with `--schema myschema`.
 
+**Migra supports PostgreSQL >= 10 only.** Known issues exist with earlier versions. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
+
+## Support `migra`'s maintenance and future development
+
+This project isn't sponsored by my employer or any other organisation: It's been built with many hours of voluntary unpaid work.
+
+I've recently set up [a Patreon](https://patreon.com/djrobstep) to help support future development of `migra` and related projects.
+
+If you or your employer uses `migra`, please consider [becoming a subscriber](https://patreon.com/djrobstep).
+
+If you require specific features or support, more formal commercial arrangements can be discussed (email me at the author email specified in this repo's `pyproject.toml`)
+
 ## Folks, schemas are good
 
 Schema migrations are without doubt the most cumbersome and annoying part of working with SQL databases. So much so that some people think that schemas themselves are bad!
 
 But schemas are actually good. Enforcing data consistency and structure is a good thing. It’s the migration tooling that is bad, because it’s harder to use than it should be. ``migra`` is an attempt to change that, and make migrations easy, safe, and reliable instead of something to dread.
-
-**Migra supports PostgreSQL >= 9.4.** Known issues exist with earlier versions.
 
 ## Full documentation
 
@@ -51,15 +66,51 @@ Migration complete!
 
 **Migrations can never be fully automatic**. As noted above **ALWAYS REVIEW MIGRATION SCRIPTS CAREFULLY, ESPECIALLY WHEN DROPPING TABLES IS INVOLVED**.
 
-Migra manages schema changes **but not your data**. If you need to move data around, as part of a migration, you'll need to handle that by editing the script or doing it separately before/after the schema changes.
+`migra` manages schema changes **but not your data**. If you need to move data around, as part of a migration, you'll need to handle that by editing the script or doing it separately before/after the schema changes.
 
-Best practice is to run your migrations against a copy of your production database first. This helps verify correctness and spot any performance issues before they cause interruptions and downtime on your production database.
+Best practice is to run your migrations against a **copy** of your production database first. This helps verify correctness and spot any performance issues before they cause interruptions and downtime on your production database.
 
 `migra` will deliberately throw an error if any generated statements feature the word "drop". This safety feature is by no means idiot-proof, but might prevent a few obvious blunders.
 
-If you want to generate "drop ..." statements, you need to use the `--unsafe` flag if using the command, or if using the python package directly, `set_safety(` to false on your `Migration` object.
+If you want to generate `drop ...` statements, you need to use the `--unsafe` flag if using the command, or if using the python package directly, `set_safety(` to false on your `Migration` object.
 
-## Python Code
+## Features and Limitations
+
+Table of supported features:
+
+Feature | Supported | Notes/limitations
+--- | --- | ---
+tables | ✔ |
+partitioned tables | ✔ | NEW!
+constraints | ✔ |
+views | ✔ |
+functions | ✔ | Dependency-aware. All languages except C/INTERNAL
+sequences | ✔ | Does not track sequence numbers
+schemas | ✔ |
+extensions | ✔ |
+enums | ✔ |
+privileges | ✔ | Not exhaustive. Requires --with-privileges flag
+row-level security | ✔ | NEW! Doesn't include role management
+triggers | ✔ | NEW!
+custom types/domains | In progress |
+
+`migra` plays nicely with extensions. Schema contents belonging to extensions will be ignored and left to the extension to manage.
+
+`migra` plays nicely with view/function dependencies, and will drop/create them in the correct order.
+
+Only SQL/PLPGSQL functions are confirmed to work so far. `migra` ignores functions that use other languages.
+
+## Installation
+
+Assuming you have [pip](https://pip.pypa.io), all you need to do is install as follows:
+
+    $ pip install migra
+
+If you don't have psycopg2-binary (the PostgreSQL driver) installed yet, you can install this at the same time with:
+
+    $ pip install migra[pg]
+
+## In python
 
 Here's how the migra command is implemented under the hood (with a few irrelevant lines removed).
 
@@ -79,27 +130,9 @@ As you can see, it's pretty simple (`S` here is a context manager that creates a
 
 Here the code just opens connections to both databases for the Migration object to analyse. `m.add_all_changes()` generates the SQL statements for the changes required, and adds to the migration object's list of pending changes. The necessary SQL is now available as a property.
 
-## Features and Limitations
-
-`migra` plays nicely with extensions. Schema contents belonging to extensions will be ignored and left to the extension to manage.
-
-**New:** `migra` now plays nicely with view dependencies too, and will drop/create them in the correct order.
-
-Only SQL/PLPGSQL functions are confirmed to work so far. `migra` ignores functions that use other languages.
-
-## Installation
-
-Assuming you have [pip](https://pip.pypa.io), all you need to do is install as follows:
-
-    $ pip install migra
-
-If you don't have psycopg2-binary (the PostgreSQL driver) installed yet, you can install this at the same time with:
-
-    $ pip install migra[pg]
-
 ## Contributing
 
-Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/issues), find a feature or fix you'd like to work on, and get involved. Or create a new issue and suggest something completely different. Beginner-friendly issues are tagged "good first issue", and if you're unsure about any aspect of the process, just ask.
+Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/issues), find a feature or fix you'd like to work on, and get involved. Or create a new issue and suggest something completely different. If you're unsure about any aspect of the process, just ask.
 
 ## Credits
 
