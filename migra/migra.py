@@ -77,7 +77,7 @@ class Migration(object):
         self.add(self.changes.indexes(drops_only=True))
 
         self.add(self.changes.selectables())
-        self.add(self.changes.triggers())
+        # self.add(self.changes.triggers())
 
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))
