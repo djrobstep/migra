@@ -36,11 +36,9 @@ drop index if exists "public"."products_x_idx";
 
 drop index if exists "public"."products_x_key";
 
-drop function if exists "public"."changed"(i integer, t text[]) cascade;
+drop materialized view if exists "public"."matvvv";
 
-drop materialized view if exists "public"."matvvv" cascade;
-
-drop view if exists "public"."vvv" cascade;
+drop view if exists "public"."vvv";
 
 drop table "public"."aunwanted";
 
@@ -135,7 +133,7 @@ $function$
 create materialized view "public"."matvvv" as  SELECT 2;
 
 
-create view "public"."vvv" as  SELECT 2;
+create or replace view "public"."vvv" as  SELECT 2;
 
 
 drop sequence if exists "public"."aunwanted_id_seq";
