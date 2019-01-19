@@ -35,13 +35,14 @@ def statements_for_changes(
     added, removed, modified, unmodified = differences(things_from, things_target)
 
     return statements_from_differences(
-        added,
-        removed,
-        modified,
-        creations_only,
-        drops_only,
-        modifications,
-        dependency_ordering,
+        added=added,
+        removed=removed,
+        modified=modified,
+        replaceable=None,
+        creations_only=creations_only,
+        drops_only=drops_only,
+        modifications=modifications,
+        dependency_ordering=dependency_ordering,
     )
 
 
@@ -49,16 +50,18 @@ def statements_from_differences(
     added,
     removed,
     modified,
+    replaceable=None,
     creations_only=False,
     drops_only=False,
     modifications=True,
     dependency_ordering=False,
 ):
+    replaceable = replaceable or set()
     statements = Statements()
     if not creations_only:
         pending_drops = set(removed)
         if modifications:
-            pending_drops |= set(modified)
+            pending_drops |= set(modified) - replaceable
     else:
         pending_drops = set()
     if not drops_only:
@@ -216,13 +219,27 @@ def get_selectable_changes(
     m_all.update(removed_tables)
     m_all.update(removed_other)
 
+    replaceable = set()
+    not_replaceable = set()
+
+    oldstuff = {**tables_from, **other_from}
+
     if add_dependents_for_modified:
         for k, m in m_all.items():
+            old = oldstuff[k]
+
+            if m.can_replace(old):
+                replaceable.add(k)
+                continue
+
             for d in m.dependents_all:
                 if d in unmodified_other:
-                    modified_other[d] = unmodified_other.pop(d)
+                    dd = unmodified_other.pop(d)
+                    modified_other[d] = dd
+                    not_replaceable.add(d)
         modified_other = od(sorted(modified_other.items()))
 
+    replaceable -= not_replaceable
     statements = Statements()
 
     def functions(d):
@@ -232,6 +249,7 @@ def get_selectable_changes(
         added_other,
         removed_other,
         modified_other,
+        replaceable=replaceable,
         drops_only=True,
         dependency_ordering=True,
     )
@@ -247,6 +265,7 @@ def get_selectable_changes(
         added_other,
         removed_other,
         modified_other,
+        replaceable=replaceable,
         creations_only=True,
         dependency_ordering=True,
     )

@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 import io
 
 from pytest import raises
-from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
+from schemainspect import get_inspector
 
 SQL = """select 1;
 
