@@ -35,7 +35,7 @@ def outs():
 
 
 def test_deps():
-    for FIXTURE_NAME in ["dependencies", "dependencies2"]:
+    for FIXTURE_NAME in ["dependencies", "dependencies2", "dependencies3"]:
         do_fixture_test(FIXTURE_NAME)
 
 

@@ -43,6 +43,7 @@ def statements_for_changes(
         drops_only=drops_only,
         modifications=modifications,
         dependency_ordering=dependency_ordering,
+        old=things_from
     )
 
 
@@ -55,6 +56,7 @@ def statements_from_differences(
     drops_only=False,
     modifications=True,
     dependency_ordering=False,
+    old=None
 ):
     replaceable = replaceable or set()
     statements = Statements()
@@ -89,7 +91,7 @@ def statements_from_differences(
             for k, v in removed.items():
                 if not has_remaining_dependents(v, pending_drops):
                     if k in pending_drops:
-                        statements.append(v.drop_statement)
+                        statements.append(old[k].drop_statement)
                         pending_drops.remove(k)
         if not drops_only:
             for k, v in added.items():
@@ -102,7 +104,7 @@ def statements_from_differences(
                 if not creations_only:
                     if not has_remaining_dependents(v, pending_drops):
                         if k in pending_drops:
-                            statements.append(v.drop_statement)
+                            statements.append(old[k].drop_statement)
                             pending_drops.remove(k)
                 if not drops_only:
                     if not has_uncreated_dependencies(v, pending_creations):
@@ -222,11 +224,9 @@ def get_selectable_changes(
     replaceable = set()
     not_replaceable = set()
 
-    oldstuff = {**tables_from, **other_from}
-
     if add_dependents_for_modified:
         for k, m in m_all.items():
-            old = oldstuff[k]
+            old = selectables_from[k]
 
             if m.can_replace(old):
                 replaceable.add(k)
@@ -252,6 +252,7 @@ def get_selectable_changes(
         replaceable=replaceable,
         drops_only=True,
         dependency_ordering=True,
+        old=selectables_from
     )
 
     statements += get_table_changes(
@@ -268,6 +269,7 @@ def get_selectable_changes(
         replaceable=replaceable,
         creations_only=True,
         dependency_ordering=True,
+        old=selectables_from
     )
     return statements
 
