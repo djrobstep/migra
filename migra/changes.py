@@ -43,7 +43,7 @@ def statements_for_changes(
         drops_only=drops_only,
         modifications=modifications,
         dependency_ordering=dependency_ordering,
-        old=things_from
+        old=things_from,
     )
 
 
@@ -56,7 +56,7 @@ def statements_from_differences(
     drops_only=False,
     modifications=True,
     dependency_ordering=False,
-    old=None
+    old=None,
 ):
     replaceable = replaceable or set()
     statements = Statements()
@@ -215,20 +215,21 @@ def get_selectable_changes(
         other_from, other_target
     )
 
-    m_all = {}
-    m_all.update(modified_tables)
-    m_all.update(modified_other)
-    m_all.update(removed_tables)
-    m_all.update(removed_other)
+    changed_all = {}
+    changed_all.update(modified_tables)
+    changed_all.update(modified_other)
+    modified_all = dict(changed_all)
+    changed_all.update(removed_tables)
+    changed_all.update(removed_other)
 
     replaceable = set()
     not_replaceable = set()
 
     if add_dependents_for_modified:
-        for k, m in m_all.items():
+        for k, m in changed_all.items():
             old = selectables_from[k]
 
-            if m.can_replace(old):
+            if k in modified_all and m.can_replace(old):
                 replaceable.add(k)
                 continue
 
@@ -252,7 +253,7 @@ def get_selectable_changes(
         replaceable=replaceable,
         drops_only=True,
         dependency_ordering=True,
-        old=selectables_from
+        old=selectables_from,
     )
 
     statements += get_table_changes(
@@ -269,7 +270,7 @@ def get_selectable_changes(
         replaceable=replaceable,
         creations_only=True,
         dependency_ordering=True,
-        old=selectables_from
+        old=selectables_from,
     )
     return statements
 

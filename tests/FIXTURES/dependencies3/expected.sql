@@ -1,3 +1,5 @@
-drop view if exists "public"."abc";
+drop view if exists "public"."switcharoo";
 
-create materialized view "public"."abc" as  SELECT 1;
+alter table "public"."t" add column "b" integer;
+
+create materialized view "public"."switcharoo" as  SELECT 1;
