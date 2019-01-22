@@ -230,7 +230,8 @@ def get_selectable_changes(
             old = selectables_from[k]
 
             if k in modified_all and m.can_replace(old):
-                replaceable.add(k)
+                if not m.is_table:
+                    replaceable.add(k)
                 continue
 
             for d in m.dependents_all:
