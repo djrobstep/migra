@@ -238,7 +238,7 @@ def get_selectable_changes(
                 if d in unmodified_other:
                     dd = unmodified_other.pop(d)
                     modified_other[d] = dd
-                    not_replaceable.add(d)
+                not_replaceable.add(d)
         modified_other = od(sorted(modified_other.items()))
 
     replaceable -= not_replaceable
