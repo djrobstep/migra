@@ -18,16 +18,6 @@ You can also detect changes for a single specific schema only with `--schema mys
 
 **Migra supports PostgreSQL >= 10 only.** Known issues exist with earlier versions. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
 
-## Support `migra`'s maintenance and future development
-
-This project isn't sponsored by my employer or any other organisation: It's been built with many hours of voluntary unpaid work.
-
-I've recently set up [a Patreon](https://patreon.com/djrobstep) to help support future development of `migra` and related projects.
-
-If you or your employer uses `migra`, please consider [becoming a subscriber](https://patreon.com/djrobstep).
-
-If you require specific features or support, more formal commercial arrangements can be discussed (email me at the author email specified in this repo's `pyproject.toml`)
-
 ## Folks, schemas are good
 
 Schema migrations are without doubt the most cumbersome and annoying part of working with SQL databases. So much so that some people think that schemas themselves are bad!
@@ -36,7 +26,7 @@ But schemas are actually good. Enforcing data consistency and structure is a goo
 
 ## Full documentation
 
-Documentation is at [migra.djrobstep.com](https://migra.djrobstep.com).
+Documentation is at [djrobstep.com/docs/migra](https://djrobstep.com/docs/migra).
 
 ## How it Works
 
