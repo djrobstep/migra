@@ -175,7 +175,8 @@ def do_fixture_test(
             assert not m.statements  # no further statements to apply
             assert m.sql == ""
             out, err = outs()
-            assert run(args, out=out, err=err) == 0
+        
+        assert run(args, out=out, err=err) == 0
         # test alternative parameters
         with S(d0) as s0, S(d1) as s1:
             m = Migration(get_inspector(s0), get_inspector(s1))
