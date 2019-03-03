@@ -6,7 +6,7 @@ tmessy = -svv
 targs = --cov-report term-missing --cov migra
 
 test:
-	$(tcommand) $(targs) tests
+	$(tcommand) $(tmessy) $(targs) tests
 
 stest:
 	$(tcommand) $(tmessy) $(targs) tests
