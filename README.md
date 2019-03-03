@@ -18,15 +18,15 @@ Most features of PostgreSQL are supported.
 
 **Migra supports PostgreSQL >= 10 only.** Known issues exist with earlier versions. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
 
+## THE DOCS
+
+Documentation is at [djrobstep.com/docs/migra](https://djrobstep.com/docs/migra).
+
 ## Folks, schemas are good
 
 Schema migrations are without doubt the most cumbersome and annoying part of working with SQL databases. So much so that some people think that schemas themselves are bad!
 
 But schemas are actually good. Enforcing data consistency and structure is a good thing. It’s the migration tooling that is bad, because it’s harder to use than it should be. ``migra`` is an attempt to change that, and make migrations easy, safe, and reliable instead of something to dread.
-
-## Full documentation
-
-Documentation is at [djrobstep.com/docs/migra](https://djrobstep.com/docs/migra).
 
 ## Contributing
 
