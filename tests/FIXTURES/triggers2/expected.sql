@@ -1,0 +1,1 @@
+alter table "public"."table2" drop column "t";
