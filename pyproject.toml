@@ -13,7 +13,12 @@ homepage = "https://migra.djrobstep.com/"
 python = "*"
 sqlbag = "*"
 six = "*"
+<<<<<<< HEAD
 schemainspect = ">= 0.1.1551695490"
+=======
+#schemainspect = {path='../schemainspect'}
+schemainspect = ">= 0.1.1552209928"
+>>>>>>> test weird table names
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
@@ -31,3 +36,9 @@ migra = 'migra:do_command'
 
 [tool.poetry.extras]
 pg = ["psycopg2-binary"]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 88
+
