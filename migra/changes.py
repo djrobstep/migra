@@ -142,7 +142,11 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
             ):
                 pre.append(before.change_enum_to_string_statement(t))
                 post.append(before.change_string_to_enum_statement(t))
-    for e in enums_to_change.values():
+    for k in enums_to_change.keys():
+      try:
+        recreate.extend(enums_target[k].change_statements(enums_from[k]))
+      except:
+        e = e_modified[k]
         recreate.append(e.drop_statement)
         recreate.append(e.create_statement)
     return pre + recreate + post
