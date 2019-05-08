@@ -12,9 +12,9 @@ class Migration(object):
     The main class of migra
     """
 
-    def __init__(self, x_from, x_target, schema=None, alterenum=False):
+    def __init__(self, x_from, x_target, schema=None, alter_enum=False):
         self.statements = Statements()
-        self.changes = Changes(None, None, alterenum)
+        self.changes = Changes(None, None, alter_enum)
         self.schema = schema
         if isinstance(x_from, DBInspector):
             self.changes.i_from = x_from

@@ -76,7 +76,7 @@ def run(args, out=None, err=None):
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema, alterenum=args.alter_enums)
+        m = Migration(ac0, ac1, schema=schema, alter_enum=args.alter_enums)
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:
