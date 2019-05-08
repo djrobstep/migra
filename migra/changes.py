@@ -123,7 +123,24 @@ def statements_from_differences(
     return statements
 
 
-def get_enum_modifications(tables_from, tables_target, enums_from, enums_target):
+def change_safe_enum_statements(self, new):
+  if not self.can_be_changed_to(new):
+    raise ValueError
+
+  new = new.elements
+  old = self.elements
+  statements = []
+  previous = None
+  for c in new:
+    if c not in old:
+      s = "INSERT INTO pg_enum (enumtypid, enumlabel, enumsortorder) SELECT '{}'::regtype::oid, '{}' , ( SELECT MAX(enumsortorder) + 1 FROM pg_enum WHERE enumtypid = '{}'::regtype );".format(
+        self.name, c, self.name
+      )
+      statements.append(s)
+    previous = c
+  return statements
+
+def get_enum_modifications(tables_from, tables_target, enums_from, enums_target, alterenum):
     _, _, e_modified, _ = differences(enums_from, enums_target)
     _, _, t_modified, _ = differences(tables_from, tables_target)
     pre = Statements()
@@ -143,16 +160,21 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
                 pre.append(before.change_enum_to_string_statement(t))
                 post.append(before.change_string_to_enum_statement(t))
     for k in enums_to_change.keys():
-      try:
-        recreate.extend(enums_target[k].change_statements(enums_from[k]))
-      except:
+      if (alterenum):
+        try:
+          recreate.extend(change_safe_enum_statements(enums_from[k],enums_target[k]))
+        except:
+          e = e_modified[k]
+          recreate.append(e.drop_statement)
+          recreate.append(e.create_statement)
+      else:
         e = e_modified[k]
         recreate.append(e.drop_statement)
         recreate.append(e.create_statement)
     return pre + recreate + post
 
 
-def get_table_changes(tables_from, tables_target, enums_from, enums_target):
+def get_table_changes(tables_from, tables_target, enums_from, enums_target, alterenum=False):
     added, removed, modified, _ = differences(tables_from, tables_target)
 
     statements = Statements()
@@ -161,7 +183,7 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
     for t, v in added.items():
         statements.append(v.create_statement)
     statements += get_enum_modifications(
-        tables_from, tables_target, enums_from, enums_target
+        tables_from, tables_target, enums_from, enums_target, alterenum
     )
 
     for t, v in modified.items():
@@ -205,6 +227,7 @@ def get_selectable_changes(
     enums_from,
     enums_target,
     add_dependents_for_modified=True,
+    alterenum=False
 ):
     tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
     tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
@@ -262,7 +285,7 @@ def get_selectable_changes(
     )
 
     statements += get_table_changes(
-        tables_from, tables_target, enums_from, enums_target
+        tables_from, tables_target, enums_from, enums_target, alterenum
     )
 
     if any([functions(added_other), functions(modified_other)]):
@@ -281,9 +304,10 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from, i_target):
+    def __init__(self, i_from, i_target, alterenum=False):
         self.i_from = i_from
         self.i_target = i_target
+        self.alterenum = alterenum
 
     def __getattr__(self, name):
         if name == "non_pk_constraints":
@@ -307,6 +331,8 @@ class Changes(object):
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,
                 self.i_target.enums,
+                True,
+                self.alterenum
             )
 
         elif name in THINGS:

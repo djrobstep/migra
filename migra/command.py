@@ -49,6 +49,13 @@ def parse_args(args):
         help="Also output privilege differences (ie. grant/revoke statements)",
     )
     parser.add_argument(
+        "--alter-enums",
+        dest="alter_enums",
+        action="store_true",
+        default = False,
+        help = "Instead of drop create, use INSERT INTO pg_enums for additions to enum",
+    )
+    parser.add_argument(
         "--force-utf8",
         dest="force_utf8",
         action="store_true",
@@ -69,7 +76,7 @@ def run(args, out=None, err=None):
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema)
+        m = Migration(ac0, ac1, schema=schema, alterenum=args.alter_enums)
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:
