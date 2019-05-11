@@ -53,7 +53,8 @@ def parse_args(args):
         dest="alter_enums",
         action="store_true",
         default = False,
-        help = "Instead of drop create, use INSERT INTO pg_enums for additions to enum",
+        help = ("Instead of drop create, use INSERT INTO pg_enums for additions to enum"
+                "note: *requires migration to be done as superuser"),
     )
     parser.add_argument(
         "--force-utf8",

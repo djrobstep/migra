@@ -133,8 +133,8 @@ def change_safe_enum_statements(self, new):
   previous = None
   for c in new:
     if c not in old:
-      s = "INSERT INTO pg_enum (enumtypid, enumlabel, enumsortorder) SELECT '{}'::regtype::oid, '{}' , ( SELECT MAX(enumsortorder) + 1 FROM pg_enum WHERE enumtypid = '{}'::regtype );".format(
-        self.name, c, self.name
+      s = "INSERT INTO \"{}\".\"pg_enum\" (enumtypid, enumlabel, enumsortorder) SELECT '{}'::regtype::oid, '{}' , ( SELECT MAX(enumsortorder) + 1 FROM pg_enum WHERE enumtypid = '{}'::regtype );".format(
+        self.schema, self.name, c, self.name
       )
       statements.append(s)
     previous = c
