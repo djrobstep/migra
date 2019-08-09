@@ -56,7 +56,7 @@ You can make a schema-only dump of your PostgreSQL database with the following c
 3. Generate a migration script using the following command (substituting your own connection strings):
 
     ```
-    $ migra --unsafe postgresql:///existing postgresql:///database_with_new_schema -f migration_script.sql
+    $ migra --unsafe postgresql:///existing postgresql:///database_with_new_schema > migration_script.sql
     ```
 
 4. Carefully review the migration script in `migration_script.sql`
