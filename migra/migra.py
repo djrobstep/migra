@@ -51,7 +51,7 @@ class Migration(object):
     def apply(self):
         for stmt in self.statements:
             raw_execute(self.s_from, stmt)
-        self.changes.i_from = get_inspector(self.s_from, schema=self.schema[0])
+        self.changes.i_from = get_inspector(self.s_from, schema=self._determine_schema(True))
         safety_on = self.statements.safe
         self.clear()
         self.set_safety(safety_on)

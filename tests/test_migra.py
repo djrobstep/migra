@@ -61,7 +61,7 @@ def test_singleschemea():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
-def test_diffrentschemas():
+def test_differentschemas():
     for FIXTURE_NAME in ["diffrentschemas"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema,goodschema1")
 
