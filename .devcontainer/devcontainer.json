@@ -1,0 +1,15 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+	"name": "Python 3 & PostgreSQL",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "docker-in-docker",
+	"workspaceFolder": "/workspace",
+	"extensions": [
+		"ms-python.python"
+	],
+	"settings": {
+		"python.pythonPath": "/usr/bin/python",
+		"python.linting.pylintEnabled": true,
+		"python.linting.enabled": true
+	}
+}
