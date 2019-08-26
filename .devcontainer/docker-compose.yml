@@ -26,3 +26,15 @@ services:
       POSTGRES_USER: root
     # environment:
     #   POSTGRES_PASSWORD: LocalPassword
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: always
+    ports: 
+      - 8080:80
+    volumes:
+      - ~/.pgadmincompose:/var/lib/pgadmin
+    environment:
+        PGADMIN_DEFAULT_EMAIL: docker
+        PGADMIN_DEFAULT_PASSWORD: docker
+        PGADMIN_LISTEN_PORT: 80  

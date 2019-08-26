@@ -15,25 +15,35 @@ class Migration(object):
     def __init__(self, x_from, x_target, schema=None):
         self.statements = Statements()
         self.changes = Changes(None, None)
-        self.schema = schema
+        self.schema = schema.split(",") if schema is not None else None
         if isinstance(x_from, DBInspector):
             self.changes.i_from = x_from
         else:
-            self.changes.i_from = get_inspector(x_from, schema=schema)
+            self.changes.i_from = get_inspector(x_from, schema=self._determine_schema())
             if x_from:
                 self.s_from = x_from
         if isinstance(x_target, DBInspector):
             self.changes.i_target = x_target
         else:
-            self.changes.i_target = get_inspector(x_target, schema=schema)
+            self.changes.i_target = get_inspector(x_target, schema=self._determine_schema(False))
             if x_target:
                 self.s_target = x_target
+    
+    def _determine_schema(self, from_schema=True):
+        if self.schema is None:
+            return None
+        if len(self.schema) == 1:
+            return self.schema[0]
+        elif from_schema:
+            return self.schema[0]
+        elif len(self.schema) > 1:
+            return self.schema[1]
 
     def inspect_from(self):
-        self.changes.i_from = get_inspector(self.s_from, schema=self.schema)
+        self.changes.i_from = get_inspector(self.s_from, schema=self._determine_schema())
 
     def inspect_target(self):
-        self.changes.i_target = get_inspector(self.s_target, schema=self.schema)
+        self.changes.i_target = get_inspector(self.s_target, schema=self._determine_schema(False))
 
     def clear(self):
         self.statements = Statements()
@@ -41,7 +51,7 @@ class Migration(object):
     def apply(self):
         for stmt in self.statements:
             raw_execute(self.s_from, stmt)
-        self.changes.i_from = get_inspector(self.s_from, schema=self.schema)
+        self.changes.i_from = get_inspector(self.s_from, schema=self.schema[0])
         safety_on = self.statements.safe
         self.clear()
         self.set_safety(safety_on)

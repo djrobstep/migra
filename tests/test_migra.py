@@ -41,41 +41,37 @@ def test_deps():
     for FIXTURE_NAME in ["dependencies", "dependencies2", "dependencies3"]:
         do_fixture_test(FIXTURE_NAME)
 
-
 def test_everything():
     for FIXTURE_NAME in ["everything"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
 
 def test_partitioning():
     for FIXTURE_NAME in ["partitioning"]:
         do_fixture_test(FIXTURE_NAME)
 
-
 def test_collations():
     for FIXTURE_NAME in ["collations"]:
         do_fixture_test(FIXTURE_NAME)
-
 
 def test_triggers():
     for FIXTURE_NAME in ["triggers", "triggers2"]:
         do_fixture_test(FIXTURE_NAME)
 
-
 def test_singleschemea():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
+def test_diffrentschemas():
+    for FIXTURE_NAME in ["diffrentschemas"]:
+        do_fixture_test(FIXTURE_NAME, schema="goodschema,goodschema1")
 
 def test_singleschema_ext():
     for FIXTURE_NAME in ["singleschema_ext"]:
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
 
-
 def test_privs():
     for FIXTURE_NAME in ["privileges"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
 
 schemainspect_test_role = "schemainspect_test_role"
 
@@ -174,6 +170,9 @@ def do_fixture_test(
                 )
             else:
                 m.add_all_changes(privileges=with_privileges)
+                print(m.changes.i_from.__dict__)
+                print("\n----")
+                print(m.changes.i_target.__dict__)
                 assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
             assert m.sql == ""
