@@ -1,0 +1,8 @@
+poetry
+sqlbag
+schemainspect
+psycopg2
+pymysql
+pylint
+pytest
+postgres

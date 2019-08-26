@@ -14,6 +14,8 @@ services:
       - ~/.gitconfig:/root/.gitconfig
       - /var/run/docker.sock:/var/run/docker.sock 
     command: sleep infinity 
+    environment:
+      DOCKERIZED: db
 
   db:
     image: postgres
@@ -21,4 +23,6 @@ services:
     ports: 
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: LocalPassword
+      POSTGRES_USER: root
+    # environment:
+    #   POSTGRES_PASSWORD: LocalPassword

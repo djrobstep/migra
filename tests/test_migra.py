@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import io
+import os
 
 from pytest import raises
 from schemainspect import get_inspector
@@ -15,6 +16,8 @@ select 2;
 
 """
 DROP = "drop table x;"
+
+HOSTNAME = os.getenv("DOCKERIZED", default="localhost")
 
 
 def test_statements():
@@ -112,8 +115,8 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    with temporary_database(host="localhost") as d0, temporary_database(
-        host="localhost"
+    with temporary_database(host=HOSTNAME) as d0, temporary_database(
+        host=HOSTNAME
     ) as d1:
         with S(d0) as s0:
             create_role(s0, schemainspect_test_role)

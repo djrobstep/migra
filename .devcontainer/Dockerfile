@@ -12,6 +12,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Docker Compose version
 ARG COMPOSE_VERSION=1.24.0
 
+COPY *requirements.txt /tmp/pip-tmp/
+
 # Configure apt and install packages
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
@@ -24,11 +26,17 @@ RUN apt-get update \
     && curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]')/gpg | (OUT=$(apt-key add - 2>&1) || echo $OUT) \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable" \
     && apt-get update \
-    && apt-get install -y docker-ce-cli fish vim\
+    && apt-get install -y docker-ce-cli fish vim postgresql-client \
     #
     # Install Docker Compose
     && curl -sSL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose \
+    #
+    # Pylint
+    && pip --disable-pip-version-check --no-cache-dir install pylint \
+    #
+    # Pip items
+    && if [ -f "/tmp/pip-tmp/requirements.txt" ]; then pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt; fi \
     #
     # Clean up
     && apt-get autoremove -y \
