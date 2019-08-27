@@ -170,9 +170,6 @@ def do_fixture_test(
                 )
             else:
                 m.add_all_changes(privileges=with_privileges)
-                print(m.changes.i_from.__dict__)
-                print("\n----")
-                print(m.changes.i_target.__dict__)
                 assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
             assert m.sql == ""
