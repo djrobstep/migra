@@ -6,6 +6,9 @@ create table goodschema.t(id uuid, value text);
 
 create table t(id uuid, value text);
 
+create table goodschema.z(id uuid, value text);
+create table z(id uuid, value text);
+
 CREATE TYPE goodschema.sdfasdfasdf AS ENUM ('not shipped', 'shipped', 'delivered');
 
 create index on goodschema.t(id);

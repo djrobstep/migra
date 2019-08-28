@@ -141,7 +141,7 @@ def do_fixture_test(
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
         with S(d0) as s0, S(d1) as s1:
-            m = Migration(s0, s1, schema=schema)
+            m = Migration(s0, s1, schema=schema, only_tables=False)
             m.inspect_from()
             m.inspect_target()
             with raises(AttributeError):

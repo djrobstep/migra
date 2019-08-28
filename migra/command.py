@@ -55,6 +55,19 @@ def parse_args(args):
         default=False,
         help="Force UTF-8 encoding for output",
     )
+    parser.add_argument(
+        "--tables",
+        dest="tables",
+        default=None,
+        help="Restricts diff to these tables (comma delimited)"
+    )
+    parser.add_argument(
+        "--tables-only",
+        dest="tables_only",
+        action="store_true",
+        default=False,
+        help="Only print out table diffs"
+    )
     parser.add_argument("dburl_from", help="The database you want to migrate.")
     parser.add_argument(
         "dburl_target", help="The database you want to use as the target."
@@ -64,12 +77,13 @@ def parse_args(args):
 
 def run(args, out=None, err=None):
     schema = args.schema
+    tables = args.tables.split(",") if args.tables else None
     if not out:
         out = sys.stdout  # pragma: no cover
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema)
+        m = Migration(ac0, ac1, schema=schema, tables=tables, only_tables=args.tables_only)
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:
