@@ -17,13 +17,12 @@ RUN easy_install-3.6 pip && \
 RUN mkdir -p Build/
 WORKDIR Build/
 
-COPY $SOURCEPATH/ /Build/$SOURCEPATH/
-COPY schemainspect/ /Build/schemainspect/
-COPY $MAINFILE /Build/
-COPY requirements.txt /Build/$SOURCEPATH/
-COPY version.py /Build/
+COPY $SOURCEPATH/ .
+
+ 
+ 
 RUN ls . -la
-ENV PYTHONPATH="/Build/$SOURCEPATH/"
+ENV PYTHONPATH="/Build/"
 RUN pip3 install -r $SOURCEPATH/requirements.txt
 RUN head -n -1 /Build/version.py >/Build/version2.py
 RUN mv /Build/version2.py /Build/version.py
@@ -39,7 +38,7 @@ RUN pip freeze >>/Build/version.py
 RUN echo "\"\"\"}" >>/Build/version.py
 #RUN pyinstaller $SOURCEPATH/$ARTIFACTNAME.py  --add-data /Build/version.txt:.  --onefile
 #RUN pyinstaller $MAINFILE  --onefile --paths $PYTHONPATH
-RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/'
+RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/' -n ${ARTIFACTNAME}
 RUN mkdir tmp 
 RUN tar -czvf ${ARTIFACTNAME}_${RELEASENAME}.tar -C /Build/dist/ . 
 RUN tar -xvf ./${ARTIFACTNAME}_${RELEASENAME}.tar -C ./tmp/
