@@ -48,17 +48,19 @@ def external_caller():
         try:
             names.append(inspect.getmodule(i[x][0]).__name__)
         except Exception as e:
-            print(e)
-    print(names)
+            #print(e)
+            pass
+ 
     return next(name for name in names if name != __name__)
 
 
 def resource_stream(subpath):
-    module_name = external_caller()
+    module_name = 'schemainspect.pg' #external_caller()
     return pkg_resource_stream(module_name, subpath)
 
 
 def resource_text(subpath):
-    print("---module",__name__)
+     
+  
     with resource_stream(subpath) as f:
         return f.read().decode("utf-8")

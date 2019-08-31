@@ -17,10 +17,11 @@ RUN mkdir -p Build/
 WORKDIR Build/
 
 COPY $SOURCEPATH/ /Build/$SOURCEPATH/
+COPY schemainspect/ /Build/schemainspect/
 COPY $MAINFILE /Build/
 COPY requirements.txt /Build/$SOURCEPATH/
 COPY version.py /Build/
-RUN ls ./migra -la
+RUN ls . -la
 ENV PYTHONPATH="/Build/$SOURCEPATH/"
 RUN pip3 install -r $SOURCEPATH/requirements.txt
 RUN head -n -1 /Build/version.py >/Build/version2.py
@@ -36,7 +37,8 @@ RUN echo ",\"python_libs\":\"\"\"" >>/Build/version.py
 RUN pip freeze >>/Build/version.py
 RUN echo "\"\"\"}" >>/Build/version.py
 #RUN pyinstaller $SOURCEPATH/$ARTIFACTNAME.py  --add-data /Build/version.txt:.  --onefile
-RUN pyinstaller $MAINFILE  --onefile --paths $PYTHONPATH
+#RUN pyinstaller $MAINFILE  --onefile --paths $PYTHONPATH
+RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/'
 RUN mkdir tmp 
 RUN tar -czvf $ARTIFACTNAME_centos_6_10.tar -C /Build/dist/ . 
 RUN tar -xvf ./$ARTIFACTNAME_centos_6_10.tar -C ./tmp/
