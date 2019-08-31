@@ -1,7 +1,8 @@
 poetry
 sqlbag
-schemainspect
-psycopg2
+#schemainspect
+psycopg2-binary
+pyinstaller
 pymysql
 pylint
 pytest

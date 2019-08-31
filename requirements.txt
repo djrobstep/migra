@@ -1,6 +1,6 @@
 poetry
 sqlbag
-schemainspect
+#schemainspect
 psycopg2-binary
 pymysql
 pylint
