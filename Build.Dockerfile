@@ -1,4 +1,5 @@
 FROM centos:6.10
+ARG RELEASENAME=centos_6_10
 ARG SOURCEPATH=migra
 ARG ARTIFACTNAME=pydbmigra
 ARG MAINFILE=pydbmigra.py
@@ -40,8 +41,8 @@ RUN echo "\"\"\"}" >>/Build/version.py
 #RUN pyinstaller $MAINFILE  --onefile --paths $PYTHONPATH
 RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/'
 RUN mkdir tmp 
-RUN tar -czvf $ARTIFACTNAME_centos_6_10.tar -C /Build/dist/ . 
-RUN tar -xvf ./$ARTIFACTNAME_centos_6_10.tar -C ./tmp/
+RUN tar -czvf ${ARTIFACTNAME}_${RELEASENAME}.tar -C /Build/dist/ . 
+RUN tar -xvf ./${ARTIFACTNAME}_${RELEASENAME}.tar -C ./tmp/
 # RUN pip3 install -r $SOURCEPATH/requirements.txt
 # RUN pyinstaller $SOURCEPATH/$ARTIFACTNAME.py -w --onefile
 # RUN tar -czvf $ARTIFACTNAME.tar -C dist/ .
