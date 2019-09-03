@@ -203,8 +203,12 @@ def get_selectable_changes(
     tables,
     add_dependents_for_modified=True,
 ):
-    tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
-    tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
+    if tables is not None:
+        tables_from = od((k,v) for k, v in selectables_from.items() if v.is_table and k.split(".")[1].replace('"', "") in tables)
+        tables_target = od((k,v) for k, v in selectables_target.items() if v.is_table and k.split(".")[1].replace('"', "") in tables)
+    else:
+        tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
+        tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
 
     other_from = od((k, v) for k, v in selectables_from.items() if not v.is_table)
     other_target = od((k, v) for k, v in selectables_target.items() if not v.is_table)
@@ -305,7 +309,7 @@ class Changes(object):
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,
                 self.i_target.enums,
-                self.tables,
+                self.tables
             )
 
         elif name in THINGS:

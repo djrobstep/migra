@@ -24,7 +24,7 @@ class DBInspector(object):
         self.dialect = self.engine.dialect
         self.include_internal = include_internal
         self.tables_only = tables_only
-        self.tables = tables
+        self.selected_tables = tables
         self.load_all()
 
     def to_pytype(self, typename):

@@ -750,7 +750,8 @@ class PostgreSQL(DBInspector):
                 qual=p.qual,
                 withcheck=p.withcheck,
             )
-            for p in q if self.tables is not None and p.table_name in self.tables
+            #for p in q
+            for p in q if self.selected_tables is not None and p.table_name in self.selected_tables
         ]
 
         self.rlspolicies = od((p.key, p) for p in rlspolicies)
@@ -922,7 +923,8 @@ class PostgreSQL(DBInspector):
                 key_expressions=i.key_expressions,
                 partial_predicate=i.partial_predicate,
             )
-            for i in q if self.tables is not None and i.table_name in self.tables
+            for i in q if self.selected_tables is not None and i.table_name in self.selected_tables
+            #for i in q
         ]
         self.indexes = od((i.quoted_full_name, i) for i in indexlist)
         q = self.c.execute(self.SEQUENCES_QUERY)
@@ -938,7 +940,8 @@ class PostgreSQL(DBInspector):
                 definition=i.definition,
                 index=i.index,
             )
-            for i in q if  self.tables is not None and i.table_name in self.tables
+            for i in q if  self.selected_tables is not None and i.table_name in self.selected_tables
+            #for i in q
         ]
         self.constraints = od((i.quoted_full_name, i) for i in constraintlist)
         q = self.c.execute(self.EXTENSIONS_QUERY)
@@ -1032,7 +1035,8 @@ class PostgreSQL(DBInspector):
                 i.enabled,
                 i.full_definition,
             )
-            for i in q if self.tables is not None and i.table_name in self.tables
+            for i in q if self.selected_tables is not None and i.table_name in self.selected_tables
+           # for i in q
         ]  # type: list[InspectedTrigger]
         self.triggers = od((t.signature, t) for t in triggers)
 
