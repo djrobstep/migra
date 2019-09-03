@@ -6,3 +6,4 @@ pymysql
 pylint
 pytest
 postgres
+pygithub

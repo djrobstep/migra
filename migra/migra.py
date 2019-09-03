@@ -12,22 +12,22 @@ class Migration(object):
     The main class of migra
     """
 
-    def __init__(self, x_from, x_target, schema=None, tables=None, only_tables=False):
+    def __init__(self, x_from, x_target, schema=None, tables=None, tables_only=False):
         self.statements = Statements()
         self.tables = tables
-        self.only_tables = only_tables
-        self.changes = Changes(None, None, tables, only_tables)
+        self.tables_only = tables_only
+        self.changes = Changes(None, None, tables)
         self.schema = schema.split(",") if schema is not None else None
         if isinstance(x_from, DBInspector):
             self.changes.i_from = x_from
         else:
-            self.changes.i_from = get_inspector(x_from, schema=self._determine_schema())
+            self.changes.i_from = get_inspector(x_from, schema=self._determine_schema, tables_only=tables_only)
             if x_from:
                 self.s_from = x_from
         if isinstance(x_target, DBInspector):
             self.changes.i_target = x_target
         else:
-            self.changes.i_target = get_inspector(x_target, schema=self._determine_schema(False))
+            self.changes.i_target = get_inspector(x_target, schema=self._determine_schema(False), tables_only=tables_only)
             if x_target:
                 self.s_target = x_target
     
@@ -74,7 +74,7 @@ class Migration(object):
             self.add(self.changes.extensions(drops_only=True))
 
     def add_all_changes(self, privileges=False):
-        if self.only_tables:
+        if self.tables_only:
             self.add(self.changes.selectables())
         else:
             self.add(self.changes.schemas(creations_only=True))

@@ -691,7 +691,7 @@ class InspectedRowPolicy(Inspected, TableRelated):
 
 
 class PostgreSQL(DBInspector):
-    def __init__(self, c, include_internal=False):
+    def __init__(self, c, include_internal=False, tables=None, tables_only=False):
         def processed(q):
             if not include_internal:
                 q = q.replace("-- SKIP_INTERNAL", "")
@@ -715,7 +715,7 @@ class PostgreSQL(DBInspector):
         self.TRIGGERS_QUERY = processed(TRIGGERS_QUERY)
         self.COLLATIONS_QUERY = processed(COLLATIONS_QUERY)
         self.RLSPOLICIES_QUERY = processed(RLSPOLICIES_QUERY)
-        super(PostgreSQL, self).__init__(c, include_internal)
+        super(PostgreSQL, self).__init__(c, include_internal, tables, tables_only)
 
     def load_all(self):
         self.load_schemas()
@@ -750,7 +750,7 @@ class PostgreSQL(DBInspector):
                 qual=p.qual,
                 withcheck=p.withcheck,
             )
-            for p in q
+            for p in q if self.tables is not None and p.table_name in self.tables
         ]
 
         self.rlspolicies = od((p.key, p) for p in rlspolicies)
@@ -922,7 +922,7 @@ class PostgreSQL(DBInspector):
                 key_expressions=i.key_expressions,
                 partial_predicate=i.partial_predicate,
             )
-            for i in q
+            for i in q if self.tables is not None and i.table_name in self.tables
         ]
         self.indexes = od((i.quoted_full_name, i) for i in indexlist)
         q = self.c.execute(self.SEQUENCES_QUERY)
@@ -938,7 +938,7 @@ class PostgreSQL(DBInspector):
                 definition=i.definition,
                 index=i.index,
             )
-            for i in q
+            for i in q if  self.tables is not None and i.table_name in self.tables
         ]
         self.constraints = od((i.quoted_full_name, i) for i in constraintlist)
         q = self.c.execute(self.EXTENSIONS_QUERY)
@@ -1032,7 +1032,7 @@ class PostgreSQL(DBInspector):
                 i.enabled,
                 i.full_definition,
             )
-            for i in q
+            for i in q if self.tables is not None and i.table_name in self.tables
         ]  # type: list[InspectedTrigger]
         self.triggers = od((t.signature, t) for t in triggers)
 

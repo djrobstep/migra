@@ -62,7 +62,7 @@ def parse_args(args):
         help="Restricts diff to these tables (comma delimited)"
     )
     parser.add_argument(
-        "--tables-only",
+        "--tables_only",
         dest="tables_only",
         action="store_true",
         default=False,
@@ -83,7 +83,7 @@ def run(args, out=None, err=None):
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema, tables=tables, only_tables=args.tables_only)
+        m = Migration(ac0, ac1, schema=schema, tables=tables, tables_only=args.tables_only)
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:

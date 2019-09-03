@@ -201,15 +201,10 @@ def get_selectable_changes(
     enums_from,
     enums_target,
     tables,
-    only_tables=False,
     add_dependents_for_modified=True,
 ):
-    if tables:
-        tables_from = od((k,v) for k, v in selectables_from.items() if v.is_table and k.split(".")[1].replace('"', "") in tables)
-        tables_target = od((k,v) for k, v in selectables_target.items() if v.is_table and k.split(".")[1].replace('"', "") in tables)
-    else:
-        tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
-        tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
+    tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
+    tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
 
     other_from = od((k, v) for k, v in selectables_from.items() if not v.is_table)
     other_target = od((k, v) for k, v in selectables_target.items() if not v.is_table)
@@ -283,11 +278,10 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from, i_target, tables, only_tables):
+    def __init__(self, i_from, i_target, tables):
         self.i_from = i_from
         self.i_target = i_target
         self.tables = tables
-        self.only_tables = only_tables
 
     def __getattr__(self, name):
         if name == "non_pk_constraints":
@@ -312,7 +306,6 @@ class Changes(object):
                 self.i_from.enums,
                 self.i_target.enums,
                 self.tables,
-                self.only_tables
             )
 
         elif name in THINGS:
