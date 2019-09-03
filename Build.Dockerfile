@@ -12,7 +12,7 @@ RUN yum -y update && \
     yum -y install python36u-setuptools
 
 RUN easy_install-3.6 pip && \
-    pip3 install pyinstaller
+    pip3 install pyinstaller cx_freeze
 
 RUN mkdir -p Build/
 WORKDIR Build/
@@ -38,7 +38,8 @@ RUN pip freeze >>/Build/version.py
 RUN echo "\"\"\"}" >>/Build/version.py
 #RUN pyinstaller $SOURCEPATH/$ARTIFACTNAME.py  --add-data /Build/version.txt:.  --onefile
 #RUN pyinstaller $MAINFILE  --onefile --paths $PYTHONPATH
-RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/' -n ${ARTIFACTNAME}
+#RUN pyinstaller $MAINFILE --onefile --paths $PYTHONPATH --add-data 'schemainspect/pg/sql/*.sql:schemainspect/pg/sql/' -n ${ARTIFACTNAME}
+RUN cxfreeze $MAINFILE --include-modules=schemainspect,sqlbag --install-dir=$PYTHONPATH/dist
 RUN mkdir tmp 
 RUN tar -czvf ${ARTIFACTNAME}_${RELEASENAME}.tar -C /Build/dist/ . 
 RUN tar -xvf ./${ARTIFACTNAME}_${RELEASENAME}.tar -C ./tmp/

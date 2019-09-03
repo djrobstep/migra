@@ -1,7 +1,7 @@
 version_dict = {"git_hash":"""
-194270c75ff2d3086040f4ff0fe317081c74446e
+d712b3a3e29243cace9db2d866ea85d16ebf702a
 """,
 "build_time":"""
-Fri Aug 30 12:17:21 UTC 2019
+Tue Sep  3 13:35:12 UTC 2019
 """
 }

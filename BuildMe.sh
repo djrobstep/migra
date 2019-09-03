@@ -14,7 +14,7 @@ echo "\"\"\"">>version.py
 
 echo "}">>version.py
 docker build --build-arg RELEASENAME=${RELEASENAME} --build-arg ARTIFACTNAME=${ARTIFACTNAME} --build-arg MAINFILE=${MAINFILE} --build-arg SOURCEPATH=${SOURCEPATH} -t builder -f Build.Dockerfile . 
-docker rm buildmecentos
+#docker rm buildmecentos
 #ßdocker run -it -v /tmp/deploy-ready/:/Build/output builder  
 docker run -it --name buildmecentos -v /tmp/deploy-ready/:/Build/output builder /Build/tmp/${ARTIFACTNAME} --version 
 #docker run -it --name buildmecentos -v /tmp/deploy-ready/:/Build/output builder cp $ARTIFACTNAME_centos_6_10.tar /Build/output/
