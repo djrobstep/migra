@@ -38,7 +38,7 @@ things as (
       on t.objid = extension_objids.extension_objid
     where
       kind in ('r', 'v', 'm', 'c', 'f') and
-      nspname not in ('pg_internal', 'pg_catalog', 'information_schema', 'pg_toast')
+      nspname not in ('pg_internal', 'pg_catalog', 'information_schema', 'pg_toast','sys','op_dba')
       and nspname not like 'pg_temp_%' and nspname not like 'pg_toast_temp_%'
       and extension_objids.extension_objid is null
 ),
