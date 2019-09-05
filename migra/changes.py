@@ -26,6 +26,7 @@ PK = "PRIMARY KEY"
 def statements_for_changes(
     things_from,
     things_target,
+    tables_only=False,
     creations_only=False,
     drops_only=False,
     modifications=True,
@@ -313,6 +314,7 @@ class Changes(object):
             )
 
         elif name in THINGS:
+            print("\n---{0}---\n\t{1}\n\t{2}".format(name, getattr(self.i_from, name), getattr(self.i_target, name)))
             return partial(
                 statements_for_changes,
                 getattr(self.i_from, name),
