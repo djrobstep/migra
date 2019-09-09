@@ -22,12 +22,14 @@ class Migration(object):
             self.changes.i_from = x_from
         else:
             self.changes.i_from = get_inspector(x_from, schema=self._determine_schema(), tables=tables, tables_only=tables_only)
+            #print("from {0} - {1}".format(self.changes.i_from.engine.url, self._determine_schema()))
             if x_from:
                 self.s_from = x_from
         if isinstance(x_target, DBInspector):
             self.changes.i_target = x_target
         else:
             self.changes.i_target = get_inspector(x_target, schema=self._determine_schema(False), tables=tables, tables_only=tables_only)
+            #print("target {0} - {1}".format(self.changes.i_target.engine.url, self._determine_schema(False)))
             if x_target:
                 self.s_target = x_target
     
@@ -74,9 +76,15 @@ class Migration(object):
             self.add(self.changes.extensions(drops_only=True))
 
     def add_all_changes(self, privileges=False):
-        if self.tables_only:
+        if self.tables_only: 
+            self.add(self.changes.rlspolicies(drops_only=True))
+            self.add(self.changes.non_pk_constraints(drops_only=True))
+            self.add(self.changes.pk_constraints(drops_only=True))
+            self.add(self.changes.indexes(drops_only=True))
+            self.add(self.changes.triggers(drops_only=True))
+
             self.add(self.changes.selectables())
-        else:
+        else: 
             self.add(self.changes.schemas(creations_only=True))
 
             self.add(self.changes.extensions(creations_only=True))
@@ -93,18 +101,18 @@ class Migration(object):
 
             self.add(self.changes.selectables())
 
-            self.add(self.changes.sequences(drops_only=True))
-            self.add(self.changes.enums(drops_only=True, modifications=False))
-            self.add(self.changes.extensions(drops_only=True))
-            self.add(self.changes.indexes(creations_only=True))
-            self.add(self.changes.pk_constraints(creations_only=True))
-            self.add(self.changes.non_pk_constraints(creations_only=True))
-            if privileges:
-                self.add(self.changes.privileges(creations_only=True))
-            self.add(self.changes.rlspolicies(creations_only=True))
-            self.add(self.changes.triggers(creations_only=True))
-            self.add(self.changes.collations(drops_only=True))
-            self.add(self.changes.schemas(drops_only=True))
+            # self.add(self.changes.sequences(drops_only=True))
+            # self.add(self.changes.enums(drops_only=True, modifications=False))
+            # self.add(self.changes.extensions(drops_only=True))
+            # self.add(self.changes.indexes(creations_only=True))
+            # self.add(self.changes.pk_constraints(creations_only=True))
+            # self.add(self.changes.non_pk_constraints(creations_only=True))
+            # if privileges:
+            #     self.add(self.changes.privileges(creations_only=True))
+            # self.add(self.changes.rlspolicies(creations_only=True))
+            # self.add(self.changes.triggers(creations_only=True))
+            # self.add(self.changes.collations(drops_only=True))
+            # self.add(self.changes.schemas(drops_only=True))
 
     @property
     def sql(self):
