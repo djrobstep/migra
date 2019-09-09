@@ -15,17 +15,20 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
     command: sleep infinity 
     environment:
-      DOCKERIZED: db
+      DOCKERIZED: dbmigra
+      PGUSER: root
+      PGPASSWORD: LocalPassword
+      PGHOST: dbmigra
+      PGPORT: 5432
 
-  db:
+  dbmigra:
     image: postgres
     restart: unless-stopped
     ports: 
       - 5432:5432
     environment:
       POSTGRES_USER: root
-    # environment:
-    #   POSTGRES_PASSWORD: LocalPassword
+      POSTGRES_PASSWORD: LocalPassword
 
   pgadmin4:
     image: dpage/pgadmin4

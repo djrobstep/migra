@@ -16,7 +16,7 @@ class Migration(object):
         self.statements = Statements()
         self.tables = tables
         self.tables_only = tables_only
-        self.changes = Changes(None, None, tables)
+        self.changes = Changes(None, None, tables, tables_only)
         self.schema = schema.split(",") if schema is not None else None
         if isinstance(x_from, DBInspector):
             self.changes.i_from = x_from

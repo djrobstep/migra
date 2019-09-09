@@ -7,7 +7,7 @@
 	"extensions": [
 		"ms-python.python"
 	],
-	"postCreateCommand": "psql -h db -c 'create role postgres'",
+	"postCreateCommand": "psql -h dbmigra -c 'create role postgres'",
 	"settings": {
 		"python.pythonPath": "/usr/local/bin/python",
 		"python.linting.pylintEnabled": true,
