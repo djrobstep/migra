@@ -22,14 +22,12 @@ class Migration(object):
             self.changes.i_from = x_from
         else:
             self.changes.i_from = get_inspector(x_from, schema=self._determine_schema(), tables=tables, tables_only=tables_only)
-            #print("from {0} - {1}".format(self.changes.i_from.engine.url, self._determine_schema()))
             if x_from:
                 self.s_from = x_from
         if isinstance(x_target, DBInspector):
             self.changes.i_target = x_target
         else:
             self.changes.i_target = get_inspector(x_target, schema=self._determine_schema(False), tables=tables, tables_only=tables_only)
-            #print("target {0} - {1}".format(self.changes.i_target.engine.url, self._determine_schema(False)))
             if x_target:
                 self.s_target = x_target
     
