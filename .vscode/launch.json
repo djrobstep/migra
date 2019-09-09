@@ -19,9 +19,9 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [
-                "postgres://root@dbmigra/postgres",
                 "postgres://root@dbmigra/root",
-                "--schema=production",
+                "postgres://root@dbmigra/postgres",
+                "--schema=production,staging",
                 "--unsafe",
                 "--tables=production",
                 "--tables_only"
