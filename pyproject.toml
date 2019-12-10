@@ -13,7 +13,7 @@ homepage = "https://migra.djrobstep.com/"
 python = "*"
 sqlbag = "*"
 six = "*"
-schemainspect = ">= 0.1.1552209928"
+schemainspect = ">=0.1.1575949847"
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
@@ -24,7 +24,7 @@ pytest-sugar = "*"
 psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"
-black = {python=">3.6", version=">=18.9b0", allow_prereleases=true}
+black = { version = ">=19.10b0", python=">=3.6" }
 
 [tool.poetry.scripts]
 migra = 'migra:do_command'
