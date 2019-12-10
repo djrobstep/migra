@@ -1,8 +1,8 @@
 create schema if not exists "evenbetterschema";
 
-create extension if not exists "citext" with schema "public" version '1.5';
+create extension if not exists "citext" with schema "public" version '1.6';
 
-create extension if not exists "hstore" with schema "public" version '1.5';
+create extension if not exists "hstore" with schema "public" version '1.6';
 
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
@@ -10,7 +10,7 @@ create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
 
-revoke select on table "public"."products" from postgres;
+revoke select on table "public"."products" from "postgres";
 
 alter table "public"."products" drop constraint "products_name_key";
 
@@ -162,6 +162,6 @@ alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric)
 
 alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
 
-grant update on table "public"."products" to postgres;
+grant update on table "public"."products" to "postgres";
 
 drop schema if exists "badschema";

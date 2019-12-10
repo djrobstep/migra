@@ -43,3 +43,5 @@ docs/site
 
 scratch
 poetry.lock
+pip-wheel-metadata
+.DS_Store
