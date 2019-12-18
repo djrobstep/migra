@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Install poetry
           command: |
-            sudo pip3 install poetry
+            sudo pip3 install poetry>=1.0.0
             poetry config virtualenvs.create false
       - run:
           command: |
@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Install poetry, deps
           command: |
-            sudo pip3 install poetry
+            sudo pip3 install poetry>=1.0.0
             poetry config virtualenvs.create false
             python3 -m venv ~/.venv
             . ~/.venv/bin/activate
