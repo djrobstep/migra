@@ -6,6 +6,9 @@ CREATE TABLE measurement (
     extra           text
 ) PARTITION BY RANGE (logdate);
 
+CREATE TABLE measurement_y2005m02 PARTITION OF measurement
+    FOR VALUES FROM ('2005-02-01') TO ('2005-03-01');
+
 CREATE TABLE measurement_y2006m02 PARTITION OF measurement
     FOR VALUES FROM ('2006-02-01') TO ('2006-03-01');
 

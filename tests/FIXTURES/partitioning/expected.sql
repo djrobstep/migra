@@ -1,5 +1,8 @@
 drop index if exists "public"."measurement_y2006m02_logdate_idx";
 
+create table "public"."measurement_y2005m02" partition of "public"."measurement" FOR VALUES FROM ('2005-02-01') TO ('2005-03-01');
+
+
 alter table "public"."measurement" detach partition "public"."measurement_y2006m03";
 
 drop table "public"."partitioned2reg";
