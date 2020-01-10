@@ -49,6 +49,13 @@ def parse_args(args):
         help="Also output privilege differences (ie. grant/revoke statements)",
     )
     parser.add_argument(
+        "--with-roles",
+        dest="with_roles",
+        action="store_true",
+        default=False,
+        help='Also output "create/drop role" statements.',
+    )
+    parser.add_argument(
         "--force-utf8",
         dest="force_utf8",
         action="store_true",
@@ -75,7 +82,7 @@ def run(args, out=None, err=None):
         if args.create_extensions_only:
             m.add_extension_changes(drops=False)
         else:
-            m.add_all_changes(privileges=args.with_privileges)
+            m.add_all_changes(privileges=args.with_privileges, roles=args.with_roles)
         try:
             if m.statements:
                 if args.force_utf8:
