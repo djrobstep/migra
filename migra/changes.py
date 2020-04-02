@@ -180,6 +180,18 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
             continue
 
         c_added, c_removed, c_modified, _ = differences(before.columns, v.columns)
+
+        for k in list(c_modified):
+            c = v.columns[k]
+            c_before = before.columns[k]
+
+            # there's no way to alter a table into/out of generated state
+            # so you gotta drop/recreate
+            if c.is_generated != c_before.is_generated:
+                del c_modified[k]
+                c_added[k] = c
+                c_removed[k] = c_before
+
         for k, c in c_removed.items():
             alter = v.alter_table_statement(c.drop_column_clause)
             statements.append(alter)
