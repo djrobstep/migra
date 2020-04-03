@@ -8,6 +8,8 @@ jobs:
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: circleci
+          POSTGRES_HOST_AUTH_METHOD: trust
+
     steps:
       - checkout
       - restore_cache:
