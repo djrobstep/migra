@@ -13,14 +13,14 @@ homepage = "https://migra.djrobstep.com/"
 python = "*"
 sqlbag = "*"
 six = "*"
-schemainspect = ">=0.1.1576671014"
+# schemainspect = {path="../schemainspect"}
+schemainspect = ">=0.1.1585871494"
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
 sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
-pytest-sugar = "*"
 psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"

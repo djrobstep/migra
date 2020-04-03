@@ -90,13 +90,13 @@ alter table "public"."products" alter column "name" drop not null;
 
 alter table "public"."products" alter column "name" set data type text using "name"::text;
 
-alter table "public"."products" alter column "price" set default 100;
-
 alter table "public"."products" alter column "price" set not null;
 
-alter table "public"."products" alter column "product_no" set default nextval('products_product_no_seq'::regclass);
+alter table "public"."products" alter column "price" set default 100;
 
 alter table "public"."products" alter column "product_no" set not null;
+
+alter table "public"."products" alter column "product_no" set default nextval('products_product_no_seq'::regclass);
 
 alter table "public"."products" alter column "x" drop default;
 

@@ -49,6 +49,11 @@ def test_partitioning():
         do_fixture_test(FIXTURE_NAME)
 
 
+def test_identitycols():
+    for FIXTURE_NAME in ["identitycols"]:
+        do_fixture_test(FIXTURE_NAME)
+
+
 def test_inherit():
     for FIXTURE_NAME in ["inherit"]:
         do_fixture_test(FIXTURE_NAME)
@@ -163,7 +168,6 @@ def do_fixture_test(
                 m.add_all_changes(privileges=with_privileges)
 
             expected = EXPECTED2 if ADDITIONS else EXPECTED
-
             assert m.sql.strip() == expected  # sql generated OK
 
             m.apply()
