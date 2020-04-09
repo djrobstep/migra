@@ -84,6 +84,11 @@ def test_privs():
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
+def test_enumdefaults():
+    for FIXTURE_NAME in ["enumdefaults"]:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+
+
 schemainspect_test_role = "schemainspect_test_role"
 
 
