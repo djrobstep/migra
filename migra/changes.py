@@ -130,18 +130,29 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
     recreate = Statements()
     post = Statements()
     enums_to_change = e_modified
+
     for t, v in t_modified.items():
         t_before = tables_from[t]
         _, _, c_modified, _ = differences(t_before.columns, v.columns)
         for k, c in c_modified.items():
             before = t_before.columns[k]
+
             if (
                 c.is_enum == before.is_enum
                 and c.dbtypestr == before.dbtypestr
                 and c.enum != before.enum
             ):
+                has_default = c.default and not c.is_generated
+
+                if has_default:
+                    pre.append(before.drop_default_statement(t))
+
                 pre.append(before.change_enum_to_string_statement(t))
                 post.append(before.change_string_to_enum_statement(t))
+
+                if has_default:
+                    post.append(before.add_default_statement(t))
+
     for e in enums_to_change.values():
         recreate.append(e.drop_statement)
         recreate.append(e.create_statement)
