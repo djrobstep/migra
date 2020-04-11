@@ -11,6 +11,19 @@
 
     This will install the latest version of migra from PyPI (the global Python Package Index), along with psycopg2, the python PostgreSQL driver.
 
+Alternatively, if you don't want to install Python, you can run it from a 
+self-contained Docker image by first running:
+
+```shell script
+docker pull djrobstep/migra
+```
+
+then creating a short alias to it with:
+
+```shell script
+alias migra="docker run djrobstep/migra migra"
+```
+
 3. Confirm migra is installed by running `migra --help`. The output should begin like this:
 
         usage: migra [-h] [--unsafe] dburl_from dburl_target
