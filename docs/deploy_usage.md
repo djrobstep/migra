@@ -1,3 +1,5 @@
+# Deploy Usage
+
 With migra you can dispense with schema version numbers and multiple migration files.
 
 ## Different deployment styles

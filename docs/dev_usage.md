@@ -1,3 +1,5 @@
+# Development Usage
+
 Migra is handy for speeding up database-related development and testing tasks.
 
 ### Auto-syncing dev database to application code
