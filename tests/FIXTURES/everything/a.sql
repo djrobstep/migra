@@ -13,6 +13,10 @@ CREATE TYPE usage_dropped_enum AS ENUM ('x', 'y');
 
 create table columnless_table();
 
+create unlogged table change_to_logged();
+
+create table change_to_unlogged();
+
 CREATE TABLE aunwanted (
     id serial primary key,
     name text not null

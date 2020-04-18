@@ -180,6 +180,9 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
             statements.append(v.create_statement)
             continue
 
+        if v.is_unlogged != before.is_unlogged:
+            statements += [v.alter_unlogged_statement]
+
         # attach/detach tables with changed parent tables
         if v.parent_table != before.parent_table:
             statements += v.attach_detach_statements(before)
@@ -215,6 +218,7 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
         if v.rowsecurity != before.rowsecurity:
             rls_alter = v.alter_rls_statement
             statements += [rls_alter]
+
     return statements
 
 

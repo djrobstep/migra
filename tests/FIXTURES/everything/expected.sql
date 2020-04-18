@@ -74,6 +74,10 @@ create type "public"."unused_enum" as enum ('a', 'b', 'c');
 
 alter table "public"."orders" alter column "status" set data type shipping_status using "status"::shipping_status;
 
+alter table "public"."change_to_logged" set logged;
+
+alter table "public"."change_to_unlogged" set unlogged;
+
 alter table "public"."orders" add column "h" hstore;
 
 alter table "public"."orders" alter column "order_id" drop default;
