@@ -14,10 +14,12 @@
 
     Alternatively, if you don't want to install Python, you can run it from a self-contained Docker image by first running:
 
+        :::shell
         docker pull djrobstep/migra
 
     then creating a short alias to it with:
 
+        :::shell
         alias migra="docker run djrobstep/migra migra"
 
 3. Confirm migra is installed by running `migra --help`. The output should begin like this:
