@@ -222,7 +222,7 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
     return statements
 
 
-def get_selectable_changes(
+def get_selectable_differences(
     selectables_from,
     selectables_target,
     enums_from,
@@ -269,6 +269,90 @@ def get_selectable_changes(
         modified_other = od(sorted(modified_other.items()))
 
     replaceable -= not_replaceable
+
+    return (
+        tables_from,
+        tables_target,
+        added_tables,
+        removed_tables,
+        modified_tables,
+        added_other,
+        removed_other,
+        modified_other,
+        replaceable,
+    )
+
+
+def get_trigger_changes(
+    triggers_from,
+    triggers_target,
+    selectables_from,
+    selectables_target,
+    enums_from,
+    enums_target,
+    add_dependents_for_modified=True,
+    **kwargs
+):
+    (
+        _,
+        _,
+        _,
+        _,
+        modified_tables,
+        _,
+        _,
+        modified_other,
+        replaceable,
+    ) = get_selectable_differences(
+        selectables_from,
+        selectables_target,
+        enums_from,
+        enums_target,
+        add_dependents_for_modified,
+    )
+
+    added, removed, modified, unmodified = differences(triggers_from, triggers_target)
+
+    modified_tables_and_other = set(modified_other)
+    deps_modified = [
+        k
+        for k, v in unmodified.items()
+        if v.quoted_full_selectable_name in modified_tables_and_other
+        and v.quoted_full_selectable_name not in replaceable
+    ]
+
+    for k in deps_modified:
+        modified[k] = unmodified.pop(k)
+
+    return statements_from_differences(
+        added, removed, modified, old=triggers_from, **kwargs
+    )
+
+
+def get_selectable_changes(
+    selectables_from,
+    selectables_target,
+    enums_from,
+    enums_target,
+    add_dependents_for_modified=True,
+):
+    (
+        tables_from,
+        tables_target,
+        _,
+        _,
+        _,
+        added_other,
+        removed_other,
+        modified_other,
+        replaceable,
+    ) = get_selectable_differences(
+        selectables_from,
+        selectables_target,
+        enums_from,
+        enums_target,
+        add_dependents_for_modified,
+    )
     statements = Statements()
 
     def functions(d):
@@ -326,6 +410,17 @@ class Changes(object):
         elif name == "selectables":
             return partial(
                 get_selectable_changes,
+                od(sorted(self.i_from.selectables.items())),
+                od(sorted(self.i_target.selectables.items())),
+                self.i_from.enums,
+                self.i_target.enums,
+            )
+
+        elif name == "triggers":
+            return partial(
+                get_trigger_changes,
+                od(sorted(self.i_from.triggers.items())),
+                od(sorted(self.i_target.triggers.items())),
                 od(sorted(self.i_from.selectables.items())),
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,

@@ -65,7 +65,7 @@ def test_collations():
 
 
 def test_triggers():
-    for FIXTURE_NAME in ["triggers", "triggers2"]:
+    for FIXTURE_NAME in ["triggers", "triggers2", "triggers3"]:
         do_fixture_test(FIXTURE_NAME)
 
 
