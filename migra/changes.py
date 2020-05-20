@@ -228,6 +228,7 @@ def get_selectable_differences(
     enums_from,
     enums_target,
     add_dependents_for_modified=True,
+    ignore_newlines=False
 ):
     tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
     tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
@@ -239,7 +240,7 @@ def get_selectable_differences(
         tables_from, tables_target
     )
     added_other, removed_other, modified_other, unmodified_other = differences(
-        other_from, other_target
+        other_from, other_target, ignore_newlines=ignore_newlines
     )
 
     changed_all = {}
@@ -388,9 +389,10 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from, i_target):
+    def __init__(self, i_from, i_target, ignore_newlines=False):
         self.i_from = i_from
         self.i_target = i_target
+        self.ignore_newlines = ignore_newlines
 
     def __getattr__(self, name):
         if name == "non_pk_constraints":
@@ -414,6 +416,7 @@ class Changes(object):
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,
                 self.i_target.enums,
+                ignore_newlines=self.ignore_newlines
             )
 
         elif name == "triggers":
