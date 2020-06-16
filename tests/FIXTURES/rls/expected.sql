@@ -7,4 +7,4 @@ on "public"."accounts"
 as restrictive
 for all
 to schemainspect_test_role
-using (manager = CURRENT_USER);
+using ((manager = CURRENT_USER));

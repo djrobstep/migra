@@ -1,0 +1,7 @@
+CREATE TABLE example (
+  id SERIAL PRIMARY KEY,
+  name text NOT NULL
+);
+ALTER TABLE example ENABLE ROW LEVEL SECURITY;
+CREATE POLICY example_all ON example FOR ALL
+   USING (true);

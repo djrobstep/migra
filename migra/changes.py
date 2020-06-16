@@ -167,6 +167,9 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
         statements.append(v.drop_statement)
     for t, v in added.items():
         statements.append(v.create_statement)
+        if v.rowsecurity:
+            rls_alter = v.alter_rls_statement
+            statements.append(rls_alter)
     statements += get_enum_modifications(
         tables_from, tables_target, enums_from, enums_target
     )
@@ -217,7 +220,7 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
 
         if v.rowsecurity != before.rowsecurity:
             rls_alter = v.alter_rls_statement
-            statements += [rls_alter]
+            statements.append(rls_alter)
 
     return statements
 

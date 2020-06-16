@@ -111,7 +111,7 @@ SELECT 1 FROM pg_roles WHERE rolname=:rolename
 
 
 def test_rls():
-    for FIXTURE_NAME in ["rls"]:
+    for FIXTURE_NAME in ["rls", "rls2"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
