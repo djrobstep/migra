@@ -30,6 +30,8 @@ create table "public"."entity_bindings_c" (
 ) inherits ("public"."entity_bindings");
 
 
+alter sequence "public"."entity_bindings_id_seq" owned by "entity_bindings"."id";
+
 CREATE UNIQUE INDEX entity_bindings_a_entity_id_entity_type_key ON public.entity_bindings_a USING btree (entity_id, entity_type);
 
 CREATE UNIQUE INDEX entity_bindings_b_entity_id_entity_type_key ON public.entity_bindings_b USING btree (entity_id, entity_type);

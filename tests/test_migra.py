@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 import io
 
 from pytest import raises
-from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
+from schemainspect import get_inspector
 
 SQL = """select 1;
 
@@ -115,6 +115,9 @@ def test_rls():
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
+check_expected = True
+
+
 def do_fixture_test(
     fixture_name, schema=None, create_extensions_only=False, with_privileges=False
 ):
@@ -152,7 +155,9 @@ def do_fixture_test(
         out, err = outs()
         assert run(args, out=out, err=err) == 2
         assert err.getvalue() == ""
-        assert out.getvalue().strip() == EXPECTED
+
+        if check_expected:
+            assert out.getvalue().strip() == EXPECTED
         ADDITIONS = io.open(fixture_path + "additions.sql").read().strip()
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
@@ -173,7 +178,9 @@ def do_fixture_test(
                 m.add_all_changes(privileges=with_privileges)
 
             expected = EXPECTED2 if ADDITIONS else EXPECTED
-            assert m.sql.strip() == expected  # sql generated OK
+
+            if check_expected:
+                assert m.sql.strip() == expected  # sql generated OK
 
             m.apply()
             # check for changes again and make sure none are pending

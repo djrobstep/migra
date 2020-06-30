@@ -62,17 +62,19 @@ create table "public"."order_items" (
 );
 
 
-alter table "public"."orders" alter column "status" set data type varchar using "status"::varchar;
-
-drop type "public"."shipping_status";
+alter type "public"."shipping_status" rename to "shipping_status__old_version_to_be_dropped";
 
 create type "public"."shipping_status" as enum ('not shipped', 'shipped', 'delivered');
 
-drop type "public"."unused_enum";
+alter type "public"."unused_enum" rename to "unused_enum__old_version_to_be_dropped";
 
 create type "public"."unused_enum" as enum ('a', 'b', 'c');
 
-alter table "public"."orders" alter column "status" set data type shipping_status using "status"::shipping_status;
+alter table "public"."orders" alter column status type "public"."shipping_status" using status::text::"public"."shipping_status";
+
+drop type "public"."shipping_status__old_version_to_be_dropped";
+
+drop type "public"."unused_enum__old_version_to_be_dropped";
 
 alter table "public"."change_to_logged" set logged;
 
@@ -109,6 +111,10 @@ alter table "public"."products" alter column "product_no" set default nextval('p
 alter table "public"."products" alter column "x" drop default;
 
 alter table "public"."products" alter column "x" drop not null;
+
+alter sequence "public"."bug_id_seq" owned by "bug"."id";
+
+alter sequence "public"."products_product_no_seq" owned by "products"."product_no";
 
 set check_function_bodies = off;
 

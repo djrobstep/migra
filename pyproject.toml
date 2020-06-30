@@ -14,13 +14,14 @@ python = "*"
 sqlbag = "*"
 six = "*"
 # schemainspect = {path="../schemainspect"}
-schemainspect = ">=0.1.1592300770"
+schemainspect = ">=0.1.1593518991"
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
 sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
+pytest-clarity = ">=0.3.0-alpha.0"
 psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"

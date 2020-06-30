@@ -10,6 +10,8 @@ create table "public"."example" (
 
 alter table "public"."example" enable row level security;
 
+alter sequence "public"."example_id_seq" owned by "example"."id";
+
 CREATE UNIQUE INDEX example_pkey ON public.example USING btree (id);
 
 alter table "public"."example" add constraint "example_pkey" PRIMARY KEY using index "example_pkey";

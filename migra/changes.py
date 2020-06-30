@@ -138,7 +138,7 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
             before = t_before.columns[k]
 
             if (
-                c.is_enum == before.is_enum
+                (c.is_enum and before.is_enum)
                 and c.dbtypestr == before.dbtypestr
                 and c.enum != before.enum
             ):
@@ -147,19 +147,37 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
                 if has_default:
                     pre.append(before.drop_default_statement(t))
 
-                pre.append(before.change_enum_to_string_statement(t))
-                post.append(before.change_string_to_enum_statement(t))
+                recast = c.change_enum_statement(v.quoted_full_name)
+
+                recreate.append(recast)
 
                 if has_default:
                     post.append(before.add_default_statement(t))
 
+    unwanted_suffix = "__old_version_to_be_dropped"
+
     for e in enums_to_change.values():
-        recreate.append(e.drop_statement)
-        recreate.append(e.create_statement)
+        unwanted_name = e.name + unwanted_suffix
+
+        rename = e.alter_rename_statement(unwanted_name)
+        pre.append(rename)
+
+        pre.append(e.create_statement)
+
+        drop_statement = e.drop_statement_with_rename(unwanted_name)
+
+        post.append(drop_statement)
     return pre + recreate + post
 
 
-def get_table_changes(tables_from, tables_target, enums_from, enums_target):
+def get_table_changes(
+    tables_from,
+    tables_target,
+    enums_from,
+    enums_target,
+    sequences_from,
+    sequences_target,
+):
     added, removed, modified, _ = differences(tables_from, tables_target)
 
     statements = Statements()
@@ -221,6 +239,21 @@ def get_table_changes(tables_from, tables_target, enums_from, enums_target):
         if v.rowsecurity != before.rowsecurity:
             rls_alter = v.alter_rls_statement
             statements.append(rls_alter)
+
+    seq_created, _, seq_modified, _ = differences(sequences_from, sequences_target)
+
+    for k in seq_created:
+        seq_b = sequences_target[k]
+
+        if seq_b.quoted_table_and_column_name:
+            statements.append(seq_b.alter_ownership_statement)
+
+    for k in seq_modified:
+        seq_a = sequences_from[k]
+        seq_b = sequences_target[k]
+
+        if seq_a.quoted_table_and_column_name != seq_b.quoted_table_and_column_name:
+            statements.append(seq_b.alter_ownership_statement)
 
     return statements
 
@@ -337,6 +370,8 @@ def get_selectable_changes(
     selectables_target,
     enums_from,
     enums_target,
+    sequences_from,
+    sequences_target,
     add_dependents_for_modified=True,
 ):
     (
@@ -372,7 +407,12 @@ def get_selectable_changes(
     )
 
     statements += get_table_changes(
-        tables_from, tables_target, enums_from, enums_target
+        tables_from,
+        tables_target,
+        enums_from,
+        enums_target,
+        sequences_from,
+        sequences_target,
     )
 
     if any([functions(added_other), functions(modified_other)]):
@@ -417,6 +457,8 @@ class Changes(object):
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,
                 self.i_target.enums,
+                self.i_from.sequences,
+                self.i_target.sequences,
             )
 
         elif name == "triggers":
