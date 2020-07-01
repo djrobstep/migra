@@ -108,9 +108,9 @@ alter table "public"."products" alter column "x" drop default;
 
 alter table "public"."products" alter column "x" drop not null;
 
-alter sequence "public"."bug_id_seq" owned by "bug"."id";
+alter sequence "public"."bug_id_seq" owned by "public"."bug"."id";
 
-alter sequence "public"."products_product_no_seq" owned by "products"."product_no";
+alter sequence "public"."products_product_no_seq" owned by "public"."products"."product_no";
 
 set check_function_bodies = off;
 

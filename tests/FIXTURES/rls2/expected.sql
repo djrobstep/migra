@@ -10,7 +10,7 @@ create table "public"."example" (
 
 alter table "public"."example" enable row level security;
 
-alter sequence "public"."example_id_seq" owned by "example"."id";
+alter sequence "public"."example_id_seq" owned by "public"."example"."id";
 
 CREATE UNIQUE INDEX example_pkey ON public.example USING btree (id);
 
