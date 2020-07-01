@@ -240,7 +240,7 @@ def get_table_changes(
             rls_alter = v.alter_rls_statement
             statements.append(rls_alter)
 
-    seq_created, _, seq_modified, _ = differences(sequences_from, sequences_target)
+    seq_created, seq_dropped, seq_modified, _ = differences(sequences_from, sequences_target)
 
     for k in seq_created:
         seq_b = sequences_target[k]
@@ -470,6 +470,14 @@ class Changes(object):
                 od(sorted(self.i_target.selectables.items())),
                 self.i_from.enums,
                 self.i_target.enums,
+            )
+
+        elif name == 'sequences':
+            return partial(
+                statements_for_changes,
+                getattr(self.i_from, name),
+                getattr(self.i_target, name),
+                modifications=False
             )
 
         elif name in THINGS:
