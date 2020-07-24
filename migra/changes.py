@@ -280,6 +280,8 @@ def get_selectable_differences(
         other_from, other_target
     )
 
+    _, _, modified_enums, _ = differences(enums_from, enums_target)
+
     changed_all = {}
     changed_all.update(modified_tables)
     changed_all.update(modified_other)
@@ -291,12 +293,16 @@ def get_selectable_differences(
     not_replaceable = set()
 
     if add_dependents_for_modified:
+
         for k, m in changed_all.items():
             old = selectables_from[k]
 
             if k in modified_all and m.can_replace(old):
                 if not m.is_table:
-                    replaceable.add(k)
+                    changed_enums = [_ for _ in m.dependent_on if _ in modified_enums]
+                    if not changed_enums:
+                        replaceable.add(k)
+
                 continue
 
             for d in m.dependents_all:

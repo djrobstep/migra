@@ -89,6 +89,11 @@ def test_enumdefaults():
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
+def test_enumdeps():
+    for FIXTURE_NAME in ["enumdeps"]:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+
+
 def test_sequences():
     for FIXTURE_NAME in ["seq"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
