@@ -32,7 +32,7 @@ def statements_for_changes(
     modifications=True,
     dependency_ordering=False,
     add_dependents_for_modified=False,
-    modifications_as_alters=False
+    modifications_as_alters=False,
 ):
     added, removed, modified, unmodified = differences(things_from, things_target)
 
@@ -47,7 +47,7 @@ def statements_for_changes(
         modifications=modifications,
         dependency_ordering=dependency_ordering,
         old=things_from,
-        modifications_as_alters=modifications_as_alters
+        modifications_as_alters=modifications_as_alters,
     )
 
 
@@ -62,7 +62,7 @@ def statements_from_differences(
     dependency_ordering=False,
     old=None,
     modifications_only=False,
-    modifications_as_alters=False
+    modifications_as_alters=False,
 ):
     replaceable = replaceable or set()
     statements = Statements()
@@ -72,7 +72,9 @@ def statements_from_differences(
 
     creations = not (drops_only or modifications_only)
     drops = not (creations_only or modifications_only)
-    modifications = modifications or modifications_only and not (creations_only or drops_only)
+    modifications = (
+        modifications or modifications_only and not (creations_only or drops_only)
+    )
 
     drop_and_recreate = modifications and not modifications_as_alters
     alters = modifications and modifications_as_alters
@@ -470,7 +472,7 @@ class Changes(object):
             statements_for_changes,
             self.i_from.extensions,
             self.i_target.extensions,
-            modifications_as_alters=True
+            modifications_as_alters=True,
         )
 
     @property
@@ -485,7 +487,6 @@ class Changes(object):
             self.i_target.sequences,
         )
 
-
     @property
     def non_pk_constraints(self):
         a = self.i_from.constraints.items()
@@ -493,7 +494,6 @@ class Changes(object):
         a_od = od((k, v) for k, v in a if v.constraint_type != PK)
         b_od = od((k, v) for k, v in b if v.constraint_type != PK)
         return partial(statements_for_changes, a_od, b_od)
-
 
     @property
     def pk_constraints(self):
