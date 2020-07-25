@@ -28,9 +28,11 @@ def statements_for_changes(
     things_target,
     creations_only=False,
     drops_only=False,
+    modifications_only=False,
     modifications=True,
     dependency_ordering=False,
     add_dependents_for_modified=False,
+    modifications_as_alters=False
 ):
     added, removed, modified, unmodified = differences(things_from, things_target)
 
@@ -41,9 +43,11 @@ def statements_for_changes(
         replaceable=None,
         creations_only=creations_only,
         drops_only=drops_only,
+        modifications_only=modifications_only,
         modifications=modifications,
         dependency_ordering=dependency_ordering,
         old=things_from,
+        modifications_as_alters=modifications_as_alters
     )
 
 
@@ -57,21 +61,38 @@ def statements_from_differences(
     modifications=True,
     dependency_ordering=False,
     old=None,
+    modifications_only=False,
+    modifications_as_alters=False
 ):
     replaceable = replaceable or set()
     statements = Statements()
-    if not creations_only:
-        pending_drops = set(removed)
-        if modifications:
+
+    pending_creations = set()
+    pending_drops = set()
+
+    creations = not (drops_only or modifications_only)
+    drops = not (creations_only or modifications_only)
+    modifications = modifications or modifications_only and not (creations_only or drops_only)
+
+    drop_and_recreate = modifications and not modifications_as_alters
+    alters = modifications and modifications_as_alters
+
+    if drops:
+        pending_drops |= set(removed)
+
+    if creations:
+        pending_creations |= set(added)
+
+    if drop_and_recreate:
+        if drops:
             pending_drops |= set(modified) - replaceable
-    else:
-        pending_drops = set()
-    if not drops_only:
-        pending_creations = set(added)
-        if modifications:
+
+        if creations:
             pending_creations |= set(modified)
-    else:
-        pending_creations = set()
+
+    if alters:
+        for k, v in modified.items():
+            statements += v.alter_statements(old[k])
 
     def has_remaining_dependents(v, pending_drops):
         if not dependency_ordering:
@@ -87,13 +108,13 @@ def statements_from_differences(
 
     while True:
         before = pending_drops | pending_creations
-        if not creations_only:
+        if drops:
             for k, v in removed.items():
                 if not has_remaining_dependents(v, pending_drops):
                     if k in pending_drops:
                         statements.append(old[k].drop_statement)
                         pending_drops.remove(k)
-        if not drops_only:
+        if creations:
             for k, v in added.items():
                 if not has_uncreated_dependencies(v, pending_creations):
                     if k in pending_creations:
@@ -101,12 +122,12 @@ def statements_from_differences(
                         pending_creations.remove(k)
         if modifications:
             for k, v in modified.items():
-                if not creations_only:
+                if drops:
                     if not has_remaining_dependents(v, pending_drops):
                         if k in pending_drops:
                             statements.append(old[k].drop_statement)
                             pending_drops.remove(k)
-                if not drops_only:
+                if creations:
                     if not has_uncreated_dependencies(v, pending_creations):
                         if k in pending_creations:
                             statements.append(v.create_statement)
@@ -443,52 +464,68 @@ class Changes(object):
         self.i_from = i_from
         self.i_target = i_target
 
+    @property
+    def extensions(self):
+        return partial(
+            statements_for_changes,
+            self.i_from.extensions,
+            self.i_target.extensions,
+            modifications_as_alters=True
+        )
+
+    @property
+    def selectables(self):
+        return partial(
+            get_selectable_changes,
+            od(sorted(self.i_from.selectables.items())),
+            od(sorted(self.i_target.selectables.items())),
+            self.i_from.enums,
+            self.i_target.enums,
+            self.i_from.sequences,
+            self.i_target.sequences,
+        )
+
+
+    @property
+    def non_pk_constraints(self):
+        a = self.i_from.constraints.items()
+        b = self.i_target.constraints.items()
+        a_od = od((k, v) for k, v in a if v.constraint_type != PK)
+        b_od = od((k, v) for k, v in b if v.constraint_type != PK)
+        return partial(statements_for_changes, a_od, b_od)
+
+
+    @property
+    def pk_constraints(self):
+        a = self.i_from.constraints.items()
+        b = self.i_target.constraints.items()
+        a_od = od((k, v) for k, v in a if v.constraint_type == PK)
+        b_od = od((k, v) for k, v in b if v.constraint_type == PK)
+        return partial(statements_for_changes, a_od, b_od)
+
+    @property
+    def triggers(self):
+        return partial(
+            get_trigger_changes,
+            od(sorted(self.i_from.triggers.items())),
+            od(sorted(self.i_target.triggers.items())),
+            od(sorted(self.i_from.selectables.items())),
+            od(sorted(self.i_target.selectables.items())),
+            self.i_from.enums,
+            self.i_target.enums,
+        )
+
+    @property
+    def sequences(self):
+        return partial(
+            statements_for_changes,
+            self.i_from.sequences,
+            self.i_target.sequences,
+            modifications=False,
+        )
+
     def __getattr__(self, name):
-        if name == "non_pk_constraints":
-            a = self.i_from.constraints.items()
-            b = self.i_target.constraints.items()
-            a_od = od((k, v) for k, v in a if v.constraint_type != PK)
-            b_od = od((k, v) for k, v in b if v.constraint_type != PK)
-            return partial(statements_for_changes, a_od, b_od)
-
-        elif name == "pk_constraints":
-            a = self.i_from.constraints.items()
-            b = self.i_target.constraints.items()
-            a_od = od((k, v) for k, v in a if v.constraint_type == PK)
-            b_od = od((k, v) for k, v in b if v.constraint_type == PK)
-            return partial(statements_for_changes, a_od, b_od)
-
-        elif name == "selectables":
-            return partial(
-                get_selectable_changes,
-                od(sorted(self.i_from.selectables.items())),
-                od(sorted(self.i_target.selectables.items())),
-                self.i_from.enums,
-                self.i_target.enums,
-                self.i_from.sequences,
-                self.i_target.sequences,
-            )
-
-        elif name == "triggers":
-            return partial(
-                get_trigger_changes,
-                od(sorted(self.i_from.triggers.items())),
-                od(sorted(self.i_target.triggers.items())),
-                od(sorted(self.i_from.selectables.items())),
-                od(sorted(self.i_target.selectables.items())),
-                self.i_from.enums,
-                self.i_target.enums,
-            )
-
-        elif name == "sequences":
-            return partial(
-                statements_for_changes,
-                getattr(self.i_from, name),
-                getattr(self.i_target, name),
-                modifications=False,
-            )
-
-        elif name in THINGS:
+        if name in THINGS:
             return partial(
                 statements_for_changes,
                 getattr(self.i_from, name),

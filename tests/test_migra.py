@@ -94,6 +94,11 @@ def test_enumdeps():
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
 
 
+def test_extversions():
+    for FIXTURE_NAME in ["extversions"]:
+        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+
+
 def test_sequences():
     for FIXTURE_NAME in ["seq"]:
         do_fixture_test(FIXTURE_NAME, with_privileges=True)
