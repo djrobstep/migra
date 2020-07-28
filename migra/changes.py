@@ -146,7 +146,9 @@ def statements_from_differences(
     return statements
 
 
-def get_enum_modifications(tables_from, tables_target, enums_from, enums_target):
+def get_enum_modifications(
+    tables_from, tables_target, enums_from, enums_target, return_tuple=False
+):
     _, _, e_modified, _ = differences(enums_from, enums_target)
     _, _, t_modified, _ = differences(tables_from, tables_target)
     pre = Statements()
@@ -190,7 +192,11 @@ def get_enum_modifications(tables_from, tables_target, enums_from, enums_target)
         drop_statement = e.drop_statement_with_rename(unwanted_name)
 
         post.append(drop_statement)
-    return pre + recreate + post
+
+    if return_tuple:
+        return pre, recreate + post
+    else:
+        return pre + recreate + post
 
 
 def get_table_changes(
@@ -206,14 +212,20 @@ def get_table_changes(
     statements = Statements()
     for t, v in removed.items():
         statements.append(v.drop_statement)
+
+    enums_pre, enums_post = get_enum_modifications(
+        tables_from, tables_target, enums_from, enums_target, return_tuple=True
+    )
+
+    statements += enums_pre
+
     for t, v in added.items():
         statements.append(v.create_statement)
         if v.rowsecurity:
             rls_alter = v.alter_rls_statement
             statements.append(rls_alter)
-    statements += get_enum_modifications(
-        tables_from, tables_target, enums_from, enums_target
-    )
+
+    statements += enums_post
 
     for t, v in modified.items():
         before = tables_from[t]
