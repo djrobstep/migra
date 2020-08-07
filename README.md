@@ -34,8 +34,8 @@ Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/
 
 ## Credits
 
-- [https://github.com/djrobstep](djrobstep): initial development, maintenance
-- [https://github.com/alvarogzp](alvarogzp): privileges support
-- [https://github.com/seblucas](seblucas): docker improvements
-- [https://github.com/MOZGIII](MOZGIII): docker support
-- [https://github.com/mshahbazi](mshahbazi): misc fixes and enhancements
+- [djrobstep](https://github.com/djrobstep): initial development, maintenance
+- [alvarogzp](https://github.com/alvarogzp): privileges support
+- [seblucas](https://github.com/seblucas): docker improvements
+- [MOZGIII](https://github.com/MOZGIII): docker support
+- [mshahbazi](https://github.com/mshahbazi): misc fixes and enhancements
