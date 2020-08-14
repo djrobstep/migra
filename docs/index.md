@@ -46,6 +46,14 @@ custom types/domains | ✔ |Basic support (drop-and-create only, no alter) |
 
 `migra` plays nicely with view/function dependencies, and will drop/create them in the correct order.
 
+<div markdown="block" class="hilighted">
+
+## CI for Databases?
+
+If you like migra, you might also be interested in [DatabaseCI](https://databaseci.com/), a new service I'm building to solve problems with database deployments. [Register your interest](https://databaseci.com/).
+
+</div>
+
 ## Endorsements
 
 `migra` was [used to manage the schema that powers PyPI](https://twitter.com/dstufft/status/988410901459034113):
@@ -54,19 +62,9 @@ custom types/domains | ✔ |Basic support (drop-and-create only, no alter) |
 
 >- [Donald Stufft](https://twitter.com/dstufft), PyPI maintainer
 
-It's [good for local development](https://news.ycombinator.com/item?id=16676481):
-
 > *I can definitely see Migra is more productive when switching around between schemas in development.*
 
 >- [Mike Bayer](https://twitter.com/zzzeek), SQLAlchemy author
-
-<div markdown="block" class="hilighted">
-
-## CI for Databases?
-
-If you like migra, you might also be interested in [CI for databases](/ci-for-databases), a new service I'm building to solve problems with database deployments. [Register your interest](/ci-for-databases).
-
-</div>
 
 ## Development
 

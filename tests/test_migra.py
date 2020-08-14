@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import io
 
+import pytest
 from pytest import raises
 from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
@@ -39,11 +40,6 @@ def test_deps():
         do_fixture_test(FIXTURE_NAME)
 
 
-def test_everything():
-    for FIXTURE_NAME in ["everything"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
-
 def test_partitioning():
     for FIXTURE_NAME in ["partitioning"]:
         do_fixture_test(FIXTURE_NAME)
@@ -79,29 +75,14 @@ def test_singleschema_ext():
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
 
 
-def test_privs():
-    for FIXTURE_NAME in ["privileges"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+fixtures = "everything privileges enumdefaults enumdeps extversions seq".split()
+
+# fixtures = [(_, ) for _ in fixtures]
 
 
-def test_enumdefaults():
-    for FIXTURE_NAME in ["enumdefaults"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
-
-def test_enumdeps():
-    for FIXTURE_NAME in ["enumdeps"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
-
-def test_extversions():
-    for FIXTURE_NAME in ["extversions"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
-
-
-def test_sequences():
-    for FIXTURE_NAME in ["seq"]:
-        do_fixture_test(FIXTURE_NAME, with_privileges=True)
+@pytest.mark.parametrize("fixture_name", fixtures)
+def test_fixtures(fixture_name):
+    do_fixture_test(fixture_name, with_privileges=True)
 
 
 schemainspect_test_role = "schemainspect_test_role"
