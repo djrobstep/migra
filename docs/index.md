@@ -46,14 +46,6 @@ custom types/domains | ✔ |Basic support (drop-and-create only, no alter) |
 
 `migra` plays nicely with view/function dependencies, and will drop/create them in the correct order.
 
-<div markdown="block" class="hilighted">
-
-## CI for Databases?
-
-If you like migra, you might also be interested in [DatabaseCI](https://databaseci.com/), a new service I'm building to solve problems with database deployments. [Register your interest](https://databaseci.com/).
-
-</div>
-
 ## Endorsements
 
 `migra` was [used to manage the schema that powers PyPI](https://twitter.com/dstufft/status/988410901459034113):
