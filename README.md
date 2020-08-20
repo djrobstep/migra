@@ -20,7 +20,7 @@ Most features of PostgreSQL are supported.
 
 ## THE DOCS
 
-Documentation is at [djrobstep.com/docs/migra](https://djrobstep.com/docs/migra).
+Documentation is at [databaseci.com/docs/migra](https://databaseci.com/docs/migra). Note that the docs have moved to [databaseci.com](https://databaseci.com/). If you're wondering what that's about, read the blog post here (https://databaseci.com/blog/hello-world).
 
 ## Folks, schemas are good
 
