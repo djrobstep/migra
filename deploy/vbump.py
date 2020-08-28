@@ -20,4 +20,4 @@ v_with_timestamp = ".".join(parts)
 pyproject["tool"]["poetry"]["version"] = v_with_timestamp
 p.write_text(dumps(pyproject, tpide()))
 
-Path("/version").expanduser().write_text(v_with_timestamp)
+Path("~/version").expanduser().write_text(v_with_timestamp)
