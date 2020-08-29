@@ -16,7 +16,7 @@
 
 Most features of PostgreSQL are supported.
 
-**Migra supports PostgreSQL >= 10 only.** Known issues exist with earlier versions. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
+**Migra supports PostgreSQL >= 9 only.** Known issues exist with earlier versions. More recent versions are more comprehensively tested. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
 
 ## THE DOCS
 
