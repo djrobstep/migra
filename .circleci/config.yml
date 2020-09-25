@@ -3,8 +3,8 @@ jobs:
   build:
     working_directory: ~/circleci
     docker:
-      - image: circleci/python:3.8.5
-      - image: circleci/postgres:12
+      - image: circleci/python:3.8.6
+      - image: circleci/postgres:13
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: circleci
@@ -53,7 +53,7 @@ jobs:
   publish:
     working_directory: ~/circleci
     docker:
-      - image: circleci/python:3.8.5
+      - image: circleci/python:3.8.6
     steps:
       - setup_remote_docker
       - checkout
