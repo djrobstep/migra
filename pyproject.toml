@@ -14,7 +14,7 @@ python = "*"
 sqlbag = "*"
 six = "*"
 # schemainspect = {path="../schemainspect"}
-schemainspect = ">=0.1.1597727684"
+schemainspect = ">=0.1.1601518481"
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
