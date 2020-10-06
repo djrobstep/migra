@@ -10,6 +10,10 @@ Migra will throw an exception if `drop...` statements are generated, as a precau
 
 Specify a single schema to diff.
 
+## `--exclude_schema [SCHEMA_NAME]`
+
+Specify a single schema to exclude, including all other schemas in the diff.
+
 ## `--create-extensions-only`
 
 Only output create extension statements, nothing else. This is useful when you have extensions as part of a setup script for a single schema: Those extensions need to be installed, but extensions are usually not installed in a custom schema.
