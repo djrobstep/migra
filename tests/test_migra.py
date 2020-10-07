@@ -70,6 +70,11 @@ def test_singleschemea():
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
 
+def test_excludeschemea():
+    for FIXTURE_NAME in ["excludeschema"]:
+        do_fixture_test(FIXTURE_NAME, exclude_schema="excludedschema")
+
+
 def test_singleschema_ext():
     for FIXTURE_NAME in ["singleschema_ext"]:
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
@@ -115,11 +120,17 @@ check_expected = True
 
 
 def do_fixture_test(
-    fixture_name, schema=None, create_extensions_only=False, with_privileges=False
+    fixture_name,
+    schema=None,
+    create_extensions_only=False,
+    with_privileges=False,
+    exclude_schema=None,
 ):
     flags = ["--unsafe"]
     if schema:
         flags += ["--schema", schema]
+    if exclude_schema:
+        flags += ["--exclude_schema", exclude_schema]
     if create_extensions_only:
         flags += ["--create-extensions-only"]
     if with_privileges:
@@ -158,7 +169,7 @@ def do_fixture_test(
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
         with S(d0) as s0, S(d1) as s1:
-            m = Migration(s0, s1, schema=schema)
+            m = Migration(s0, s1, schema=schema, exclude_schema=exclude_schema)
             m.inspect_from()
             m.inspect_target()
             with raises(AttributeError):

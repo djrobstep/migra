@@ -35,6 +35,12 @@ def parse_args(args):
         help="Restrict output to statements for a particular schema",
     )
     parser.add_argument(
+        "--exclude_schema",
+        dest="exclude_schema",
+        default=None,
+        help="Restrict output to statements for all schemas except the specified schema",
+    )
+    parser.add_argument(
         "--create-extensions-only",
         dest="create_extensions_only",
         action="store_true",
@@ -64,12 +70,13 @@ def parse_args(args):
 
 def run(args, out=None, err=None):
     schema = args.schema
+    exclude_schema = args.exclude_schema
     if not out:
         out = sys.stdout  # pragma: no cover
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema)
+        m = Migration(ac0, ac1, schema=schema, exclude_schema=exclude_schema)
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:
