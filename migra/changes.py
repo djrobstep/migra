@@ -243,7 +243,13 @@ def get_table_changes(
         if v.parent_table != before.parent_table:
             statements += v.attach_detach_statements(before)
 
-    for t, v in modified.items():
+    modified_order = list(modified.keys())
+
+    modified_order.sort(key=lambda x: modified[x].is_inheritance_child_table)
+
+    for t in modified_order:
+        v = modified[t]
+
         before = tables_from[t]
 
         if not v.is_alterable:
@@ -257,10 +263,19 @@ def get_table_changes(
 
             # there's no way to alter a table into/out of generated state
             # so you gotta drop/recreate
-            if c.is_generated != c_before.is_generated:
+
+            generated_status_changed = c.is_generated != c_before.is_generated
+
+            inheritance_status_changed = c.is_inherited != c_before.is_inherited
+
+            if inheritance_status_changed or generated_status_changed:
                 del c_modified[k]
-                c_added[k] = c
-                c_removed[k] = c_before
+
+                if not c_before.is_inherited:
+                    c_removed[k] = c_before
+
+                if not c.is_inherited:
+                    c_added[k] = c
 
         for k, c in c_removed.items():
             alter = v.alter_table_statement(c.drop_column_clause)
@@ -269,7 +284,8 @@ def get_table_changes(
             alter = v.alter_table_statement(c.add_column_clause)
             statements.append(alter)
         for k, c in c_modified.items():
-            statements += c.alter_table_statements(before.columns[k], t)
+            c_before = before.columns[k]
+            statements += c.alter_table_statements(c_before, t)
 
         if v.rowsecurity != before.rowsecurity:
             rls_alter = v.alter_rls_statement

@@ -1,14 +1,22 @@
 from __future__ import unicode_literals
 
 import io
+from difflib import ndiff as difflib_diff
 
 import pytest
+# import yaml
 from pytest import raises
-from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
+from schemainspect import get_inspector
+
+
+def textdiff(a, b):
+    cd = difflib_diff(a.splitlines(), b.splitlines())
+    return "\n" + "\n".join(cd) + "\n"
+
 
 SQL = """select 1;
 
@@ -50,11 +58,6 @@ def test_identitycols():
         do_fixture_test(FIXTURE_NAME)
 
 
-def test_inherit():
-    for FIXTURE_NAME in ["inherit"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
 def test_collations():
     for FIXTURE_NAME in ["collations"]:
         do_fixture_test(FIXTURE_NAME)
@@ -80,7 +83,16 @@ def test_singleschema_ext():
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
 
 
-fixtures = "everything privileges enumdefaults enumdeps extversions seq".split()
+fixtures = """\
+everything
+privileges
+enumdefaults
+enumdeps
+extversions
+seq
+inherit
+inherit2
+""".split()
 
 # fixtures = [(_, ) for _ in fixtures]
 
@@ -199,6 +211,13 @@ def do_fixture_test(
                 )
             else:
                 m.add_all_changes(privileges=with_privileges)
+
+                # y0 = yaml.safe_dump(m.changes.i_from._as_dicts())
+                # y1 = yaml.safe_dump(m.changes.i_target._as_dicts())
+
+                # print(textdiff(y0, y1))
+                # print(m.statements)
+
                 assert m.changes.i_from == m.changes.i_target
             assert not m.statements  # no further statements to apply
             assert m.sql == ""
