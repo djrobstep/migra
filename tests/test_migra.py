@@ -4,13 +4,14 @@ import io
 from difflib import ndiff as difflib_diff
 
 import pytest
+
 # import yaml
 from pytest import raises
+from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
-from schemainspect import get_inspector
 
 
 def textdiff(a, b):
@@ -43,37 +44,12 @@ def outs():
     return io.StringIO(), io.StringIO()
 
 
-def test_deps():
-    for FIXTURE_NAME in ["dependencies", "dependencies2", "dependencies3"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
-def test_partitioning():
-    for FIXTURE_NAME in ["partitioning"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
-def test_identitycols():
-    for FIXTURE_NAME in ["identitycols"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
-def test_collations():
-    for FIXTURE_NAME in ["collations"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
-def test_triggers():
-    for FIXTURE_NAME in ["triggers", "triggers2", "triggers3"]:
-        do_fixture_test(FIXTURE_NAME)
-
-
-def test_singleschemea():
+def test_singleschema():
     for FIXTURE_NAME in ["singleschema"]:
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
 
-def test_excludeschemea():
+def test_excludeschema():
     for FIXTURE_NAME in ["excludeschema"]:
         do_fixture_test(FIXTURE_NAME, exclude_schema="excludedschema")
 
@@ -85,6 +61,9 @@ def test_singleschema_ext():
 
 fixtures = """\
 everything
+collations
+identitycols
+partitioning
 privileges
 enumdefaults
 enumdeps
@@ -92,6 +71,13 @@ extversions
 seq
 inherit
 inherit2
+triggers
+triggers2
+triggers3
+dependencies
+dependencies2
+dependencies3
+dependencies4
 """.split()
 
 # fixtures = [(_, ) for _ in fixtures]
@@ -175,8 +161,11 @@ def do_fixture_test(
         assert run(args, out=out, err=err) == 2
         assert err.getvalue() == ""
 
+        output = out.getvalue().strip()
+
         if check_expected:
-            assert out.getvalue().strip() == EXPECTED
+            assert output == EXPECTED
+
         ADDITIONS = io.open(fixture_path + "additions.sql").read().strip()
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 

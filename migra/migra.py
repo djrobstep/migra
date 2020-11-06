@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 
-from sqlbag import raw_execute
-
 from schemainspect import DBInspector, get_inspector
+from sqlbag import raw_execute
 
 from .changes import Changes
 from .statements import Statements
@@ -88,10 +87,13 @@ class Migration(object):
         if privileges:
             self.add(self.changes.privileges(drops_only=True))
         self.add(self.changes.non_pk_constraints(drops_only=True))
+
+        self.add(self.changes.non_table_selectable_drops())
+
         self.add(self.changes.pk_constraints(drops_only=True))
         self.add(self.changes.indexes(drops_only=True))
 
-        self.add(self.changes.selectables())
+        self.add(self.changes.tables_only_selectables())
 
         self.add(self.changes.sequences(drops_only=True))
         self.add(self.changes.enums(drops_only=True, modifications=False))
@@ -99,6 +101,9 @@ class Migration(object):
         self.add(self.changes.indexes(creations_only=True))
         self.add(self.changes.pk_constraints(creations_only=True))
         self.add(self.changes.non_pk_constraints(creations_only=True))
+
+        self.add(self.changes.non_table_selectable_creations())
+
         if privileges:
             self.add(self.changes.privileges(creations_only=True))
         self.add(self.changes.rlspolicies(creations_only=True))

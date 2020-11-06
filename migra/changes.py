@@ -432,6 +432,10 @@ def get_selectable_changes(
     sequences_from,
     sequences_target,
     add_dependents_for_modified=True,
+    tables_only=False,
+    non_tables_only=False,
+    drops_only=False,
+    creations_only=False,
 ):
     (
         tables_from,
@@ -455,53 +459,67 @@ def get_selectable_changes(
     def functions(d):
         return {k: v for k, v in d.items() if v.relationtype == "f"}
 
-    statements += statements_from_differences(
-        added_other,
-        removed_other,
-        modified_other,
-        replaceable=replaceable,
-        drops_only=True,
-        dependency_ordering=True,
-        old=selectables_from,
-    )
+    if not tables_only:
+        if not creations_only:
+            statements += statements_from_differences(
+                added_other,
+                removed_other,
+                modified_other,
+                replaceable=replaceable,
+                drops_only=True,
+                dependency_ordering=True,
+                old=selectables_from,
+            )
 
-    statements += get_table_changes(
-        tables_from,
-        tables_target,
-        enums_from,
-        enums_target,
-        sequences_from,
-        sequences_target,
-    )
+    if not non_tables_only:
+        statements += get_table_changes(
+            tables_from,
+            tables_target,
+            enums_from,
+            enums_target,
+            sequences_from,
+            sequences_target,
+        )
 
-    if any([functions(added_other), functions(modified_other)]):
-        statements += ["set check_function_bodies = off;"]
+    if not tables_only:
+        if not drops_only:
+            if any([functions(added_other), functions(modified_other)]):
+                statements += ["set check_function_bodies = off;"]
 
-    statements += statements_from_differences(
-        added_other,
-        removed_other,
-        modified_other,
-        replaceable=replaceable,
-        creations_only=True,
-        dependency_ordering=True,
-        old=selectables_from,
-    )
+            statements += statements_from_differences(
+                added_other,
+                removed_other,
+                modified_other,
+                replaceable=replaceable,
+                creations_only=True,
+                dependency_ordering=True,
+                old=selectables_from,
+            )
     return statements
 
 
 class Changes(object):
-    def __init__(self, i_from, i_target):
+    def __init__(self, i_from, i_target, ignore_extension_versions=False):
         self.i_from = i_from
         self.i_target = i_target
+        self.ignore_extension_versions = ignore_extension_versions
 
     @property
     def extensions(self):
-        return partial(
-            statements_for_changes,
-            self.i_from.extensions,
-            self.i_target.extensions,
-            modifications_as_alters=True,
-        )
+        if self.ignore_extension_versions:
+            return partial(
+                statements_for_changes,
+                self.i_from.extensions,
+                self.i_target.extensions,
+                modifications=False,
+            )
+        else:
+            return partial(
+                statements_for_changes,
+                self.i_from.extensions,
+                self.i_target.extensions,
+                modifications_as_alters=True,
+            )
 
     @property
     def selectables(self):
@@ -513,6 +531,47 @@ class Changes(object):
             self.i_target.enums,
             self.i_from.sequences,
             self.i_target.sequences,
+        )
+
+    @property
+    def tables_only_selectables(self):
+        return partial(
+            get_selectable_changes,
+            od(sorted(self.i_from.selectables.items())),
+            od(sorted(self.i_target.selectables.items())),
+            self.i_from.enums,
+            self.i_target.enums,
+            self.i_from.sequences,
+            self.i_target.sequences,
+            tables_only=True,
+        )
+
+    @property
+    def non_table_selectable_drops(self):
+        return partial(
+            get_selectable_changes,
+            od(sorted(self.i_from.selectables.items())),
+            od(sorted(self.i_target.selectables.items())),
+            self.i_from.enums,
+            self.i_target.enums,
+            self.i_from.sequences,
+            self.i_target.sequences,
+            drops_only=True,
+            non_tables_only=True,
+        )
+
+    @property
+    def non_table_selectable_creations(self):
+        return partial(
+            get_selectable_changes,
+            od(sorted(self.i_from.selectables.items())),
+            od(sorted(self.i_target.selectables.items())),
+            self.i_from.enums,
+            self.i_target.enums,
+            self.i_from.sequences,
+            self.i_target.sequences,
+            creations_only=True,
+            non_tables_only=True,
         )
 
     @property

@@ -2,7 +2,7 @@ create schema if not exists "evenbetterschema";
 
 create extension if not exists "citext" with schema "public" version '1.6';
 
-create extension if not exists "hstore" with schema "public" version '1.6';
+create extension if not exists "hstore" with schema "public" version '1.7';
 
 create type "public"."bug_status" as enum ('new', 'open', 'closed');
 
@@ -22,6 +22,10 @@ alter table "public"."products" drop constraint "products_zz_fkey";
 
 alter table "public"."products" drop constraint "x";
 
+drop materialized view if exists "public"."matvvv";
+
+drop view if exists "public"."vvv";
+
 alter table "public"."aunwanted" drop constraint "aunwanted_pkey";
 
 drop index if exists "public"."aunwanted_pkey";
@@ -35,10 +39,6 @@ drop index if exists "public"."products_price_idx";
 drop index if exists "public"."products_x_idx";
 
 drop index if exists "public"."products_x_key";
-
-drop materialized view if exists "public"."matvvv";
-
-drop view if exists "public"."vvv";
 
 drop table "public"."aunwanted";
 
@@ -116,6 +116,32 @@ alter sequence "public"."bug_id_seq" owned by "public"."bug"."id";
 
 alter sequence "public"."products_product_no_seq" owned by "public"."products"."product_no";
 
+drop sequence if exists "public"."aunwanted_id_seq";
+
+drop sequence if exists "public"."orders_order_id_seq";
+
+drop type "public"."unwanted_enum";
+
+drop extension if exists "pg_trgm";
+
+CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (product_no, order_id);
+
+CREATE INDEX products_name_idx ON public.products USING btree (name);
+
+CREATE UNIQUE INDEX products_pkey ON public.products USING btree (product_no);
+
+alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
+
+alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
+
+alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+
+alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
+
+alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
+
+alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+
 set check_function_bodies = off;
 
 CREATE OR REPLACE FUNCTION public.newfunc(i integer, t text[])
@@ -149,32 +175,6 @@ create materialized view "public"."matvvv" as  SELECT 2;
 
 create or replace view "public"."vvv" as  SELECT 2;
 
-
-drop sequence if exists "public"."aunwanted_id_seq";
-
-drop sequence if exists "public"."orders_order_id_seq";
-
-drop type "public"."unwanted_enum";
-
-drop extension if exists "pg_trgm";
-
-CREATE UNIQUE INDEX order_items_pkey ON public.order_items USING btree (product_no, order_id);
-
-CREATE INDEX products_name_idx ON public.products USING btree (name);
-
-CREATE UNIQUE INDEX products_pkey ON public.products USING btree (product_no);
-
-alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
-
-alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
-
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
-
-alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
-
-alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
-
-alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
 
 grant update on table "public"."products" to "postgres";
 
