@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from collections import OrderedDict as od
 from functools import partial
 
+import schemainspect
+
 from .statements import Statements
 from .util import differences
 
@@ -601,6 +603,32 @@ class Changes(object):
             self.i_from.enums,
             self.i_target.enums,
         )
+
+    @property
+    def mv_indexes(self):
+        a = self.i_from.indexes.items()
+        b = self.i_target.indexes.items()
+
+        def is_mv_index(i, ii):
+            sig = schemainspect.misc.quoted_identifier(i.table_name, i.schema)
+            return sig in ii.materialized_views
+
+        a_od = od((k, v) for k, v in a if is_mv_index(v, self.i_from))
+        b_od = od((k, v) for k, v in b if is_mv_index(v, self.i_target))
+        return partial(statements_for_changes, a_od, b_od)
+
+    @property
+    def non_mv_indexes(self):
+        a = self.i_from.indexes.items()
+        b = self.i_target.indexes.items()
+
+        def is_mv_index(i, ii):
+            sig = schemainspect.misc.quoted_identifier(i.table_name, i.schema)
+            return sig in ii.materialized_views
+
+        a_od = od((k, v) for k, v in a if not is_mv_index(v, self.i_from))
+        b_od = od((k, v) for k, v in b if not is_mv_index(v, self.i_target))
+        return partial(statements_for_changes, a_od, b_od)
 
     @property
     def sequences(self):
