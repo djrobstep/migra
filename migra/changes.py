@@ -639,6 +639,14 @@ class Changes(object):
             modifications=False,
         )
 
+    @property
+    def enums(self):
+        return partial(
+            statements_for_changes,
+            od((k, v) for k,v in self.i_from.enums.items() if not v.is_extension),
+            od((k, v) for k,v in self.i_target.enums.items() if not v.is_extension),
+        )
+
     def __getattr__(self, name):
         if name in THINGS:
             return partial(
