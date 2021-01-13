@@ -500,6 +500,11 @@ def get_selectable_changes(
     return statements
 
 
+def _schemainspect_has_extension_enums():
+    enum = schemainspect.pg.obj.InspectedEnum('name', 'schema', ['elements'])
+    return hasattr(enum, 'is_extension')
+
+
 class Changes(object):
     def __init__(self, i_from, i_target, ignore_extension_versions=False):
         self.i_from = i_from
@@ -639,13 +644,14 @@ class Changes(object):
             modifications=False,
         )
 
-    @property
-    def enums(self):
-        return partial(
-            statements_for_changes,
-            od((k, v) for k,v in self.i_from.enums.items() if not v.is_extension),
-            od((k, v) for k,v in self.i_target.enums.items() if not v.is_extension),
-        )
+    if _schemainspect_has_extension_enums():
+        @property
+        def enums(self):
+            return partial(
+                statements_for_changes,
+                od((k, v) for k,v in self.i_from.enums.items() if not v.is_extension),
+                od((k, v) for k,v in self.i_target.enums.items() if not v.is_extension),
+            )
 
     def __getattr__(self, name):
         if name in THINGS:
