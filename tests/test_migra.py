@@ -78,6 +78,7 @@ dependencies
 dependencies2
 dependencies3
 dependencies4
+constraints
 """.split()
 
 # fixtures = [(_, ) for _ in fixtures]
