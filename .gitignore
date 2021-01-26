@@ -42,6 +42,6 @@ nosetests.xml
 docs/site
 
 scratch
-poetry.lock
+# poetry.lock
 pip-wheel-metadata
 .DS_Store
