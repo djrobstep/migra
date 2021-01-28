@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "migra"
-version = "1.0"
+version = "2.0"
 authors = [ "Robert Lechte <robertlechte@gmail.com>",]
 license = "Unlicense"
 readme = "README.md"
@@ -14,14 +14,14 @@ python = "*"
 sqlbag = "*"
 six = "*"
 # schemainspect = {path="../schemainspect"}
-schemainspect = ">=0.1.1610498640"
+schemainspect = ">=0.1.1610498640,<3"
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
 sqlbag = "*"
-pytest = "*"
+pytest = {version="*", python=">=3.5,<4"}
 pytest-cov = "*"
-pytest-clarity = ">=0.3.0-alpha.0"
+pytest-clarity = {version=">=0.3.0-alpha.0", python=">=3.5,<4"}
 psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"
