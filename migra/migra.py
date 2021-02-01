@@ -121,6 +121,7 @@ class Migration(object):
         self.add(self.changes.rlspolicies(creations_only=True))
         self.add(self.changes.triggers(creations_only=True))
         self.add(self.changes.collations(drops_only=True))
+        self.add(self.changes.comments(creations_only=True))
         self.add(self.changes.schemas(drops_only=True))
 
     @property
