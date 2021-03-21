@@ -37,3 +37,7 @@ pg = ["psycopg2-binary"]
 multi_line_output = 3
 include_trailing_comma = true
 line_length = 88
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
