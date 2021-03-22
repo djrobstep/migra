@@ -61,6 +61,7 @@ def test_singleschema_ext():
 
 fixtures = """\
 everything
+comments
 collations
 identitycols
 partitioning
