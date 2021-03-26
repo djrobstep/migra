@@ -1,12 +1,10 @@
-FROM alpine:3.8
+FROM python:3.9-alpine
 
-RUN set -x && \
-    apk add --no-cache bash python3 ca-certificates postgresql-libs postgresql-dev && \
-    apk add --no-cache --virtual=build-dependencies build-base python3-dev && \
-    pip3 install --upgrade --no-cache-dir pip && \
-    pip3 install --no-cache-dir psycopg2-binary migra && \
-    apk del build-dependencies postgresql-dev python3-dev && \
-    rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
+RUN apk add --update --no-cache --upgrade postgresql-libs && \
+  apk add --no-cache --virtual=build-dependencies build-base postgresql-dev && \
+  pip install --no-cache-dir packaging psycopg2-binary migra && \
+  apk del build-dependencies && \
+  rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
