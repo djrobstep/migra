@@ -1,11 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -e
 
 if [ "$1" = 'migra' ]; then
 	if [ "${MIGRA_LOG_COMMAND}" = 'true' ]; then
-		migra_command="$@"
-		echo "${migra_command}"
+		echo "$*"
 	fi
 fi
 
