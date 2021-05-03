@@ -10,7 +10,18 @@ create sequence "public"."bug_id_seq";
 
 create sequence "public"."products_product_no_seq";
 
-revoke select on table "public"."products" from "postgres";
+DO
+$$
+    BEGIN
+        IF (SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = 'public'
+              AND table_name = 'products'
+        ) THEN
+            REVOKE select on table "public"."products" from "postgres";
+        END IF;
+    END
+$$;
 
 alter table "public"."products" drop constraint "products_name_key";
 

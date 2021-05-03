@@ -32,13 +32,15 @@ def parse_args(args):
         "--schema",
         dest="schema",
         default=None,
-        help="Restrict output to statements for a particular schema",
+        help="Restrict output to statements for a particular schema. For multiple, use a comma separated string. Ex. "
+             "schema1,schema2",
     )
     parser.add_argument(
         "--exclude_schema",
         dest="exclude_schema",
         default=None,
-        help="Restrict output to statements for all schemas except the specified schema",
+        help="Restrict output to statements for all schemas except the specified schema. For multiple, use a comma "
+             "separated string. Ex. schema1,schema2",
     )
     parser.add_argument(
         "--create-extensions-only",

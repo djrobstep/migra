@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+          key: deps1-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -34,7 +34,7 @@ jobs:
 
             poetry install
       - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
+          key: deps1-{{ .Branch }}-{{ checksum "poetry.lock" }}
           paths:
             - "~/.venv"
       - run:
@@ -50,42 +50,8 @@ jobs:
           path: test-reports/
           destination: tr1
 
-  publish:
-    working_directory: ~/circleci
-    docker:
-      - image: circleci/python:3.8.6
-    steps:
-      - setup_remote_docker
-      - checkout
-      - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
-      - run:
-          name: Install poetry, deps
-          command: |
-            sudo pip3 install poetry>=1.0.0
-            poetry config virtualenvs.create false
-            python3 -m venv ~/.venv
-            . ~/.venv/bin/activate
-            poetry install
-      - run:
-          name: Bump version, build, install
-          command: |
-            . ~/.venv/bin/activate
-            python deploy/vbump.py
-            poetry build
-            poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD
-            git tag `cat ~/version`
-            git push origin `cat ~/version`
-
-
 workflows:
   version: 2
-  build-then-publish:
+  build:
     jobs:
       - build
-      - publish:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
