@@ -6,7 +6,11 @@ tmessy = -svv
 targs = --cov-report term-missing --cov migra
 
 test:
-	$(tcommand) $(tmessy) $(targs) tests
+	docker build -t migra-postgres --build-arg LOCAL_USER=$$USER - < tests/Dockerfile 
+	$(eval ID := $(shell docker run -d -p 5432:5432 migra-postgres))
+	$(tcommand) $(tmessy) $(targs) tests || true
+	docker stop $(ID)
+	docker rm $(ID)
 
 stest:
 	$(tcommand) $(tmessy) $(targs) tests
