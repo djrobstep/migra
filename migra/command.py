@@ -31,6 +31,7 @@ def parse_args(args):
     parser.add_argument(
         "--schema",
         dest="schema",
+        action="append",
         default=None,
         help="Restrict output to statements for a particular schema",
     )
@@ -69,38 +70,40 @@ def parse_args(args):
 
 
 def run(args, out=None, err=None):
-    schema = args.schema
+    schemas = args.schema
     exclude_schema = args.exclude_schema
+    result=0
     if not out:
         out = sys.stdout  # pragma: no cover
     if not err:
         err = sys.stderr  # pragma: no cover
-    with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema, exclude_schema=exclude_schema)
-        if args.unsafe:
-            m.set_safety(False)
-        if args.create_extensions_only:
-            m.add_extension_changes(drops=False)
-        else:
-            m.add_all_changes(privileges=args.with_privileges)
-        try:
-            if m.statements:
-                if args.force_utf8:
-                    print(m.sql.encode("utf8"), file=out)
-                else:
-                    print(m.sql, file=out)
-        except UnsafeMigrationException:
-            print(
-                "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
-                file=err,
-            )
-            return 3
+    for schema in schemas:
+        with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
+            m = Migration(ac0, ac1, schema=schema, exclude_schema=exclude_schema)
+            if args.unsafe:
+                m.set_safety(False)
+            if args.create_extensions_only:
+                m.add_extension_changes(drops=False)
+            else:
+                m.add_all_changes(privileges=args.with_privileges)
+            try:
+                if m.statements:
+                    if args.force_utf8:
+                        print(m.sql.encode("utf8"), file=out)
+                    else:
+                        print(m.sql, file=out)
+            except UnsafeMigrationException:
+                print(
+                    "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
+                    file=err,
+                )
+                return 3
 
-        if not m.statements:
-            return 0
-
-        else:
-            return 2
+            if not m.statements and result==0: 
+                result=0
+            else:
+                result=2
+    return result
 
 
 def do_command():  # pragma: no cover
