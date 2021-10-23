@@ -97,9 +97,33 @@ alter table "public"."orders" alter column "order_id" drop default;
 
 alter table "public"."orders" alter column "status2" set data type text using "status2"::text;
 
-alter table "public"."products" drop column "z";
+DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'products'
+                  AND column_name = 'z'
+            ) THEN
+                alter table "public"."products" drop column "z";
+            END IF;
+        END
+    $$;
 
-alter table "public"."products" drop column "zz";
+DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'products'
+                  AND column_name = 'zz'
+            ) THEN
+                alter table "public"."products" drop column "zz";
+            END IF;
+        END
+    $$;
 
 alter table "public"."products" add column "newcolumn2" interval;
 

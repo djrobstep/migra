@@ -282,7 +282,7 @@ def get_table_changes(
                     c_added[k] = c
 
         for k, c in c_removed.items():
-            alter = v.alter_table_statement(c.drop_column_clause)
+            alter = v.drop_statement_for_existing_column(c)
             statements.append(alter)
         for k, c in c_added.items():
             alter = v.alter_table_statement(c.add_column_clause)

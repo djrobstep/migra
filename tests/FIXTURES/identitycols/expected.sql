@@ -9,9 +9,33 @@ create table "public"."t2" (
 );
 
 
-alter table "public"."gen" drop column "adding";
+DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'gen'
+                  AND column_name = 'adding'
+            ) THEN
+                alter table "public"."gen" drop column "adding";
+            END IF;
+        END
+    $$;
 
-alter table "public"."gen" drop column "removing";
+DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'gen'
+                  AND column_name = 'removing'
+            ) THEN
+                alter table "public"."gen" drop column "removing";
+            END IF;
+        END
+    $$;
 
 alter table "public"."gen" add column "adding" integer generated always as (1) stored;
 

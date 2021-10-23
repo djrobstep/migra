@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/circleci
     docker:
-      - image: circleci/python:3.8.6
+      - image: circleci/python:3.9.7
       - image: circleci/postgres:13
         environment:
           POSTGRES_USER: circleci

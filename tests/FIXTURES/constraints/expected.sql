@@ -14,7 +14,19 @@ alter table "public"."t1" add column "price" numeric;
 
 alter table "public"."t1" alter column "a" set not null;
 
-alter table "public"."t2" drop column "price";
+DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 't2'
+                  AND column_name = 'price'
+            ) THEN
+                alter table "public"."t2" drop column "price";
+            END IF;
+        END
+    $$;
 
 alter table "public"."t2" alter column "a" drop not null;
 
