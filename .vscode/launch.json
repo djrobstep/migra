@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Launch migra",
+            "type": "python",
+            "request": "launch",
+            "program": "command.py",
+            "args": ["--with-privileges",
+                "postgresql://postgres:bwm8hk4KduBbaNeh01GxemvV9xUB1ilT6YyLboxlDoP4FY44Gl@dev-db-rds-cluster.cluster-cahcncaz1toj.us-west-2.rds.amazonaws.com:5432/core",
+                "postgresql://postgres:@localhost:5432/latch-console-dev",
+                "--unsafe"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/migra"
+        }
+    ]
+}

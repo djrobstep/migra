@@ -3,8 +3,14 @@ from __future__ import unicode_literals
 from schemainspect import DBInspector, get_inspector
 from sqlbag import raw_execute
 
-from .changes import Changes
-from .statements import Statements
+try:
+    from .changes import Changes
+    from .formatter import Formatter
+    from .statements import Statements
+except ImportError:
+    from changes import Changes
+    from formatter import Formatter
+    from statements import Statements
 
 
 class Migration(object):
@@ -75,6 +81,8 @@ class Migration(object):
             self.add(self.changes.extensions(drops_only=True))
 
     def add_all_changes(self, privileges=False):
+        formatter = Formatter()
+
         self.add(self.changes.schemas(creations_only=True))
 
         self.add(self.changes.extensions(creations_only=True, modifications=False))
@@ -108,7 +116,7 @@ class Migration(object):
 
         if privileges:
             self.add(self.changes.privileges(creations_only=True))
-        self.add(self.changes.rlspolicies(creations_only=True))
+        self.add(formatter.create_policy(self.changes.rlspolicies()))
         self.add(self.changes.triggers(creations_only=True))
         self.add(self.changes.collations(drops_only=True))
         self.add(self.changes.schemas(drops_only=True))

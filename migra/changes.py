@@ -2,11 +2,16 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict as od
 from functools import partial
+from venv import create
 
 import schemainspect
 
-from .statements import Statements
-from .util import differences
+try:
+    from .statements import Statements
+    from .util import differences
+except ImportError:
+    from statements import Statements
+    from util import differences
 
 THINGS = [
     "schemas",

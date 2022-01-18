@@ -6,8 +6,12 @@ from contextlib import contextmanager
 
 from sqlbag import S
 
-from .migra import Migration
-from .statements import UnsafeMigrationException
+try:
+    from .migra import Migration
+    from .statements import UnsafeMigrationException
+except ImportError:
+    from migra import Migration
+    from statements import UnsafeMigrationException
 
 
 @contextmanager
@@ -107,3 +111,6 @@ def do_command():  # pragma: no cover
     args = parse_args(sys.argv[1:])
     status = run(args)
     sys.exit(status)
+
+if __name__ == '__main__':
+    do_command()
