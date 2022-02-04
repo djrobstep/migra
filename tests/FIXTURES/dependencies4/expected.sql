@@ -9,7 +9,14 @@ create table "public"."t" (
 
 CREATE UNIQUE INDEX t_pkey ON public.t USING btree (id);
 
-alter table "public"."t" add constraint "t_pkey" PRIMARY KEY using index "t_pkey";
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 't_pkey') THEN
+                alter table "public"."t" add constraint "t_pkey" PRIMARY KEY using index "t_pkey";
+        END IF;
+    END
+$$;
 
 create or replace view "public"."v" as  SELECT t.id,
     t.a,

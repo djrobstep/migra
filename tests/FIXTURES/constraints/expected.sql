@@ -36,10 +36,38 @@ CREATE UNIQUE INDEX t1_pkey ON public.t1 USING btree (a);
 
 CREATE UNIQUE INDEX t2_a_idx ON public.t2 USING btree (a);
 
-alter table "public"."c" add constraint "c_pkey" PRIMARY KEY using index "c_pkey" DEFERRABLE INITIALLY DEFERRED;
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'c_pkey') THEN
+                alter table "public"."c" add constraint "c_pkey" PRIMARY KEY using index "c_pkey" DEFERRABLE INITIALLY DEFERRED;
+        END IF;
+    END
+$$;
 
-alter table "public"."t1" add constraint "t1_pkey" PRIMARY KEY using index "t1_pkey";
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 't1_pkey') THEN
+                alter table "public"."t1" add constraint "t1_pkey" PRIMARY KEY using index "t1_pkey";
+        END IF;
+    END
+$$;
 
-alter table "public"."t1" add constraint "x" CHECK ((price > (0)::numeric));
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'x') THEN
+                alter table "public"."t1" add constraint "x" CHECK ((price > (0)::numeric));
+        END IF;
+    END
+$$;
 
-alter table "public"."t2" add constraint "t2_bb_fkey" FOREIGN KEY (bb) REFERENCES b(bb) DEFERRABLE INITIALLY DEFERRED;
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 't2_bb_fkey') THEN
+                alter table "public"."t2" add constraint "t2_bb_fkey" FOREIGN KEY (bb) REFERENCES b(bb) DEFERRABLE INITIALLY DEFERRED;
+        END IF;
+    END
+$$;

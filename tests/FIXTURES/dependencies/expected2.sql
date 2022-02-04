@@ -1,12 +1,16 @@
+drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
+
+drop function if exists "public"."fff"(t text) cascade;
+
 drop view if exists "public"."ccc_view3";
 
 drop view if exists "public"."ddd";
 
-drop function if exists "public"."depends_on_bbb_view2"(t text);
+drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
 
 drop view if exists "public"."eee";
 
-drop function if exists "public"."fff"(t text);
+drop function if exists "public"."fff"(t text) cascade;
 
 drop view if exists "public"."bbb_view2";
 
