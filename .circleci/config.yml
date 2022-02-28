@@ -3,8 +3,8 @@ jobs:
   build:
     working_directory: ~/circleci
     docker:
-      - image: circleci/python:3.8.6
-      - image: circleci/postgres:13
+      - image: cimg/python:3.10
+      - image: cimg/postgres:14.1
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: circleci
@@ -25,13 +25,13 @@ jobs:
       - run:
           name: Install poetry
           command: |
-            sudo pip3 install poetry>=1.0.0
+            python --version
+            python -m pip install -U pip setuptools poetry
             poetry config virtualenvs.create false
       - run:
           command: |
-            python3 -m venv ~/.venv
+            python -m venv ~/.venv
             . ~/.venv/bin/activate
-
             poetry install
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
@@ -53,18 +53,21 @@ jobs:
   publish:
     working_directory: ~/circleci
     docker:
-      - image: circleci/python:3.8.6
+      - image: cimg/python:3.10
     steps:
       - setup_remote_docker
       - checkout
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "pyproject.toml" }}
       - run:
-          name: Install poetry, deps
+          name: Install poetry
           command: |
-            sudo pip3 install poetry>=1.0.0
+            python --version
+            python -m pip install -U pip setuptools poetry
             poetry config virtualenvs.create false
-            python3 -m venv ~/.venv
+      - run:
+          command: |
+            python -m venv ~/.venv
             . ~/.venv/bin/activate
             poetry install
       - run:
