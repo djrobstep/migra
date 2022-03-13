@@ -77,7 +77,7 @@ jobs:
             python deploy/vbump.py
             poetry build
             poetry config pypi-token.pypi $PYPI_PASSWORD
-            poetry publish --username $PYPI_USERNAME
+            poetry publish
             git tag `cat ~/version`
             git push origin `cat ~/version`
 
