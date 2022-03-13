@@ -26,6 +26,7 @@ psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"
 black = "*"
+toml = "*"
 
 [tool.poetry.scripts]
 migra = 'migra:do_command'
