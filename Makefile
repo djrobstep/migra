@@ -20,7 +20,7 @@ clean:
 	rm -rf build
 
 fmt:
-	isort -rc .
+	isort .
 	black .
 
 lint:
