@@ -76,7 +76,8 @@ jobs:
             . ~/.venv/bin/activate
             python deploy/vbump.py
             poetry build
-            poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD
+            poetry config pypi-token.pypi $PYPI_PASSWORD
+            poetry publish --username $PYPI_USERNAME
             git tag `cat ~/version`
             git push origin `cat ~/version`
 
