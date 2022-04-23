@@ -14,16 +14,8 @@ alter sequence "public"."example_id_seq" owned by "public"."example"."id";
 
 CREATE UNIQUE INDEX example_pkey ON public.example USING btree (id);
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'example_pkey') THEN
-                alter table "public"."example" add constraint "example_pkey" PRIMARY KEY using index "example_pkey";
-        END IF;
-    END
-$$;
+alter table "public"."example" add constraint "example_pkey" PRIMARY KEY using index "example_pkey";
 
-drop policy if exists "example_all" on "public"."example";
 create policy "example_all"
 on "public"."example"
 as permissive

@@ -91,7 +91,6 @@ class Migration(object):
         self.add(self.changes.non_pk_constraints(drops_only=True))
 
         self.add(self.changes.mv_indexes(drops_only=True))
-        self.add(self.changes.functions(drops_only=True))
         self.add(self.changes.non_table_selectable_drops())
 
         self.add(self.changes.pk_constraints(drops_only=True))

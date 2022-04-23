@@ -38,56 +38,14 @@ CREATE UNIQUE INDEX entity_bindings_b_entity_id_entity_type_key ON public.entity
 
 CREATE UNIQUE INDEX entity_bindings_c_entity_id_entity_type_key ON public.entity_bindings_c USING btree (entity_id, entity_type);
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_bindings_a_entity_id_entity_type_key') THEN
-                alter table "public"."entity_bindings_a" add constraint "entity_bindings_a_entity_id_entity_type_key" UNIQUE using index "entity_bindings_a_entity_id_entity_type_key";
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_a" add constraint "entity_bindings_a_entity_id_entity_type_key" UNIQUE using index "entity_bindings_a_entity_id_entity_type_key";
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_type must be A') THEN
-                alter table "public"."entity_bindings_a" add constraint "entity_type must be A" CHECK ((entity_type = 'A'::text));
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_a" add constraint "entity_type must be A" CHECK ((entity_type = 'A'::text));
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_bindings_b_entity_id_entity_type_key') THEN
-                alter table "public"."entity_bindings_b" add constraint "entity_bindings_b_entity_id_entity_type_key" UNIQUE using index "entity_bindings_b_entity_id_entity_type_key";
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_b" add constraint "entity_bindings_b_entity_id_entity_type_key" UNIQUE using index "entity_bindings_b_entity_id_entity_type_key";
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_type must be B') THEN
-                alter table "public"."entity_bindings_b" add constraint "entity_type must be B" CHECK ((entity_type = 'B'::text));
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_b" add constraint "entity_type must be B" CHECK ((entity_type = 'B'::text));
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_bindings_c_entity_id_entity_type_key') THEN
-                alter table "public"."entity_bindings_c" add constraint "entity_bindings_c_entity_id_entity_type_key" UNIQUE using index "entity_bindings_c_entity_id_entity_type_key";
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_c" add constraint "entity_bindings_c_entity_id_entity_type_key" UNIQUE using index "entity_bindings_c_entity_id_entity_type_key";
 
-DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'entity_type must be C') THEN
-                alter table "public"."entity_bindings_c" add constraint "entity_type must be C" CHECK ((entity_type = 'C'::text));
-        END IF;
-    END
-$$;
+alter table "public"."entity_bindings_c" add constraint "entity_type must be C" CHECK ((entity_type = 'C'::text));

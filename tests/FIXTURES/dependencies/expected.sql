@@ -1,8 +1,6 @@
-drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
-
 drop view if exists "public"."ccc_view3";
 
-drop function if exists "public"."depends_on_bbb_view2"(t text) cascade;
+drop function if exists "public"."depends_on_bbb_view2"(t text);
 
 drop view if exists "public"."bbb_view2";
 
