@@ -45,3 +45,5 @@ scratch
 # poetry.lock
 pip-wheel-metadata
 .DS_Store
+
+.idea
