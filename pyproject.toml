@@ -17,7 +17,7 @@ packages = [
 python = ">=3.6,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = { git = "https://github.com/discatech/schemainspect.git", branch = "717f26837c4664fcb20ee0b0d7beb35fefa40341", develop = true }
+schemainspect = { git = "https://github.com/discatech/schemainspect.git", branch = "c0f28f5abfee89b23501bde59d8ccd2107aa106f", develop = true }
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]

@@ -177,17 +177,59 @@ CREATE INDEX products_name_idx ON public.products USING btree (name);
 
 CREATE UNIQUE INDEX products_pkey ON public.products USING btree (product_no);
 
-alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'order_items_pkey') THEN
+                alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY using index "order_items_pkey";
+        END IF;
+    END
+$$;
 
-alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'products_pkey') THEN
+                alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
+        END IF;
+    END
+$$;
 
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'order_items_order_id_fkey') THEN
+                alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+        END IF;
+    END
+$$;
 
-alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'order_items_product_no_fkey') THEN
+                alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
+        END IF;
+    END
+$$;
 
-alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'y') THEN
+                alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
+        END IF;
+    END
+$$;
 
-alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'x') THEN
+                alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+        END IF;
+    END
+$$;
 
 set check_function_bodies = off;
 
