@@ -59,6 +59,11 @@ def test_singleschema_ext():
         do_fixture_test(FIXTURE_NAME, create_extensions_only=True)
 
 
+def test_extversions():
+    for FIXTURE_NAME in ["extversions"]:
+        do_fixture_test(FIXTURE_NAME, ignore_extension_versions=False)
+
+
 fixtures = """\
 everything
 collations
@@ -67,7 +72,6 @@ partitioning
 privileges
 enumdefaults
 enumdeps
-extversions
 seq
 inherit
 inherit2
@@ -80,8 +84,6 @@ dependencies3
 dependencies4
 constraints
 """.split()
-
-# fixtures = [(_, ) for _ in fixtures]
 
 
 @pytest.mark.parametrize("fixture_name", fixtures)
@@ -122,6 +124,7 @@ def do_fixture_test(
     fixture_name,
     schema=None,
     create_extensions_only=False,
+    ignore_extension_versions=True,
     with_privileges=False,
     exclude_schema=None,
 ):
@@ -132,6 +135,8 @@ def do_fixture_test(
         flags += ["--exclude_schema", exclude_schema]
     if create_extensions_only:
         flags += ["--create-extensions-only"]
+    if ignore_extension_versions:
+        flags += ["--ignore-extension-versions"]
     if with_privileges:
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
@@ -144,9 +149,11 @@ def do_fixture_test(
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
+
         args = parse_args([d0, d1])
         assert not args.unsafe
         assert args.schema is None
+
         out, err = outs()
         assert run(args, out=out, err=err) == 3
         assert out.getvalue() == ""
@@ -171,7 +178,13 @@ def do_fixture_test(
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
         with S(d0) as s0, S(d1) as s1:
-            m = Migration(s0, s1, schema=schema, exclude_schema=exclude_schema)
+            m = Migration(
+                s0,
+                s1,
+                schema=schema,
+                exclude_schema=exclude_schema,
+                ignore_extension_versions=ignore_extension_versions,
+            )
             m.inspect_from()
             m.inspect_target()
             with raises(AttributeError):
@@ -216,7 +229,9 @@ def do_fixture_test(
         assert run(args, out=out, err=err) == 0
         # test alternative parameters
         with S(d0) as s0, S(d1) as s1:
-            m = Migration(get_inspector(s0), get_inspector(s1))
+            m = Migration(
+                get_inspector(s0), get_inspector(s1), ignore_extension_versions=True
+            )
         # test empty
         m = Migration(None, None)
         m.add_all_changes(privileges=with_privileges)

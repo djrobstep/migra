@@ -509,12 +509,10 @@ class Changes(object):
     @property
     def extensions(self):
         if self.ignore_extension_versions:
-            return partial(
-                statements_for_changes,
-                self.i_from.extensions,
-                self.i_target.extensions,
-                modifications=False,
-            )
+            fe = self.i_from.extensions_without_versions
+            te = self.i_target.extensions_without_versions
+
+            return partial(statements_for_changes, fe, te, modifications=False)
         else:
             return partial(
                 statements_for_changes,

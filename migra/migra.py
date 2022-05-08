@@ -12,7 +12,14 @@ class Migration(object):
     The main class of migra
     """
 
-    def __init__(self, x_from, x_target, schema=None, exclude_schema=None):
+    def __init__(
+        self,
+        x_from,
+        x_target,
+        schema=None,
+        exclude_schema=None,
+        ignore_extension_versions=False,
+    ):
         self.statements = Statements()
         self.changes = Changes(None, None)
         if schema and exclude_schema:
@@ -35,6 +42,8 @@ class Migration(object):
             )
             if x_target:
                 self.s_target = x_target
+
+        self.changes.ignore_extension_versions = ignore_extension_versions
 
     def inspect_from(self):
         self.changes.i_from = get_inspector(

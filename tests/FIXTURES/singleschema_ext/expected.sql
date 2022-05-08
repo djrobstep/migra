@@ -1,1 +1,1 @@
-create extension if not exists "citext" with schema "public" version '1.6';
+create extension if not exists "citext" with schema "public";

@@ -48,6 +48,13 @@ def parse_args(args):
         help='Only output "create extension..." statements, nothing else.',
     )
     parser.add_argument(
+        "--ignore-extension-versions",
+        dest="ignore_extension_versions",
+        action="store_true",
+        default=False,
+        help="Ignore the versions when comparing extensions.",
+    )
+    parser.add_argument(
         "--with-privileges",
         dest="with_privileges",
         action="store_true",
@@ -76,7 +83,13 @@ def run(args, out=None, err=None):
     if not err:
         err = sys.stderr  # pragma: no cover
     with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
-        m = Migration(ac0, ac1, schema=schema, exclude_schema=exclude_schema)
+        m = Migration(
+            ac0,
+            ac1,
+            schema=schema,
+            exclude_schema=exclude_schema,
+            ignore_extension_versions=args.ignore_extension_versions,
+        )
         if args.unsafe:
             m.set_safety(False)
         if args.create_extensions_only:
