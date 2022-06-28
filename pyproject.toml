@@ -13,8 +13,7 @@ homepage = "https://databaseci.com/docs/migra"
 python = ">=3.7,<4"
 sqlbag = "*"
 six = "*"
-# schemainspect = {path="../schemainspect", develop=true}
-schemainspect = ">=3.1.1652015119"
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "6402a3aaa54c405b50c312c2369de0bf1c06dde5" }
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
