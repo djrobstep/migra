@@ -40,12 +40,18 @@ CREATE UNIQUE INDEX entity_bindings_c_entity_id_entity_type_key ON public.entity
 
 alter table "public"."entity_bindings_a" add constraint "entity_bindings_a_entity_id_entity_type_key" UNIQUE using index "entity_bindings_a_entity_id_entity_type_key";
 
-alter table "public"."entity_bindings_a" add constraint "entity_type must be A" CHECK ((entity_type = 'A'::text));
+alter table "public"."entity_bindings_a" add constraint "entity_type must be A" CHECK ((entity_type = 'A'::text)) not valid;
+
+alter table "public"."entity_bindings_a" validate constraint "entity_type must be A";
 
 alter table "public"."entity_bindings_b" add constraint "entity_bindings_b_entity_id_entity_type_key" UNIQUE using index "entity_bindings_b_entity_id_entity_type_key";
 
-alter table "public"."entity_bindings_b" add constraint "entity_type must be B" CHECK ((entity_type = 'B'::text));
+alter table "public"."entity_bindings_b" add constraint "entity_type must be B" CHECK ((entity_type = 'B'::text)) not valid;
+
+alter table "public"."entity_bindings_b" validate constraint "entity_type must be B";
 
 alter table "public"."entity_bindings_c" add constraint "entity_bindings_c_entity_id_entity_type_key" UNIQUE using index "entity_bindings_c_entity_id_entity_type_key";
 
-alter table "public"."entity_bindings_c" add constraint "entity_type must be C" CHECK ((entity_type = 'C'::text));
+alter table "public"."entity_bindings_c" add constraint "entity_type must be C" CHECK ((entity_type = 'C'::text)) not valid;
+
+alter table "public"."entity_bindings_c" validate constraint "entity_type must be C";

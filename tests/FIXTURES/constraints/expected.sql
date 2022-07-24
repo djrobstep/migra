@@ -41,6 +41,10 @@ alter table "public"."t1" add constraint "t1_pkey" PRIMARY KEY using index "t1_p
 
 alter table "public"."circles" add constraint "circles_c_excl" EXCLUDE USING gist (c WITH &&);
 
-alter table "public"."t1" add constraint "x" CHECK ((price > (0)::numeric));
+alter table "public"."t1" add constraint "x" CHECK ((price > (0)::numeric)) not valid;
 
-alter table "public"."t2" add constraint "t2_bb_fkey" FOREIGN KEY (bb) REFERENCES b(bb) DEFERRABLE INITIALLY DEFERRED;
+alter table "public"."t1" validate constraint "x";
+
+alter table "public"."t2" add constraint "t2_bb_fkey" FOREIGN KEY (bb) REFERENCES b(bb) DEFERRABLE INITIALLY DEFERRED not valid;
+
+alter table "public"."t2" validate constraint "t2_bb_fkey";
