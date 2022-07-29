@@ -13,7 +13,7 @@ homepage = "https://databaseci.com/docs/migra"
 python = ">=3.7,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "6402a3aaa54c405b50c312c2369de0bf1c06dde5" }
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "b4ca84baa876fba2c4d7c6d096ed68fb1edff0b1" }
 psycopg2-binary = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
