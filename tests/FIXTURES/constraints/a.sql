@@ -7,3 +7,8 @@ create table t2(a int primary key, bb int references b(bb), price numeric, const
 create table c(cc int unique);
 
 create unique index on t1(a);
+
+CREATE TABLE circles_dropexclude (
+    c circle,
+    EXCLUDE USING gist (c WITH &&)
+);

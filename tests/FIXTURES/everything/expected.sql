@@ -134,13 +134,21 @@ alter table "public"."order_items" add constraint "order_items_pkey" PRIMARY KEY
 
 alter table "public"."products" add constraint "products_pkey" PRIMARY KEY using index "products_pkey";
 
-alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+alter table "public"."order_items" add constraint "order_items_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE not valid;
 
-alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT;
+alter table "public"."order_items" validate constraint "order_items_order_id_fkey";
 
-alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric));
+alter table "public"."order_items" add constraint "order_items_product_no_fkey" FOREIGN KEY (product_no) REFERENCES products(product_no) ON DELETE RESTRICT not valid;
 
-alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric));
+alter table "public"."order_items" validate constraint "order_items_product_no_fkey";
+
+alter table "public"."products" add constraint "y" CHECK ((price > (0)::numeric)) not valid;
+
+alter table "public"."products" validate constraint "y";
+
+alter table "public"."products" add constraint "x" CHECK ((price > (10)::numeric)) not valid;
+
+alter table "public"."products" validate constraint "x";
 
 set check_function_bodies = off;
 

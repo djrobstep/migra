@@ -11,3 +11,12 @@ CREATE UNIQUE INDEX c_pkey ON public.c USING btree (cc);
 alter table "public"."c" add constraint "c_pkey" PRIMARY KEY using index "c_pkey" deferrable INITIALLY deferred;
 
 create unique index on t2(a);
+
+CREATE TABLE circles (
+    c circle,
+    EXCLUDE USING gist (c WITH &&)
+);
+
+CREATE TABLE circles_dropexclude (
+    c circle
+);
