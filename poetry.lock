@@ -334,7 +334,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "schemainspect"
-version = "3.1.1663062229"
+version = "3.1.1663480743"
 description = "Schema inspection for PostgreSQL (and possibly others)"
 category = "main"
 optional = false
@@ -742,8 +742,8 @@ rich = [
     {file = "rich-12.5.1.tar.gz", hash = "sha256:63a5c5ce3673d3d5fbbf23cd87e11ab84b6b451436f1b7f19ec54b6bc36ed7ca"},
 ]
 schemainspect = [
-    {file = "schemainspect-3.1.1663062229-py3-none-any.whl", hash = "sha256:ca6ab497e90a1e4c4dd7406b1d38efdbf478d7c482408e3a8852b2dfa686a5f6"},
-    {file = "schemainspect-3.1.1663062229.tar.gz", hash = "sha256:625507658f4971a4a3cd0a4afe7ce40e66158fe5fcbd57f426e307434f5742e6"},
+    {file = "schemainspect-3.1.1663480743-py3-none-any.whl", hash = "sha256:852813d0ee38985242373708b8441c5fbcff611d30dae013afb5cb7d7148c95a"},
+    {file = "schemainspect-3.1.1663480743.tar.gz", hash = "sha256:b042676ceffd189983f38a42042dfb19d86925f8c4f8bdd6d40334582fdb116b"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},

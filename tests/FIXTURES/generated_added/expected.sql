@@ -1,0 +1,1 @@
+alter table "public"."demo_gencol" alter column "the_column" drop expression;

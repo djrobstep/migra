@@ -11,11 +11,9 @@ create table "public"."t2" (
 
 alter table "public"."gen" drop column "adding";
 
-alter table "public"."gen" drop column "removing";
-
 alter table "public"."gen" add column "adding" integer generated always as (1) stored;
 
-alter table "public"."gen" add column "removing" integer;
+alter table "public"."gen" alter column "removing" drop expression;
 
 alter table "public"."identchanges" alter column "c" drop default;
 
