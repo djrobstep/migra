@@ -4,7 +4,7 @@ import argparse
 import sys
 from contextlib import contextmanager
 
-from sqlbag import S
+
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
@@ -16,6 +16,7 @@ def arg_context(x):
         yield None
 
     else:
+        from sqlbag import S
         with S(x) as s:
             yield s
 
