@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from schemainspect import DBInspector, get_inspector
 
-
 from .changes import Changes
 from .statements import Statements
 
@@ -60,6 +59,7 @@ class Migration(object):
 
     def apply(self):
         from sqlbag import raw_execute
+
         for stmt in self.statements:
             raw_execute(self.s_from, stmt)
         self.changes.i_from = get_inspector(

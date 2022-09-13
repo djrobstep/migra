@@ -122,7 +122,7 @@ def statements_from_differences(
             for k, v in added.items():
                 if not has_uncreated_dependencies(v, pending_creations):
                     if k in pending_creations:
-                        if hasattr(v, 'safer_create_statements'):
+                        if hasattr(v, "safer_create_statements"):
                             statements += v.safer_create_statements
                         else:
                             statements.append(v.create_statement)
@@ -137,7 +137,7 @@ def statements_from_differences(
                 if creations:
                     if not has_uncreated_dependencies(v, pending_creations):
                         if k in pending_creations:
-                            if hasattr(v, 'safer_create_statements'):
+                            if hasattr(v, "safer_create_statements"):
                                 statements += v.safer_create_statements
                             else:
                                 statements.append(v.create_statement)
