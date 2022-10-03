@@ -8,4 +8,4 @@ drop type "goodschema"."sdfasdfasdf__old_version_to_be_dropped";
 
 alter table "goodschema"."t" add column "name" text;
 
-create or replace view "goodschema"."v" as  SELECT 2;
+create or replace view "goodschema"."v" as  SELECT 2 AS a;

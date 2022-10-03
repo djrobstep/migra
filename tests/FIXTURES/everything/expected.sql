@@ -178,10 +178,10 @@ AS $function$
 $function$
 ;
 
-create materialized view "public"."matvvv" as  SELECT 2;
+create materialized view "public"."matvvv" as  SELECT 2 AS a;
 
 
-create or replace view "public"."vvv" as  SELECT 2;
+create or replace view "public"."vvv" as  SELECT 2 AS a;
 
 
 grant update on table "public"."products" to "postgres";

@@ -122,7 +122,7 @@ def statements_from_differences(
             for k, v in added.items():
                 if not has_uncreated_dependencies(v, pending_creations):
                     if k in pending_creations:
-                        if hasattr(v, 'safer_create_statements'):
+                        if hasattr(v, "safer_create_statements"):
                             statements += v.safer_create_statements
                         else:
                             statements.append(v.create_statement)
@@ -137,7 +137,7 @@ def statements_from_differences(
                 if creations:
                     if not has_uncreated_dependencies(v, pending_creations):
                         if k in pending_creations:
-                            if hasattr(v, 'safer_create_statements'):
+                            if hasattr(v, "safer_create_statements"):
                                 statements += v.safer_create_statements
                             else:
                                 statements.append(v.create_statement)
@@ -276,7 +276,17 @@ def get_table_changes(
 
             inheritance_status_changed = c.is_inherited != c_before.is_inherited
 
-            if inheritance_status_changed or generated_status_changed:
+            generated_status_removed = not c.is_generated and c_before.is_generated
+
+            can_drop_generated = (
+                generated_status_removed and c_before.can_drop_generated
+            )
+
+            drop_and_recreate_required = inheritance_status_changed or (
+                generated_status_changed and not can_drop_generated
+            )
+
+            if drop_and_recreate_required:
                 del c_modified[k]
 
                 if not c_before.is_inherited:
@@ -284,6 +294,9 @@ def get_table_changes(
 
                 if not c.is_inherited:
                     c_added[k] = c
+
+            if generated_status_changed:
+                pass
 
         for k, c in c_removed.items():
             alter = v.alter_table_statement(c.drop_column_clause)
