@@ -16,6 +16,7 @@ six = "*"
 # schemainspect = {path="../schemainspect", develop=true}
 schemainspect = ">=3.1.1663480743"
 psycopg2-binary = { version="*", optional = true }
+pgpasslib = "*"
 
 [tool.poetry.dev-dependencies]
 sqlbag = "*"
