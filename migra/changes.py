@@ -21,6 +21,7 @@ THINGS = [
     "collations",
     "rlspolicies",
     "triggers",
+    "comments",
 ]
 PK = "PRIMARY KEY"
 
@@ -652,6 +653,15 @@ class Changes(object):
             statements_for_changes,
             self.i_from.sequences,
             self.i_target.sequences,
+            modifications=False,
+        )
+
+    @property
+    def comments(self):
+        return partial(
+            statements_for_changes,
+            self.i_from.comments,
+            self.i_target.comments,
             modifications=False,
         )
 
