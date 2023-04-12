@@ -10,11 +10,12 @@ repository = "https://github.com/djrobstep/migra"
 homepage = "https://databaseci.com/docs/migra"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.9,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "b4ca84baa876fba2c4d7c6d096ed68fb1edff0b1" }
-psycopg2-binary = { version="*", optional = true }
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "2df4dfdae65e2ab5ddfe9e2dc1d5037bed830220" }
+#schemainspect = { path = "../schemainspect", develop = true }
+psycopg2 = { version="*", optional = true }
 
 [tool.poetry.dev-dependencies]
 sqlbag = "*"

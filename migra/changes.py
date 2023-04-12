@@ -365,7 +365,6 @@ def get_selectable_differences(
     not_replaceable = set()
 
     if add_dependents_for_modified:
-
         for k, m in changed_all.items():
             old = selectables_from[k]
 
