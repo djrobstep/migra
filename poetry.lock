@@ -655,8 +655,8 @@ sqlalchemy = "*"
 [package.source]
 type = "git"
 url = "https://github.com/joshainglis/schemainspect.git"
-reference = "8fe1b389337537882f8aa983a297b5f3e188ee2f"
-resolved_reference = "8fe1b389337537882f8aa983a297b5f3e188ee2f"
+reference = "a434855feeb85411e2a8e7b231c72d404f3dddbd"
+resolved_reference = "a434855feeb85411e2a8e7b231c72d404f3dddbd"
 
 [[package]]
 name = "six"
@@ -812,4 +812,4 @@ pg = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4"
-content-hash = "f71e6b118a86a1db12739cee6d2ca15a440e90d0f74dbb05fdf88fc9962ff075"
+content-hash = "e50ca218701fe4c4605462dfca3db87717407d75cc3fde424574a3cdd1337785"
