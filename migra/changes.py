@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from collections import OrderedDict as od
 from functools import partial
 
+from networkx import lexicographical_topological_sort, DiGraph
+
 import schemainspect
 
 from .statements import Statements
@@ -228,11 +230,23 @@ def get_table_changes(
 
     statements += enums_pre
 
-    for t, v in added.items():
-        statements.append(v.create_statement)
-        if v.rowsecurity:
-            rls_alter = v.alter_rls_statement
-            statements.append(rls_alter)
+    # topologial sort of tables using table.dependents
+    # this is to ensure that tables are created in the correct order
+    # so that foreign keys can be created
+
+    G = DiGraph()
+    G.add_nodes_from(tables_target.keys())
+    for t, v in tables_target.items():
+        G.add_edges_from((t, d) for d in v.dependents)
+
+    tables_sorted = {k: tables_target[k] for k in lexicographical_topological_sort(G) if k in tables_target}
+
+    for t, v in tables_sorted.items():
+        if t in added:
+            statements.append(v.create_statement)
+            if v.rowsecurity:
+                rls_alter = v.alter_rls_statement
+                statements.append(rls_alter)
 
     statements += enums_post
 
