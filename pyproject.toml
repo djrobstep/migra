@@ -13,7 +13,7 @@ homepage = "https://databaseci.com/docs/migra"
 python = ">=3.9,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "a434855feeb85411e2a8e7b231c72d404f3dddbd" }
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "0a0ca10de4d3264693e0e5a3e0a0d5f46b8e2e52" }
 #schemainspect = { path = "../schemainspect", develop = true }
 psycopg2 = { version="*", optional = true }
 networkx = "^3.1"
