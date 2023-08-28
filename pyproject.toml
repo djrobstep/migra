@@ -23,7 +23,7 @@ sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-clarity = "*"
-psycopg2-binary = "*"
+psycopg2 = "*"
 flake8 = "*"
 isort = "*"
 black = "*"
@@ -33,7 +33,7 @@ toml = "*"
 migra = 'migra:do_command'
 
 [tool.poetry.extras]
-pg = ["psycopg2-binary"]
+pg = ["psycopg2"]
 
 [tool.isort]
 multi_line_output = 3
