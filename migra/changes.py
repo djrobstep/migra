@@ -492,7 +492,7 @@ def get_selectable_changes(
     statements = Statements()
 
     def functions(d):
-        return {k: v for k, v in d.items() if v.relationtype == "f"}
+        return {k: v for k, v in d.items() if v.relationtype in ("f", "a")}
 
     if not tables_only:
         if not creations_only:
