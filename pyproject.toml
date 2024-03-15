@@ -10,12 +10,12 @@ repository = "https://github.com/djrobstep/migra"
 homepage = "https://databaseci.com/docs/migra"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4"
+python = ">=3.8,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "51d47d64021818b5c5e8fc4f85f25aaa6df81571" }
 #schemainspect = { path = "../schemainspect", develop = true }
-psycopg2 = { version="*", optional = true }
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "79b3fbdb9c22252574578e8f83dcb7f85ebaf69a" }
+psycopg2-binary = { version="*", optional = true }
 networkx = "^3.1"
 
 [tool.poetry.dev-dependencies]
@@ -23,7 +23,7 @@ sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-clarity = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
 flake8 = "*"
 isort = "*"
 black = "*"
@@ -33,7 +33,7 @@ toml = "*"
 migra = 'migra:do_command'
 
 [tool.poetry.extras]
-pg = ["psycopg2"]
+pg = ["psycopg2-binary"]
 
 [tool.isort]
 multi_line_output = 3
