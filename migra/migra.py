@@ -85,6 +85,7 @@ class Migration(object):
             self.add(self.changes.extensions(drops_only=True))
 
     def add_all_changes(self, privileges=False):
+        self.add(self.changes.comments(drops_only=True))
         self.add(self.changes.schemas(creations_only=True))
 
         self.add(self.changes.extensions(creations_only=True, modifications=False))
@@ -122,6 +123,7 @@ class Migration(object):
         self.add(self.changes.triggers(creations_only=True))
         self.add(self.changes.collations(drops_only=True))
         self.add(self.changes.schemas(drops_only=True))
+        self.add(self.changes.comments(creations_only=True))
 
     @property
     def sql(self):
