@@ -14,7 +14,7 @@ python = ">=3.8,<4"
 sqlbag = "*"
 six = "*"
 #schemainspect = { path = "../schemainspect", develop = true }
-schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "79b3fbdb9c22252574578e8f83dcb7f85ebaf69a" }
+schemainspect = { git = "https://github.com/joshainglis/schemainspect.git", rev = "eeda5c18d26fce006a826cfe63f8683b4490a321" }
 psycopg2-binary = { version="*", optional = true }
 networkx = "^3.1"
 
