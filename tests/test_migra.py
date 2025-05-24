@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import os
 import io
 from difflib import ndiff as difflib_diff
 
@@ -8,10 +9,15 @@ import pytest
 # import yaml
 from pytest import raises
 from schemainspect import get_inspector
-from sqlbag import S, load_sql_from_file, temporary_database
+from sqlbag import S, load_sql_from_file
+from .temporary_database import temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def textdiff(a, b):
@@ -142,8 +148,17 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    with temporary_database(host="localhost") as d0, temporary_database(
-        host="localhost"
+    user = os.getenv('DB_USER')
+    password = os.getenv('DB_PASS')
+
+    connection_str: str = 'postgres'
+    if user is not None and len(user) > 0:
+        connection_str = user
+    if password is not None and len(password) > 0:
+        connection_str += f":{password}"
+
+    with temporary_database(host="localhost", user_pass=connection_str) as d0, temporary_database(
+        host="localhost", user_pass=connection_str
     ) as d1:
         with S(d0) as s0:
             create_role(s0, schemainspect_test_role)
