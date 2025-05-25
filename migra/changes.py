@@ -4,6 +4,7 @@ from collections import OrderedDict as od
 from functools import partial
 
 import schemainspect
+from schemainspect import DBInspector
 
 from .statements import Statements
 from .util import differences
@@ -520,7 +521,7 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from, i_target, ignore_extension_versions=False):
+    def __init__(self, i_from: DBInspector | None, i_target: DBInspector | None, ignore_extension_versions=False):
         self.i_from = i_from
         self.i_target = i_target
         self.ignore_extension_versions = ignore_extension_versions
@@ -658,6 +659,9 @@ class Changes(object):
 
     def __getattr__(self, name):
         if name in THINGS:
+            if name == "privileges":
+                print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+                breakpoint()
             return partial(
                 statements_for_changes,
                 getattr(self.i_from, name),
