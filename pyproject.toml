@@ -14,8 +14,8 @@ homepage = "https://databaseci.com/docs/migra"
 python = ">=3.9,<4"
 sqlbag = "*"
 six = "*"
-schemainspect = {path="../schemainspect", develop=true}
-# schemainspect = ">=3.1.1663480743"
+# schemainspect = {path="../schemainspect", develop=true}
+schema-inspect-maintained = ">=1.0.3"
 psycopg2-binary = { version=">=2.9.7,<3", optional = true }
 greenlet = "^3.2.2"
 setuptools = "^80.8.0"
