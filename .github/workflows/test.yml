@@ -1,0 +1,65 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [master, next]
+
+jobs:
+  test:
+    name: Test on PostgreSQL ${{ matrix.pg_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pg_version: [14.1, 13.5, 12.9, 11.13, 10.19]
+    services:
+      postgres:
+        image: postgres:${{ matrix.pg_version }}
+        env:
+          POSTGRES_USER: runner
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: runner
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      # - name: Wait for Postgres
+      #   run: until pg_isready -h localhost -U postgres -d app_db; do sleep 1; done
+      
+      - name: create postgres user
+        run: psql postgresql://runner@localhost/runner -c 'create role postgres'
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+
+      - name: Setup Poetry
+        run: |
+          python -m pip install -U pip setuptools poetry
+          poetry config virtualenvs.create false
+
+      - name: Install deps
+        run: |
+          python -m venv ~/.virt
+          . ~/.virt/bin/activate
+          poetry install
+
+      - name: Lint
+        run: |
+          . ~/.virt/bin/activate
+          make lint
+
+      - name: Test
+        run: |
+          . ~/.virt/bin/activate
+          make test
