@@ -4,7 +4,7 @@ drop view if exists "public"."switcharoo";
 
 alter table "public"."t" add column "b" integer;
 
-create or replace view "public"."strange_view(what)" as  SELECT (("strange_name(((yo?)))".id)::integer * 2) AS a
+create or replace view "public"."strange_view(what)" as  SELECT ((id)::integer * 2) AS a
    FROM "strange_name(((yo?)))";
 
 

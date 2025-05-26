@@ -8,11 +8,11 @@ create table "x"."t_data" (
 );
 
 
-create or replace view "x"."data" as  SELECT t_data.id,
-    t_data.name
+create or replace view "x"."data" as  SELECT id,
+    name
    FROM x.t_data;
 
 
-create or replace view "x"."q" as  SELECT data.id,
-    data.name
+create or replace view "x"."q" as  SELECT id,
+    name
    FROM x.data;

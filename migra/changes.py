@@ -659,9 +659,6 @@ class Changes(object):
 
     def __getattr__(self, name):
         if name in THINGS:
-            if name == "privileges":
-                print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-                breakpoint()
             return partial(
                 statements_for_changes,
                 getattr(self.i_from, name),

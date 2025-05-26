@@ -18,6 +18,10 @@ Most features of PostgreSQL are supported.
 
 **Migra supports PostgreSQL >= 9 only.** Known issues exist with earlier versions. More recent versions are more comprehensively tested. Development resources are limited, and feature support rather than backwards compatibility is prioritised.
 
+## DEVELOPMENT
+
+A passwordless login for a superuser with username=your_os_username is required for the test cases to run
+
 ## THE DOCS
 
 Documentation is at [databaseci.com/docs/migra](https://databaseci.com/docs/migra).

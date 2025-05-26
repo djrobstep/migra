@@ -4,9 +4,9 @@ drop view if exists "public"."view_on_table";
 
 alter table "public"."my_table" add column "some_date" timestamp without time zone;
 
-create or replace view "public"."view_on_table" as  SELECT my_table.some_text,
-    my_table.some_date,
-    my_table.some_count
+create or replace view "public"."view_on_table" as  SELECT some_text,
+    some_date,
+    some_count
    FROM my_table;
 
 

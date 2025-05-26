@@ -9,8 +9,7 @@ import pytest
 # import yaml
 from pytest import raises
 from schemainspect import get_inspector
-from sqlbag import S, load_sql_from_file
-from .temporary_database import temporary_database
+from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
@@ -157,8 +156,8 @@ def do_fixture_test(
     if password is not None and len(password) > 0:
         connection_str += f":{password}"
 
-    with temporary_database(host="localhost", user_pass=connection_str) as d0, temporary_database(
-        host="localhost", user_pass=connection_str
+    with temporary_database(host="localhost") as d0, temporary_database(
+        host="localhost"
     ) as d1:
         with S(d0) as s0:
             create_role(s0, schemainspect_test_role)
