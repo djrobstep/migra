@@ -1,32 +1,36 @@
-[tool.poetry]
+[project]
 name = "migra"
 version = "3.0"
-authors = [ "Robert Lechte <robertlechte@gmail.com>",]
+authors = [{ name = "Robert Lechte", email = "robertlechte@gmail.com" }]
 license = "Unlicense"
 readme = "README.md"
 description = "Like `diff` but for PostgreSQL schemas"
 
+[project.urls]
 repository = "https://github.com/djrobstep/migra"
 homepage = "https://databaseci.com/docs/migra"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.9,<4"
 sqlbag = "*"
 six = "*"
 # schemainspect = {path="../schemainspect", develop=true}
-schemainspect = ">=3.1.1663480743"
-psycopg2-binary = { version="*", optional = true }
+schema-inspect-maintained = ">=1.0.3"
+psycopg2-binary = { version=">=2.9.7,<3", optional = true }
+greenlet = "^3.2.2"
+setuptools = "^80.8.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-clarity = "*"
-psycopg2-binary = "*"
+psycopg2-binary = ">=2.9.7,<3"
 flake8 = "*"
 isort = "*"
 black = "*"
 toml = "*"
+python-dotenv = "^1.1.0"
 
 [tool.poetry.scripts]
 migra = 'migra:do_command'

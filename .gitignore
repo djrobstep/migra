@@ -47,3 +47,4 @@ pip-wheel-metadata
 .DS_Store
 
 .vscode
+.env

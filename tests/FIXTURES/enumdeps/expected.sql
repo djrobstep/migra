@@ -16,13 +16,13 @@ alter table "public"."t" alter column category type "public"."e" using category:
 
 drop type "public"."e__old_version_to_be_dropped";
 
-create or replace view "public"."v" as  SELECT t.id,
-    t.category
+create or replace view "public"."v" as  SELECT id,
+    category
    FROM t;
 
 
-create or replace view "public"."v2" as  SELECT t.id,
-    t.category,
+create or replace view "public"."v2" as  SELECT id,
+    category,
     'b'::e AS e
    FROM t;
 
