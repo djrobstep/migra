@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.4 (2025-05-27)
+
+### Bug Fixes
+
+- Update release script
+  ([`5954e7f`](https://github.com/PhilipWee/migra/commit/5954e7ff86382c0928897dff572b43f902e42237))
+
+
 ## v1.0.3 (2025-05-27)
 
 
