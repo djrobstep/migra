@@ -1,10 +1,14 @@
 [project]
 name = "migra"
-version = "3.0"
+version = "0.0.0"
 authors = [{ name = "Robert Lechte", email = "robertlechte@gmail.com" }]
 license = "Unlicense"
 readme = "README.md"
 description = "Like `diff` but for PostgreSQL schemas"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+build_command = "pip install poetry; poetry install; poetry build"
 
 [project.urls]
 repository = "https://github.com/djrobstep/migra"
