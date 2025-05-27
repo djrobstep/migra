@@ -116,6 +116,7 @@ jobs:
 
     outputs:
       released: ${{ steps.release.outputs.released }}
+      tag: ${{ steps.release.outputs.tag }}
 
   deploy:
     # 1. Separate out the deploy step from the publish step to run each step at
