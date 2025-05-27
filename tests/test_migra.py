@@ -77,6 +77,7 @@ partitioning
 privileges
 enumdefaults
 enumdeps
+enumdepwithfuncdep
 seq
 inherit
 inherit2
