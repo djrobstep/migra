@@ -1,10 +1,13 @@
 [project]
-name = "migra"
+name = "migra-maintained"
 version = "0.0.0"
 authors = [{ name = "Robert Lechte", email = "robertlechte@gmail.com" }]
 license = "Unlicense"
 readme = "README.md"
 description = "Like `diff` but for PostgreSQL schemas"
+
+[tool.poetry]
+packages = [{ include = "migra" }]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
