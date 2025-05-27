@@ -1,6 +1,6 @@
 [project]
 name = "migra"
-version = "0.0.0"
+version = "1.0.1"
 authors = [{ name = "Robert Lechte", email = "robertlechte@gmail.com" }]
 license = "Unlicense"
 readme = "README.md"
