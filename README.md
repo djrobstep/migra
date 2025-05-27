@@ -43,3 +43,4 @@ Contributing is easy. [Jump into the issues](https://github.com/djrobstep/migra/
 - [seblucas](https://github.com/seblucas): docker improvements
 - [MOZGIII](https://github.com/MOZGIII): docker support
 - [mshahbazi](https://github.com/mshahbazi): misc fixes and enhancements
+ 
