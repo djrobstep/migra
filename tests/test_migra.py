@@ -186,8 +186,6 @@ def do_fixture_test(
         assert err.getvalue() == ""
 
         output = out.getvalue().strip()
-        print(output)
-        breakpoint()
         if check_expected:
             assert output == EXPECTED
 

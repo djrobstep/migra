@@ -346,6 +346,7 @@ def get_selectable_differences(
     enums_from,
     enums_target,
     add_dependents_for_modified=True,
+    add_dependents_for_enums=True
 ):
     tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
     tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
@@ -362,6 +363,18 @@ def get_selectable_differences(
 
     _, _, modified_enums, _ = differences(enums_from, enums_target)
 
+    #TODO: Consider if a function depends on an enum that has been deleted
+
+    if add_dependents_for_enums:
+        for k, e in modified_enums.items():
+            for dependent in e.dependents:
+                # TODO: Consider if this is an issue if the enum is removed elsewhere, but shouldn't be because it is a set
+                if dependent in other_from:
+                    # Technically we shouldn't do this check, but dependents can include non-others objects
+                    removed_other[dependent] = other_from[dependent]
+                if dependent in other_target:
+                    added_other[dependent] = other_target[dependent]
+    
     changed_all = {}
     changed_all.update(modified_tables)
     changed_all.update(modified_other)
@@ -380,8 +393,6 @@ def get_selectable_differences(
             if k in modified_all and m.can_replace(old):
                 if not m.is_table:
                     changed_enums = [_ for _ in m.dependent_on if _ in modified_enums]
-                    print(changed_enums)
-                    breakpoint()
                     if not changed_enums:
                         replaceable.add(k)
 
@@ -490,9 +501,6 @@ def get_selectable_changes(
     def functions(d):
         return {k: v for k, v in d.items() if v.relationtype == "f"}
 
-    # TEST
-    removed_other['"public"."function_with_enum"(param1 enum_type_1)'] = selectables_from['"public"."function_with_enum"(param1 enum_type_1)']
-    added_other['"public"."function_with_enum"(param1 enum_type_1)'] = selectables_from['"public"."function_with_enum"(param1 enum_type_1)']
     if not tables_only:
         if not creations_only:
             statements += statements_from_differences(
