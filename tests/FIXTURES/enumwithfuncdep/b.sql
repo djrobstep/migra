@@ -1,4 +1,4 @@
-create type enum_type_1 as enum ('val1', 'val2');
+create type enum_type_1 as enum ('val1', 'val2', 'val3');
 
 create table table_with_enum (
   enum_col enum_type_1
@@ -10,4 +10,4 @@ begin
 end;
 $$ language plpgsql;
 
-alter type enum_type_1 add value 'val3';
+-- alter type enum_type_1 add value 'val3';

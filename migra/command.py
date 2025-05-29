@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals
 import argparse
 import sys
 from contextlib import contextmanager
+from enum import IntEnum
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
@@ -75,6 +76,12 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
+class MigrationStatus(IntEnum):
+    NO_CHANGES = 0
+    CHANGES_FOUND = 2
+    UNSAFE_CHANGES = 3
+
+
 def run(args, out=None, err=None):
     schema = args.schema
     exclude_schema = args.exclude_schema
@@ -107,13 +114,13 @@ def run(args, out=None, err=None):
                 "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.",
                 file=err,
             )
-            return 3
+            return MigrationStatus.UNSAFE_CHANGES
 
         if not m.statements:
-            return 0
+            return MigrationStatus.NO_CHANGES
 
         else:
-            return 2
+            return MigrationStatus.CHANGES_FOUND
 
 
 def do_command():  # pragma: no cover

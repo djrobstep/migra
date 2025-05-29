@@ -77,7 +77,7 @@ partitioning
 privileges
 enumdefaults
 enumdeps
-enumdepwithfuncdep
+enumwithfuncdep
 seq
 inherit
 inherit2
@@ -186,6 +186,8 @@ def do_fixture_test(
         assert err.getvalue() == ""
 
         output = out.getvalue().strip()
+        print(output)
+        breakpoint()
         if check_expected:
             assert output == EXPECTED
 

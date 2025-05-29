@@ -156,7 +156,11 @@ def statements_from_differences(
 
 
 def get_enum_modifications(
-    tables_from, tables_target, enums_from, enums_target, return_tuple=False
+    tables_from,
+    tables_target,
+    enums_from,
+    enums_target,
+    return_tuple=False
 ):
     _, _, e_modified, _ = differences(enums_from, enums_target)
     _, _, t_modified, _ = differences(tables_from, tables_target)
@@ -192,6 +196,9 @@ def get_enum_modifications(
 
     for e in enums_to_change.values():
         unwanted_name = e.name + unwanted_suffix
+
+        # TODO: Recreate function here as well
+        dependents = e.dependents
 
         rename = e.alter_rename_statement(unwanted_name)
         pre.append(rename)
@@ -373,6 +380,8 @@ def get_selectable_differences(
             if k in modified_all and m.can_replace(old):
                 if not m.is_table:
                     changed_enums = [_ for _ in m.dependent_on if _ in modified_enums]
+                    print(changed_enums)
+                    breakpoint()
                     if not changed_enums:
                         replaceable.add(k)
 
@@ -481,6 +490,9 @@ def get_selectable_changes(
     def functions(d):
         return {k: v for k, v in d.items() if v.relationtype == "f"}
 
+    # TEST
+    removed_other['"public"."function_with_enum"(param1 enum_type_1)'] = selectables_from['"public"."function_with_enum"(param1 enum_type_1)']
+    added_other['"public"."function_with_enum"(param1 enum_type_1)'] = selectables_from['"public"."function_with_enum"(param1 enum_type_1)']
     if not tables_only:
         if not creations_only:
             statements += statements_from_differences(
@@ -521,7 +533,7 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from: DBInspector | None, i_target: DBInspector | None, ignore_extension_versions=False):
+    def __init__(self, i_from: DBInspector, i_target: DBInspector, ignore_extension_versions=False):
         self.i_from = i_from
         self.i_target = i_target
         self.ignore_extension_versions = ignore_extension_versions
@@ -565,6 +577,24 @@ class Changes(object):
             self.i_target.sequences,
             tables_only=True,
         )
+
+    # @property
+    # def function_drops(self):
+    #     return partial(
+    #         statements_for_changes,
+    #         self.i_from.functions,
+    #         self.i_target.functions,
+    #         drops_only=True
+    #     )
+
+    # @property
+    # def function_creations(self):
+    #     return partial(
+    #         statements_for_changes,
+    #         self.i_from.functions,
+    #         self.i_target.functions,
+    #         creations_only=True
+    #     )
 
     @property
     def non_table_selectable_drops(self):
