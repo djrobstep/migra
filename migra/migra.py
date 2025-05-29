@@ -70,7 +70,6 @@ class Migration(object):
         self.set_safety(safety_on)
 
     def add(self, statements):
-        print("ADDING STATEMENT",statements)
         self.statements += statements
 
     def add_sql(self, sql):
