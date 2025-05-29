@@ -36,7 +36,7 @@ def test_statements():
     s1 = Statements(["select 1;"])
     s2 = Statements(["select 2;"])
     s3 = s1 + s2
-    assert type(s1) == type(s2) == type(s3)
+    assert type(s1) is type(s2) is type(s3)
     s3 = s3 + Statements([DROP])
     with raises(UnsafeMigrationException):
         assert s3.sql == SQL

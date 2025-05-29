@@ -21,13 +21,13 @@ homepage = "https://databaseci.com/docs/migra"
 python = ">=3.9,<4"
 sqlbag = "*"
 six = "*"
-schema-inspect-maintained = {path="../schemainspect", develop=true}
-# schema-inspect-maintained = ">=1.0.3"
+schema-inspect-maintained = ">=1.0.4"
 psycopg2-binary = { version=">=2.9.7,<3", optional = true }
 greenlet = "^3.2.2"
 setuptools = "^80.8.0"
 
 [tool.poetry.group.dev.dependencies]
+schema-inspect-maintained = {path="../schemainspect", develop=true}
 sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
