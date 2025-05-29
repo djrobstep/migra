@@ -197,9 +197,6 @@ def get_enum_modifications(
     for e in enums_to_change.values():
         unwanted_name = e.name + unwanted_suffix
 
-        # TODO: Recreate function here as well
-        dependents = e.dependents
-
         rename = e.alter_rename_statement(unwanted_name)
         pre.append(rename)
 
@@ -585,24 +582,6 @@ class Changes(object):
             self.i_target.sequences,
             tables_only=True,
         )
-
-    # @property
-    # def function_drops(self):
-    #     return partial(
-    #         statements_for_changes,
-    #         self.i_from.functions,
-    #         self.i_target.functions,
-    #         drops_only=True
-    #     )
-
-    # @property
-    # def function_creations(self):
-    #     return partial(
-    #         statements_for_changes,
-    #         self.i_from.functions,
-    #         self.i_target.functions,
-    #         creations_only=True
-    #     )
 
     @property
     def non_table_selectable_drops(self):
