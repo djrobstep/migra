@@ -91,6 +91,7 @@ class Migration(object):
         self.add(self.changes.extensions(modifications_only=True, modifications=True))
         self.add(self.changes.collations(creations_only=True))
         self.add(self.changes.enums(creations_only=True, modifications=False))
+
         self.add(self.changes.sequences(creations_only=True))
         self.add(self.changes.triggers(drops_only=True))
         self.add(self.changes.rlspolicies(drops_only=True))

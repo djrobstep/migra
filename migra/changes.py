@@ -339,6 +339,7 @@ def get_selectable_differences(
     enums_from,
     enums_target,
     add_dependents_for_modified=True,
+    add_dependents_for_enums=True,
 ):
     tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
     tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
@@ -354,6 +355,18 @@ def get_selectable_differences(
     )
 
     _, _, modified_enums, _ = differences(enums_from, enums_target)
+
+    # TODO: Consider if a function depends on an enum that has been deleted
+
+    if add_dependents_for_enums:
+        for k, e in modified_enums.items():
+            for dependent in e.dependents:
+                # TODO: Consider if this is an issue if the enum is removed elsewhere, but shouldn't be because it is a set
+                if dependent in other_from:
+                    # Technically we shouldn't do this check, but dependents can include non-others objects
+                    removed_other[dependent] = other_from[dependent]
+                if dependent in other_target:
+                    added_other[dependent] = other_target[dependent]
 
     changed_all = {}
     changed_all.update(modified_tables)
@@ -521,7 +534,12 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from: DBInspector | None, i_target: DBInspector | None, ignore_extension_versions=False):
+    def __init__(
+        self,
+        i_from: DBInspector,
+        i_target: DBInspector,
+        ignore_extension_versions=False,
+    ):
         self.i_from = i_from
         self.i_target = i_target
         self.ignore_extension_versions = ignore_extension_versions
