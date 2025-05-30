@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.0.6 (2025-05-30)
+
+### Bug Fixes
+
+- Bump schema-inspect version to use new funcs
+  ([`7bfa670`](https://github.com/PhilipWee/migra/commit/7bfa670555dd3cca09054b69835e1b58097f6e9a))
+
+- Dependency clash
+  ([`562bf4c`](https://github.com/PhilipWee/migra/commit/562bf4c2476143e6dfce4f201ab2e0b3f55610b6))
+
+- Funcs dependent on enums
+  ([`802583b`](https://github.com/PhilipWee/migra/commit/802583b46d487b0dfbaf9649208eff019494aea1))
+
+
 ## v1.0.5 (2025-05-27)
 
 
