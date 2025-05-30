@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
-import os
 import io
+import os
 from difflib import ndiff as difflib_diff
 
 import pytest
+from dotenv import load_dotenv
 
 # import yaml
 from pytest import raises
@@ -13,8 +14,6 @@ from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
 from migra.command import parse_args, run
-
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -148,10 +147,10 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    user = os.getenv('DB_USER')
-    password = os.getenv('DB_PASS')
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASS")
 
-    connection_str: str = 'postgres'
+    connection_str: str = "postgres"
     if user is not None and len(user) > 0:
         connection_str = user
     if password is not None and len(password) > 0:

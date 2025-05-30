@@ -633,21 +633,19 @@ jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
 name = "schema-inspect-maintained"
-version = "1.0.3"
+version = "1.0.4"
 description = "Schema inspection for PostgreSQL (and possibly others)"
 optional = false
-python-versions = ">=3.9,<4"
+python-versions = "<4,>=3.9"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "schema_inspect_maintained-1.0.4-py3-none-any.whl", hash = "sha256:6dc2615741762a311602cebb1e1c433a5bfc2497abf4ebf272050a3c6d64ac49"},
+    {file = "schema_inspect_maintained-1.0.4.tar.gz", hash = "sha256:be4839baeb3de53b3368964920d993cfbf1598aa870dd7565d5151fb1690a4d3"},
+]
 
 [package.dependencies]
-setuptools = "^80.8.0"
+setuptools = ">=80.8.0,<81.0.0"
 sqlalchemy = "1.4.46"
-
-[package.source]
-type = "directory"
-url = "../schemainspect"
 
 [[package]]
 name = "setuptools"
@@ -853,4 +851,4 @@ pg = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4"
-content-hash = "7fbb7d862af72276b7d34cdb91d5448b55d9fa0d407576b8edbad4a214b0c33f"
+content-hash = "194074711890327710f0bfef714eae163f61f23d505b915e47323f3f5e55c2e9"

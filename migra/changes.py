@@ -156,11 +156,7 @@ def statements_from_differences(
 
 
 def get_enum_modifications(
-    tables_from,
-    tables_target,
-    enums_from,
-    enums_target,
-    return_tuple=False
+    tables_from, tables_target, enums_from, enums_target, return_tuple=False
 ):
     _, _, e_modified, _ = differences(enums_from, enums_target)
     _, _, t_modified, _ = differences(tables_from, tables_target)
@@ -343,7 +339,7 @@ def get_selectable_differences(
     enums_from,
     enums_target,
     add_dependents_for_modified=True,
-    add_dependents_for_enums=True
+    add_dependents_for_enums=True,
 ):
     tables_from = od((k, v) for k, v in selectables_from.items() if v.is_table)
     tables_target = od((k, v) for k, v in selectables_target.items() if v.is_table)
@@ -538,7 +534,12 @@ def get_selectable_changes(
 
 
 class Changes(object):
-    def __init__(self, i_from: DBInspector, i_target: DBInspector, ignore_extension_versions=False):
+    def __init__(
+        self,
+        i_from: DBInspector,
+        i_target: DBInspector,
+        ignore_extension_versions=False,
+    ):
         self.i_from = i_from
         self.i_target = i_target
         self.ignore_extension_versions = ignore_extension_versions

@@ -27,7 +27,7 @@ greenlet = "^3.2.2"
 setuptools = "^80.8.0"
 
 [tool.poetry.group.dev.dependencies]
-schema-inspect-maintained = {path="../schemainspect", develop=true}
+# schema-inspect-maintained = {path="../schemainspect", develop=true}
 sqlbag = "*"
 pytest = "*"
 pytest-cov = "*"
