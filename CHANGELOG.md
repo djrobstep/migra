@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.0 (2025-06-02)
+
+### Features
+
+- Comments support
+  ([`c3e6b1d`](https://github.com/PhilipWee/migra/commit/c3e6b1de997dba8e12c867010fb4fab646acd65f))
+
+
 ## v1.0.6 (2025-05-30)
 
 ### Bug Fixes
