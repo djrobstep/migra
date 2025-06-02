@@ -13,7 +13,7 @@ from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
-from migra.command import parse_args, run
+from migra.command import MigrationStatus, parse_args, run
 
 load_dotenv()
 
@@ -68,28 +68,33 @@ def test_extversions():
         do_fixture_test(FIXTURE_NAME, ignore_extension_versions=False)
 
 
-fixtures = """\
-everything
-collations
-identitycols
-partitioning
-privileges
-enumdefaults
-enumdeps
-enumwithfuncdep
-seq
-inherit
-inherit2
-triggers
-triggers2
-triggers3
-dependencies
-dependencies2
-dependencies3
-dependencies4
-constraints
-generated
-""".split()
+fixtures = [
+    "everything",
+    "collations",
+    "identitycols",
+    "partitioning",
+    "privileges",
+    "enumdefaults",
+    "enumdeps",
+    "enumwithfuncdep",
+    "seq",
+    "comments",
+    "inherit",
+    "inherit2",
+    "triggers",
+    "triggers2",
+    "triggers3",
+    "dependencies",
+    "dependencies2",
+    "dependencies3",
+    "dependencies4",
+    "constraints",
+    "generated",
+    pytest.param(
+        "commentswithdep",
+        marks=pytest.mark.skip(reason="Comments not yet in dependencies SQL"),
+    ),
+]
 
 
 @pytest.mark.parametrize("fixture_name", fixtures)
@@ -170,7 +175,7 @@ def do_fixture_test(
         assert args.schema is None
 
         out, err = outs()
-        assert run(args, out=out, err=err) == 3
+        assert run(args, out=out, err=err) == MigrationStatus.UNSAFE_CHANGES
         assert out.getvalue() == ""
 
         DESTRUCTIVE = "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.\n"
@@ -181,7 +186,7 @@ def do_fixture_test(
         assert args.unsafe
         assert args.schema == schema
         out, err = outs()
-        assert run(args, out=out, err=err) == 2
+        assert run(args, out=out, err=err) == MigrationStatus.CHANGES_FOUND
         assert err.getvalue() == ""
 
         output = out.getvalue().strip()

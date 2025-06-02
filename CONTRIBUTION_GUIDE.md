@@ -1,6 +1,12 @@
 # Contribution guide
 
 
+## Quirks
+
+All tests must be unsafe operations - i.e. must thave a `DROP` statement somewhere in the sql generated for the migration generated (i.e. setting a comment to `IS NULL`) does not count as a drop
+
+
+
 ## Installation
 
 To make sure tests run on your system, you will need to have a local postgres db running with and provide the connection credentials to the test files so that the tests can be run

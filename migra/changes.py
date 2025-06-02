@@ -15,6 +15,7 @@ THINGS = [
     "sequences",
     "constraints",
     "functions",
+    "comments",
     "views",
     "indexes",
     "extensions",
