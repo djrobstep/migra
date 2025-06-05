@@ -80,6 +80,7 @@ fixtures = [
     "identitycols",
     "partitioning",
     "privileges",
+    "privilegesnontable",
     "enumdefaults",
     "enumdeps",
     "enumwithfuncdep",
@@ -96,6 +97,7 @@ fixtures = [
     "dependencies4",
     "constraints",
     "generated",
+    "viewownertracking",
     pytest.param(
         "commentswithdep",
         marks=pytest.mark.skip(reason="Comments not yet in dependencies SQL"),
@@ -108,7 +110,8 @@ def test_fixtures(fixture_name):
     do_fixture_test(fixture_name, with_privileges=True)
 
 
-schemainspect_test_role = "schemainspect_test_role"
+schemainspect_test_role1 = "schemainspect_test_role"
+schemainspect_test_role2 = "schemainspect_test_role2"
 
 
 def create_role(s, rolename):
@@ -167,7 +170,8 @@ def do_fixture_test(
         host="localhost"
     ) as d1:
         with S(d0) as s0:
-            create_role(s0, schemainspect_test_role)
+            create_role(s0, schemainspect_test_role1)
+            create_role(s0, schemainspect_test_role2)
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
