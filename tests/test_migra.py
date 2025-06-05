@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import io
 import os
 from difflib import ndiff as difflib_diff
+from typing import List
 
 import pytest
 from dotenv import load_dotenv
@@ -54,8 +55,8 @@ def test_singleschema():
 
 
 def test_excludeschema():
-    for FIXTURE_NAME in ["excludeschema"]:
-        do_fixture_test(FIXTURE_NAME, exclude_schema="excludedschema")
+    do_fixture_test('excludesingleschema', exclude_schema="excludedschema")
+    do_fixture_test('excludemultipleschema', exclude_schemas=["excludedschema1","excludedschema2"])
 
 
 def test_singleschema_ext():
@@ -137,13 +138,17 @@ def do_fixture_test(
     create_extensions_only=False,
     ignore_extension_versions=True,
     with_privileges=False,
-    exclude_schema=None,
+    exclude_schema:str | None = None,
+    exclude_schemas:List[str] = [],
 ):
     flags = ["--unsafe"]
     if schema:
         flags += ["--schema", schema]
     if exclude_schema:
-        flags += ["--exclude_schema", exclude_schema]
+        flags += ['--exclude_schema', exclude_schema]
+    if len(exclude_schemas) > 0:
+        # Note that this doesn't account for weird schema names, like "schema A" with a space in the center, for tests
+        flags += ["--exclude_schemas", ' '.join(exclude_schemas)]
     if create_extensions_only:
         flags += ["--create-extensions-only"]
     if ignore_extension_versions:
@@ -152,14 +157,6 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASS")
-
-    connection_str: str = "postgres"
-    if user is not None and len(user) > 0:
-        connection_str = user
-    if password is not None and len(password) > 0:
-        connection_str += f":{password}"
 
     with temporary_database(host="localhost") as d0, temporary_database(
         host="localhost"
@@ -183,6 +180,9 @@ def do_fixture_test(
         assert err.getvalue() == DESTRUCTIVE
 
         args = parse_args(flags + [d0, d1])
+        print(flags)
+        print(args)
+        print(111111111111111111111111111111111111)
         assert args.unsafe
         assert args.schema == schema
         out, err = outs()
@@ -201,7 +201,7 @@ def do_fixture_test(
                 s0,
                 s1,
                 schema=schema,
-                exclude_schema=exclude_schema,
+                exclude_schemas=exclude_schemas,
                 ignore_extension_versions=ignore_extension_versions,
             )
             m.inspect_from()
