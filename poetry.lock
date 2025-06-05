@@ -636,17 +636,19 @@ name = "schema-inspect-maintained"
 version = "1.1.2"
 description = "Schema inspection for PostgreSQL (and possibly others)"
 optional = false
-python-versions = "<4,>=3.9"
-groups = ["main"]
-files = [
-    {file = "schema_inspect_maintained-1.1.2-py3-none-any.whl", hash = "sha256:052ddc937c114522ed437df7051fa2647a9a8311552d95ffd1e77fe0202d0e30"},
-    {file = "schema_inspect_maintained-1.1.2.tar.gz", hash = "sha256:c9a2021c7ddb87e44007d6b08b4d69ee1b066ffe1d6e6a051cb0a61efec11bf6"},
-]
+python-versions = ">=3.9,<4"
+groups = ["dev"]
+files = []
+develop = true
 
 [package.dependencies]
-setuptools = ">=80.8.0,<81.0.0"
+setuptools = "^80.8.0"
 sqlalchemy = "1.4.46"
 sqlbag = ">=0.1.1616028516"
+
+[package.source]
+type = "directory"
+url = "../schemainspect"
 
 [[package]]
 name = "setuptools"
@@ -654,7 +656,7 @@ version = "80.9.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "setuptools-80.9.0-py3-none-any.whl", hash = "sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922"},
     {file = "setuptools-80.9.0.tar.gz", hash = "sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c"},
@@ -852,4 +854,4 @@ pg = ["psycopg2-binary"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4"
-content-hash = "39476f07ee9c0336c5db678552390b6070dd633a5bbf685983efe3423a84b5a5"
+content-hash = "800b8276e065bb0dd1f89dbaeca4e5ca92982295b6bb68c47d42e7be172b550b"

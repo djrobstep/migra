@@ -54,9 +54,14 @@ def test_singleschema():
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
 
-def test_excludeschema():
-    do_fixture_test('excludesingleschema', exclude_schema="excludedschema")
-    do_fixture_test('excludemultipleschema', exclude_schemas=["excludedschema1","excludedschema2"])
+def test_excludesingleschema():
+    do_fixture_test("excludesingleschema", exclude_schema="excludedschema")
+
+
+def test_excludemultipleschema():
+    do_fixture_test(
+        "excludemultipleschema", exclude_schemas=["excludedschema1", "excludedschema2"]
+    )
 
 
 def test_singleschema_ext():
@@ -138,17 +143,17 @@ def do_fixture_test(
     create_extensions_only=False,
     ignore_extension_versions=True,
     with_privileges=False,
-    exclude_schema:str | None = None,
-    exclude_schemas:List[str] = [],
+    exclude_schema: str | None = None,
+    exclude_schemas: List[str] = [],
 ):
     flags = ["--unsafe"]
     if schema:
         flags += ["--schema", schema]
     if exclude_schema:
-        flags += ['--exclude_schema', exclude_schema]
+        flags += ["--exclude_schema", exclude_schema]
     if len(exclude_schemas) > 0:
         # Note that this doesn't account for weird schema names, like "schema A" with a space in the center, for tests
-        flags += ["--exclude_schemas", ' '.join(exclude_schemas)]
+        flags += ["--exclude_schemas"] + exclude_schemas
     if create_extensions_only:
         flags += ["--create-extensions-only"]
     if ignore_extension_versions:
@@ -180,9 +185,6 @@ def do_fixture_test(
         assert err.getvalue() == DESTRUCTIVE
 
         args = parse_args(flags + [d0, d1])
-        print(flags)
-        print(args)
-        print(111111111111111111111111111111111111)
         assert args.unsafe
         assert args.schema == schema
         out, err = outs()
@@ -196,12 +198,16 @@ def do_fixture_test(
         ADDITIONS = io.open(fixture_path + "additions.sql").read().strip()
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
+        resolved_exclude_schemas = [s for s in exclude_schemas]
+        if exclude_schema is not None:
+            resolved_exclude_schemas.append(exclude_schema)
+
         with S(d0) as s0, S(d1) as s1:
             m = Migration(
                 s0,
                 s1,
                 schema=schema,
-                exclude_schemas=exclude_schemas,
+                exclude_schemas=resolved_exclude_schemas,
                 ignore_extension_versions=ignore_extension_versions,
             )
             m.inspect_from()
