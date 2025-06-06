@@ -4,6 +4,7 @@ import argparse
 import sys
 from contextlib import contextmanager
 from enum import IntEnum
+from typing import List
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
@@ -21,7 +22,7 @@ def arg_context(x):
             yield s
 
 
-def parse_args(args):
+def parse_args(args: List[str]):
     parser = argparse.ArgumentParser(description="Generate a database migration.")
     parser.add_argument(
         "--unsafe",
@@ -39,7 +40,14 @@ def parse_args(args):
         "--exclude_schema",
         dest="exclude_schema",
         default=None,
-        help="Restrict output to statements for all schemas except the specified schema",
+        help="Restrict output to statements for all schemas except the specified schema.",
+    )
+    parser.add_argument(
+        "--exclude_schemas",
+        dest="exclude_schemas",
+        nargs="*",
+        default=[],
+        help="Restrict output to statements for all schemas except the specified schemas.",
     )
     parser.add_argument(
         "--create-extensions-only",
@@ -84,7 +92,11 @@ class MigrationStatus(IntEnum):
 
 def run(args, out=None, err=None):
     schema = args.schema
-    exclude_schema = args.exclude_schema
+    exclude_schemas: List[str] = args.exclude_schemas
+
+    if args.exclude_schema is not None:
+        exclude_schemas.append(args.exclude_schema)
+
     if not out:
         out = sys.stdout  # pragma: no cover
     if not err:
@@ -94,7 +106,7 @@ def run(args, out=None, err=None):
             ac0,
             ac1,
             schema=schema,
-            exclude_schema=exclude_schema,
+            exclude_schemas=exclude_schemas,
             ignore_extension_versions=args.ignore_extension_versions,
         )
         if args.unsafe:

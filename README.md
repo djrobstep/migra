@@ -74,7 +74,7 @@ The dream would be to develop this to a point where we no longer need to manuall
 ### RLS policies
 
 - [ ] [alter policy statements](https://github.com/djrobstep/schemainspect/blob/master/schemainspect/pg/obj.py#L228)
-- [ ] [column privileges](https://github.com/djrobstep/schemainspect/pull/67)
+- [x] [column privileges](https://github.com/djrobstep/schemainspect/pull/67)
 
 ### Other entities
 
