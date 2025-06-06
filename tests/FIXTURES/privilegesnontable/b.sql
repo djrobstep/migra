@@ -1,6 +1,6 @@
 create table test_table(id integer primary key, value text);
 
-create view test_view as select * from test_table;
+create view test_view2 as select * from test_table;
 
 create sequence test_sequence;
 
