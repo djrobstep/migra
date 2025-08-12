@@ -1,9 +1,12 @@
 from __future__ import unicode_literals
 
 import io
+import os
 from difflib import ndiff as difflib_diff
+from typing import List
 
 import pytest
+from dotenv import load_dotenv
 
 # import yaml
 from pytest import raises
@@ -11,7 +14,9 @@ from schemainspect import get_inspector
 from sqlbag import S, load_sql_from_file, temporary_database
 
 from migra import Migration, Statements, UnsafeMigrationException
-from migra.command import parse_args, run
+from migra.command import MigrationStatus, parse_args, run
+
+load_dotenv()
 
 
 def textdiff(a, b):
@@ -31,7 +36,7 @@ def test_statements():
     s1 = Statements(["select 1;"])
     s2 = Statements(["select 2;"])
     s3 = s1 + s2
-    assert type(s1) == type(s2) == type(s3)
+    assert type(s1) is type(s2) is type(s3)
     s3 = s3 + Statements([DROP])
     with raises(UnsafeMigrationException):
         assert s3.sql == SQL
@@ -49,9 +54,14 @@ def test_singleschema():
         do_fixture_test(FIXTURE_NAME, schema="goodschema")
 
 
-def test_excludeschema():
-    for FIXTURE_NAME in ["excludeschema"]:
-        do_fixture_test(FIXTURE_NAME, exclude_schema="excludedschema")
+def test_excludesingleschema():
+    do_fixture_test("excludesingleschema", exclude_schema="excludedschema")
+
+
+def test_excludemultipleschema():
+    do_fixture_test(
+        "excludemultipleschema", exclude_schemas=["excludedschema1", "excludedschema2"]
+    )
 
 
 def test_singleschema_ext():
@@ -64,27 +74,35 @@ def test_extversions():
         do_fixture_test(FIXTURE_NAME, ignore_extension_versions=False)
 
 
-fixtures = """\
-everything
-collations
-identitycols
-partitioning
-privileges
-enumdefaults
-enumdeps
-seq
-inherit
-inherit2
-triggers
-triggers2
-triggers3
-dependencies
-dependencies2
-dependencies3
-dependencies4
-constraints
-generated
-""".split()
+fixtures = [
+    "everything",
+    "collations",
+    "identitycols",
+    "partitioning",
+    "privileges",
+    "privilegesnontable",
+    "enumdefaults",
+    "enumdeps",
+    "enumwithfuncdep",
+    "seq",
+    "comments",
+    "inherit",
+    "inherit2",
+    "triggers",
+    "triggers2",
+    "triggers3",
+    "dependencies",
+    "dependencies2",
+    "dependencies3",
+    "dependencies4",
+    "constraints",
+    "generated",
+    "viewownertracking",
+    pytest.param(
+        "commentswithdep",
+        marks=pytest.mark.skip(reason="Comments not yet in dependencies SQL"),
+    ),
+]
 
 
 @pytest.mark.parametrize("fixture_name", fixtures)
@@ -92,7 +110,8 @@ def test_fixtures(fixture_name):
     do_fixture_test(fixture_name, with_privileges=True)
 
 
-schemainspect_test_role = "schemainspect_test_role"
+schemainspect_test_role1 = "schemainspect_test_role"
+schemainspect_test_role2 = "schemainspect_test_role2"
 
 
 def create_role(s, rolename):
@@ -127,13 +146,17 @@ def do_fixture_test(
     create_extensions_only=False,
     ignore_extension_versions=True,
     with_privileges=False,
-    exclude_schema=None,
+    exclude_schema: str | None = None,
+    exclude_schemas: List[str] = [],
 ):
     flags = ["--unsafe"]
     if schema:
         flags += ["--schema", schema]
     if exclude_schema:
         flags += ["--exclude_schema", exclude_schema]
+    if len(exclude_schemas) > 0:
+        # Note that this doesn't account for weird schema names, like "schema A" with a space in the center, for tests
+        flags += ["--exclude_schemas"] + exclude_schemas
     if create_extensions_only:
         flags += ["--create-extensions-only"]
     if ignore_extension_versions:
@@ -142,11 +165,13 @@ def do_fixture_test(
         flags += ["--with-privileges"]
     fixture_path = "tests/FIXTURES/{}/".format(fixture_name)
     EXPECTED = io.open(fixture_path + "expected.sql").read().strip()
+
     with temporary_database(host="localhost") as d0, temporary_database(
         host="localhost"
     ) as d1:
         with S(d0) as s0:
-            create_role(s0, schemainspect_test_role)
+            create_role(s0, schemainspect_test_role1)
+            create_role(s0, schemainspect_test_role2)
         with S(d0) as s0, S(d1) as s1:
             load_sql_from_file(s0, fixture_path + "a.sql")
             load_sql_from_file(s1, fixture_path + "b.sql")
@@ -156,7 +181,7 @@ def do_fixture_test(
         assert args.schema is None
 
         out, err = outs()
-        assert run(args, out=out, err=err) == 3
+        assert run(args, out=out, err=err) == MigrationStatus.UNSAFE_CHANGES
         assert out.getvalue() == ""
 
         DESTRUCTIVE = "-- ERROR: destructive statements generated. Use the --unsafe flag to suppress this error.\n"
@@ -167,7 +192,7 @@ def do_fixture_test(
         assert args.unsafe
         assert args.schema == schema
         out, err = outs()
-        assert run(args, out=out, err=err) == 2
+        assert run(args, out=out, err=err) == MigrationStatus.CHANGES_FOUND
         assert err.getvalue() == ""
 
         output = out.getvalue().strip()
@@ -177,12 +202,16 @@ def do_fixture_test(
         ADDITIONS = io.open(fixture_path + "additions.sql").read().strip()
         EXPECTED2 = io.open(fixture_path + "expected2.sql").read().strip()
 
+        resolved_exclude_schemas = [s for s in exclude_schemas]
+        if exclude_schema is not None:
+            resolved_exclude_schemas.append(exclude_schema)
+
         with S(d0) as s0, S(d1) as s1:
             m = Migration(
                 s0,
                 s1,
                 schema=schema,
-                exclude_schema=exclude_schema,
+                exclude_schemas=resolved_exclude_schemas,
                 ignore_extension_versions=ignore_extension_versions,
             )
             m.inspect_from()

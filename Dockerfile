@@ -1,8 +1,8 @@
-FROM python:3.9-alpine
+FROM python:3.12-alpine
 
 RUN apk add --update --no-cache --upgrade postgresql-libs && \
   apk add --no-cache --virtual=build-dependencies build-base postgresql-dev && \
-  pip install --no-cache-dir packaging psycopg2-binary migra && \
+  pip install --no-cache-dir packaging psycopg2-binary migra-maintained && \
   apk del build-dependencies && \
   rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 

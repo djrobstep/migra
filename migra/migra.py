@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from typing import List
+
 from schemainspect import DBInspector, get_inspector
 from sqlbag import raw_execute
 
@@ -17,20 +19,20 @@ class Migration(object):
         x_from,
         x_target,
         schema=None,
-        exclude_schema=None,
+        exclude_schemas: List[str] = [],
         ignore_extension_versions=False,
     ):
         self.statements = Statements()
         self.changes = Changes(None, None)
-        if schema and exclude_schema:
+        if schema and len(exclude_schemas) > 0:
             raise ValueError("You cannot have both a schema and excluded schema")
         self.schema = schema
-        self.exclude_schema = exclude_schema
+        self.exclude_schema = exclude_schemas
         if isinstance(x_from, DBInspector):
             self.changes.i_from = x_from
         else:
             self.changes.i_from = get_inspector(
-                x_from, schema=schema, exclude_schema=exclude_schema
+                x_from, schema=schema, exclude_schemas=exclude_schemas
             )
             if x_from:
                 self.s_from = x_from
@@ -38,7 +40,7 @@ class Migration(object):
             self.changes.i_target = x_target
         else:
             self.changes.i_target = get_inspector(
-                x_target, schema=schema, exclude_schema=exclude_schema
+                x_target, schema=schema, exclude_schemas=exclude_schemas
             )
             if x_target:
                 self.s_target = x_target
@@ -47,12 +49,12 @@ class Migration(object):
 
     def inspect_from(self):
         self.changes.i_from = get_inspector(
-            self.s_from, schema=self.schema, exclude_schema=self.exclude_schema
+            self.s_from, schema=self.schema, exclude_schemas=self.exclude_schema
         )
 
     def inspect_target(self):
         self.changes.i_target = get_inspector(
-            self.s_target, schema=self.schema, exclude_schema=self.exclude_schema
+            self.s_target, schema=self.schema, exclude_schemas=self.exclude_schema
         )
 
     def clear(self):
@@ -64,7 +66,7 @@ class Migration(object):
         for stmt in self.statements:
             raw_execute(self.s_from, stmt)
         self.changes.i_from = get_inspector(
-            self.s_from, schema=self.schema, exclude_schema=self.exclude_schema
+            self.s_from, schema=self.schema, exclude_schemas=self.exclude_schema
         )
         safety_on = self.statements.safe
         self.clear()
@@ -98,7 +100,9 @@ class Migration(object):
         self.add(self.changes.extensions(modifications_only=True, modifications=True))
         self.add(self.changes.collations(creations_only=True))
         self.add(self.changes.enums(creations_only=True, modifications=False))
+
         self.add(self.changes.sequences(creations_only=True))
+        self.add(self.changes.comments(drops_only=True, modifications=False))
         self.add(self.changes.triggers(drops_only=True))
         self.add(self.changes.rlspolicies(drops_only=True))
         if privileges:
@@ -129,6 +133,7 @@ class Migration(object):
                 self.add(self.changes.memberships(creations_only=True))
         self.add(self.changes.rlspolicies(creations_only=True))
         self.add(self.changes.triggers(creations_only=True))
+        self.add(self.changes.comments(creations_only=True))
         self.add(self.changes.collations(drops_only=True))
         self.add(self.changes.schemas(drops_only=True))
 

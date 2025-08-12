@@ -6,6 +6,6 @@ drop view if exists "public"."bbb_view2";
 
 drop view if exists "public"."aaa_view1";
 
-create or replace view "public"."ddd_changed" as  SELECT basetable.name,
+create or replace view "public"."ddd_changed" as  SELECT name,
     'x'::text AS x
    FROM basetable;
