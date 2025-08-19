@@ -90,6 +90,7 @@ class Migration(object):
     def add_all_changes(self, privileges=False, roles=False):
         if roles:
             if privileges:
+                self.add(self.changes.privileges(drops_only=True))
                 self.add(self.changes.memberships(drops_only=True))
             self.add(self.changes.roles(drops_only=True))
             self.add(self.changes.roles(creations_only=True))
@@ -105,8 +106,6 @@ class Migration(object):
         self.add(self.changes.comments(drops_only=True, modifications=False))
         self.add(self.changes.triggers(drops_only=True))
         self.add(self.changes.rlspolicies(drops_only=True))
-        if privileges:
-            self.add(self.changes.privileges(drops_only=True))
         self.add(self.changes.non_pk_constraints(drops_only=True))
 
         self.add(self.changes.mv_indexes(drops_only=True))
