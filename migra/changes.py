@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from collections import OrderedDict as od
 from functools import partial
 
+from networkx import lexicographical_topological_sort, DiGraph
+
 import schemainspect
 
 from .statements import Statements
@@ -21,6 +23,7 @@ THINGS = [
     "collations",
     "rlspolicies",
     "triggers",
+    "comments",
 ]
 PK = "PRIMARY KEY"
 
@@ -227,11 +230,23 @@ def get_table_changes(
 
     statements += enums_pre
 
-    for t, v in added.items():
-        statements.append(v.create_statement)
-        if v.rowsecurity:
-            rls_alter = v.alter_rls_statement
-            statements.append(rls_alter)
+    # topologial sort of tables using table.dependents
+    # this is to ensure that tables are created in the correct order
+    # so that foreign keys can be created
+
+    G = DiGraph()
+    G.add_nodes_from(tables_target.keys())
+    for t, v in tables_target.items():
+        G.add_edges_from((t, d) for d in v.dependents)
+
+    tables_sorted = {k: tables_target[k] for k in lexicographical_topological_sort(G) if k in tables_target}
+
+    for t, v in tables_sorted.items():
+        if t in added:
+            statements.append(v.create_statement)
+            if v.rowsecurity:
+                rls_alter = v.alter_rls_statement
+                statements.append(rls_alter)
 
     statements += enums_post
 
@@ -365,7 +380,6 @@ def get_selectable_differences(
     not_replaceable = set()
 
     if add_dependents_for_modified:
-
         for k, m in changed_all.items():
             old = selectables_from[k]
 
@@ -478,7 +492,7 @@ def get_selectable_changes(
     statements = Statements()
 
     def functions(d):
-        return {k: v for k, v in d.items() if v.relationtype == "f"}
+        return {k: v for k, v in d.items() if v.relationtype in ("f", "a")}
 
     if not tables_only:
         if not creations_only:
@@ -653,6 +667,15 @@ class Changes(object):
             statements_for_changes,
             self.i_from.sequences,
             self.i_target.sequences,
+            modifications=False,
+        )
+
+    @property
+    def comments(self):
+        return partial(
+            statements_for_changes,
+            self.i_from.comments,
+            self.i_target.comments,
             modifications=False,
         )
 
