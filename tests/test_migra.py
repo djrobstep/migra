@@ -66,6 +66,7 @@ def test_extversions():
 
 fixtures = """\
 everything
+comments
 collations
 identitycols
 partitioning
