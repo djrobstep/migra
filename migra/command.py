@@ -38,6 +38,12 @@ def parse_args(args):
         "--exclude_schema",
         dest="exclude_schema",
         default=None,
+        help="[DEPRECATED: Use --exclude-schema] Restrict output to statements for all schemas except the specified schema",
+    )
+    parser.add_argument(
+        "--exclude-schema",
+        dest="exclude_schema",
+        default=None,
         help="Restrict output to statements for all schemas except the specified schema",
     )
     parser.add_argument(
