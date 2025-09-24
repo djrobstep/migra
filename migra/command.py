@@ -1,8 +1,13 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
+import pgpasslib
 import sys
+import getpass
+
 from contextlib import contextmanager
+from sqlalchemy.engine.url import make_url
+from sqlbag import S
 
 from .migra import Migration
 from .statements import UnsafeMigrationException
@@ -75,6 +80,46 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
+def get_password_from_pgpass(host, port, database, username):
+    if not host:
+        host = "localhost"
+
+    if not port:
+        port = 5432
+
+    if not username:
+        username = getpass.getuser()
+
+    if not database:
+        database = username
+
+    try:
+        return pgpasslib.getpass(
+            host,
+            port,
+            database,
+            username,
+        )
+    except pgpasslib.FileNotFound:
+        return None
+
+    return None
+
+
+def get_password_from_uri(uri):
+
+    uri = make_url(uri)
+
+    if not uri.password:
+        password = get_password_from_pgpass(
+            uri.host, uri.port, uri.database, uri.username
+        )
+        if password:
+            uri.set(password=password)
+
+    return uri
+
+
 def run(args, out=None, err=None):
     schema = args.schema
     exclude_schema = args.exclude_schema
@@ -82,7 +127,11 @@ def run(args, out=None, err=None):
         out = sys.stdout  # pragma: no cover
     if not err:
         err = sys.stderr  # pragma: no cover
-    with arg_context(args.dburl_from) as ac0, arg_context(args.dburl_target) as ac1:
+
+    db_from = get_password_from_uri(args.dburl_from)
+    db_to = get_password_from_uri(args.dburl_target)
+
+    with arg_context(db_from) as ac0, arg_context(db_to) as ac1:
         m = Migration(
             ac0,
             ac1,

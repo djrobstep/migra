@@ -26,6 +26,12 @@ The general form is as follows:
     :::bash
     connectiontype://username:password@databasehostname/databasename?extraparam1=a&extraparam2=b
 
+If you have a .pgpass file in your $HOME dir, you can make use of that as well
+as you don't need to enter the password in the connection string:
+
+    :::bash
+    postgresql://username@hostname/databasename
+
 These can be left out if not necessary. For instance, if connecting locally, using your default system username and passwordless "trust" login, only a connection type and database name is required:
 
     :::bash
